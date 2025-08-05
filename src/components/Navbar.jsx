@@ -19,7 +19,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200">
-      {/* Top Bar */}
+      {/* Barra Superior */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -36,7 +36,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Search Bar - Desktop */}
+          {/* Barra de Búsqueda - Escritorio */}
           <div className="hidden md:block flex-1 max-w-2xl mx-8">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -50,17 +50,17 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Right Side Icons */}
+          {/* Iconos del Lado Derecho */}
           <div className="flex items-center space-x-4">
-            {/* Search Icon - Mobile */}
+            {/* Icono de Búsqueda - Móvil */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900"
+              className="md:hidden p-2 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               <Search className="h-5 w-5" />
             </button>
 
-            {/* Auth Links */}
+            {/* Enlaces de Autenticación */}
             <div className="hidden sm:flex items-center space-x-4">
               <Link
                 to="/login"
@@ -79,7 +79,7 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {/* Cart */}
+            {/* Carrito */}
             <Link
               to="/cart"
               className="p-2 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 relative transition-colors duration-200"
@@ -87,7 +87,7 @@ const Navbar = () => {
               <ShoppingCart className="h-5 w-5" />
             </Link>
 
-            {/* Mobile Menu Button */}
+            {/* Botón de Menú Móvil */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900"
@@ -101,7 +101,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Search Bar */}
+        {/* Barra de Búsqueda Móvil */}
         {isSearchOpen && (
           <div className="md:hidden pb-4">
             <div className="relative">
@@ -118,7 +118,7 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Categories Menu - Desktop */}
+      {/* Menú de Categorías - Escritorio */}
       <div className="hidden lg:block bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center space-x-8 py-3 overflow-x-auto">
@@ -139,11 +139,11 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Menú Móvil */}
       {isMenuOpen && (
         <div className="lg:hidden bg-white border-t border-gray-200">
           <div className="px-4 py-3 space-y-3">
-            {/* Mobile Auth Links */}
+            {/* Enlaces de Autenticación Móvil */}
             <div className="sm:hidden space-y-2 py-2">
               <Link
                 to="/login"
@@ -163,7 +163,7 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {/* Mobile Categories */}
+            {/* Categorías Móvil */}
             <div className="border-t border-gray-200 pt-3">
               <div className="space-y-2">
                 {categories.map((category, index) => (
