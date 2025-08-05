@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Mail, Lock, User, Phone, MapPin, Eye, EyeOff } from 'lucide-react'
-
+import { Link } from 'react-router-dom'
 const Register = () => {
   const [formData, setFormData] = useState({
     nombre: '',
@@ -353,13 +353,13 @@ const Register = () => {
           </button>
 
           <div className="mt-6">
-            <button
+            <Link
+              to="/login"
               type="button"
               className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200"
-              onClick={() => console.log('Redirigir a login')}
             >
               ¿Ya tienes cuenta? Iniciar sesión
-            </button>
+            </Link>
           </div>
         </div>
 
