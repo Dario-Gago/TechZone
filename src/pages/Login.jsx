@@ -15,11 +15,17 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    // Validar credenciales simuladas
+    // Simulación de credenciales y rol de administrador
     if (email === 'gagodario1@gmail.com' && password === 'pass1234') {
       const fakeToken = 'token_falso_123456789'
-      login(fakeToken) // Guardamos el token en el contexto
-      navigate('/') // Redirigir a home o donde quieras
+      const isAdmin = true // este usuario es admin
+      login(fakeToken, isAdmin)
+      navigate('/')
+    } else if (email === 'usuario@normal.com' && password === 'pass1234') {
+      const fakeToken = 'token_usuario_normal'
+      const isAdmin = false
+      login(fakeToken, isAdmin)
+      navigate('/')
     } else {
       setError('Correo o contraseña incorrectos')
     }
