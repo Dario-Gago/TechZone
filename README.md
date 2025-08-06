@@ -1,12 +1,188 @@
-# React + Vite
+# 🎮 TechZone
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<div align="center">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
+</div>
 
-Currently, two official plugins are available:
+<div align="center">
+  <h3>🚀 Tu destino definitivo para artículos gaming de alta calidad</h3>
+  <p>Una experiencia de compra moderna y fluida para gamers exigentes</p>
+</div>
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 📋 Descripción
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**TechZone** es una aplicación web de comercio electrónico especializada en la venta de artículos gaming. Desarrollada con React, ofrece una interfaz moderna e intuitiva que permite a los usuarios explorar, filtrar y gestionar productos gaming de última generación.
+
+### ✨ Características Principales
+
+- 🎯 **Catálogo Especializado**: Amplia gama de productos gaming organizados por categorías
+- 🔍 **Búsqueda Avanzada**: Sistema de filtros inteligente para encontrar el producto perfecto
+- 🛒 **Carrito Dinámico**: Gestión fluida de productos con actualización en tiempo real
+- 📱 **Diseño Responsivo**: Experiencia optimizada en todos los dispositivos
+- ⚡ **Rendimiento Optimizado**: Carga rápida y navegación fluida
+- 🎨 **UI/UX Moderna**: Interfaz atractiva siguiendo las mejores prácticas de diseño
+
+## 🛠️ Tecnologías Utilizadas
+
+- **Frontend Framework**: React 18+
+- **Lenguaje**: JavaScript (ES6+)
+- **Estilos**: CSS3 / CSS Modules
+- **Gestión de Estado**: React Context API para autenticación
+- **Routing**: React Router DOM con rutas protegidas
+- **Routing**: React Router DOM
+- **Build Tool**: Create React App / Vite
+- **Control de Versiones**: Git
+
+## 🚀 Instalación y Configuración
+
+### Prerrequisitos
+
+- Node.js (v14 o superior)
+- npm o yarn
+- Git
+
+### Pasos de Instalación
+
+1. **Clonar el repositorio**
+
+   ```bash
+   git clone https://github.com/Dario-Gago/TechZone.git
+   cd techzone
+   ```
+
+2. **Instalar dependencias**
+
+   ```bash
+   npm install
+   # o
+   yarn install
+   ```
+
+3. **Iniciar el servidor de desarrollo**
+
+   ```bash
+   npm run dev
+   # o
+   yarn run dev
+   ```
+
+4. **Abrir en el navegador**
+   ```
+   http://localhost:5173/
+   ```
+
+## 📁 Estructura del Proyecto
+
+```
+techzone/
+├── node_modules/
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   │   ├── Carousel.jsx
+│   │   ├── Footer.jsx
+│   │   ├── Navbar.jsx
+│   │   └── PrivateRoute.jsx
+│   ├── contexts/
+│   │   └── AuthContext.jsx
+│   ├── pages/
+│   │   ├── Cart.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── Home.jsx
+│   │   ├── Login.jsx
+│   │   └── Register.jsx
+│   ├── App.css
+│   ├── App.jsx
+│   ├── index.css
+│   └── main.jsx
+├── package.json
+└── README.md
+```
+
+## 🎮 Funcionalidades
+
+### 🔐 Sistema de Autenticación
+
+- **Login y Register**: Autenticación segura de usuarios
+- **AuthContext**: Gestión global del estado de autenticación
+- **PrivateRoute**: Protección de rutas para usuarios autenticados
+
+### 🏠 Página Principal (Home)
+
+- Hero section con productos gaming destacados
+- Carousel interactivo con ofertas especiales
+- Categorías principales de productos
+- Navegación intuitiva y moderna
+
+### 🛒 Carrito de Compras (Cart)
+
+- Añadir/eliminar productos gaming
+- Actualización dinámica de cantidades
+- Cálculo automático de totales
+- Persistencia de datos entre sesiones
+
+### 📊 Dashboard
+
+- Panel de control personalizado
+- Gestión de perfil de usuario
+- Historial de compras
+- Estadísticas de actividad
+
+### 🎨 Componentes Reutilizables
+
+- **Navbar**: Navegación responsive con menú gaming
+- **Footer**: Información de contacto y enlaces útiles
+- **Carousel**: Slider de productos y ofertas especiales
+
+## 🎨 Capturas de Pantalla
+
+_[Aquí puedes agregar capturas de pantalla de tu aplicación]_
+
+## 🔮 Próximas Funcionalidades
+
+- [ ] Integración con backend para gestión de productos
+- [ ] Catálogo completo de productos gaming
+- [ ] Lista de deseos y favoritos
+- [ ] Sistema de reviews y calificaciones
+- [ ] Integración con pasarelas de pago
+- [ ] Notificaciones en tiempo real
+- [ ] Comparador de productos
+- [ ] Chat en vivo para soporte técnico
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Para contribuir:
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 👨‍💻 Desarrolladores
+
+<div align="center">
+
+|             **Dario Gago**              |             **Alberto Cid**              |
+| :-------------------------------------: | :--------------------------------------: |
+|           Frontend Developer            |            Frontend Developer            |
+| [GitHub](https://github.com/dario-gago) | [GitHub](https://github.com/alberto-cid) |
+
+</div>
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
+
+---
+
+<div align="center">
+  <p>⭐ Si te gusta este proyecto, ¡no olvides darle una estrella! ⭐</p>
+  <p>Hecho con ❤️ por el equipo de TechZone</p>
+</div>
