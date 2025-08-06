@@ -1,6 +1,10 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import { useProducts } from '../hooks/useProducts'
 
 const Footer = () => {
+  const { categories } = useProducts()
+
   return (
     <footer className="bg-gray-100 py-12 px-6">
       <div className="max-w-6xl mx-auto">
@@ -13,77 +17,41 @@ const Footer = () => {
             </button>
           </div>
 
-          {/* Categorías Section */}
+          {/* Categorías Section - Primera columna */}
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-6">
               Categorías
             </h3>
             <ul className="space-y-3">
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  Gaming y Streaming
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  Computación
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  Componentes
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  Conectividad y Redes
-                </a>
-              </li>
+              {categories.slice(0, 4).map((category) => (
+                <li key={category.id}>
+                  <Link
+                    to={`/category/${category.slug}`}
+                    className="text-gray-600 hover:text-gray-800 transition-colors"
+                  >
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Segunda columna de categorías */}
+          {/* Categorías Section - Segunda columna */}
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-6 invisible">
               Categorías
             </h3>
             <ul className="space-y-3">
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  Hogar y Oficina
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  Audio y Video
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  className="text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  Otras Categorías
-                </a>
-              </li>
+              {categories.slice(4).map((category) => (
+                <li key={category.id}>
+                  <Link
+                    to={`/category/${category.slug}`}
+                    className="text-gray-600 hover:text-gray-800 transition-colors"
+                  >
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -97,18 +65,18 @@ const Footer = () => {
                 <p>Address #1234 - Location - City</p>
               </div>
               <div className="space-y-2">
-                <a
-                  href="#"
+                <Link
+                  to="/dashboard"
                   className="block text-gray-600 hover:text-gray-800 transition-colors"
                 >
                   Cuenta
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link
+                  to="/cart"
                   className="block text-gray-600 hover:text-gray-800 transition-colors"
                 >
                   Carrito
-                </a>
+                </Link>
               </div>
             </div>
           </div>
