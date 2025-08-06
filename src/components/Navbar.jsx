@@ -10,22 +10,14 @@ import {
   LogOut
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
+import { useProducts } from '../hooks/useProducts'
+import SearchBar from './SearchBar'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const { isAuthenticated, logout } = useAuth()
-
-  const categories = [
-    'Todo',
-    'Gaming y Streaming',
-    'Computación',
-    'Componentes',
-    'Conectividad y Redes',
-    'Hogar y Oficina',
-    'Audio y Video',
-    'Otras Categorías'
-  ]
+  const { categories } = useProducts()
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200">
@@ -156,15 +148,15 @@ const Navbar = () => {
           <div className="flex items-center justify-center space-x-8 py-3 overflow-x-auto">
             {categories.map((category, index) => (
               <Link
-                key={index}
-                to={`/category/${category.toLowerCase().replace(/\s+/g, '-')}`}
+                key={category.id}
+                to={`/category/${category.slug}`}
                 className={`whitespace-nowrap text-sm font-medium transition-colors duration-200 hover:text-gray-900 ${
                   index === 0
                     ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
                     : 'text-gray-600'
                 }`}
               >
-                {category}
+                {category.name}
               </Link>
             ))}
           </div>
@@ -226,10 +218,8 @@ const Navbar = () => {
               <div className="space-y-2">
                 {categories.map((category, index) => (
                   <Link
-                    key={index}
-                    to={`/category/${category
-                      .toLowerCase()
-                      .replace(/\s+/g, '-')}`}
+                    key={category.id}
+                    to={`/category/${category.slug}`}
                     onClick={() => setIsMenuOpen(false)}
                     className={`block w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                       index === 0
@@ -237,7 +227,7 @@ const Navbar = () => {
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     }`}
                   >
-                    {category}
+                    {category.name}
                   </Link>
                 ))}
               </div>
