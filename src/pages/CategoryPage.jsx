@@ -77,7 +77,7 @@ const CategoryPage = () => {
                 </div>
 
                 {/* Información del producto */}
-                <div className="p-4">
+                <div className="p-4 flex flex-col h-38">
                   {/* Marca */}
                   {product.brand && (
                     <p className="text-sm text-gray-500 uppercase tracking-wide mb-1">
@@ -86,12 +86,12 @@ const CategoryPage = () => {
                   )}
 
                   {/* Nombre del producto */}
-                  <h3 className="text-sm font-medium text-gray-800 mb-3 line-clamp-2 leading-tight">
+                  <h3 className="text-sm font-medium text-gray-800 mb-3 line-clamp-2 leading-tight flex-grow">
                     {product.name}
                   </h3>
 
                   {/* Precios */}
-                  <div className="space-y-1">
+                  <div className="space-y-1 mt-auto">
                     {/* Precio original tachado */}
                     {product.discount > 0 && (
                       <p className="text-sm text-gray-500 line-through">
@@ -104,8 +104,6 @@ const CategoryPage = () => {
                       {formatPrice(product.discountPrice)}
                     </p>
                   </div>
-
-
                 </div>
               </Link>
             ))}
