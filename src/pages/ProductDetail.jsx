@@ -10,6 +10,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1)
 
   const product = getProductById(id)
+
   // Manejar estados de carga y producto no encontrado
   if (loading) {
     return (
