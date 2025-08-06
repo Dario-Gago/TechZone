@@ -28,17 +28,6 @@ export const API_ENDPOINTS = {
   COMPRAS_ADMIN: `${API_BASE_URL}/compras/admin`
 }
 
-// Función helper para construir URLs con query parameters
-export const buildUrl = (baseUrl, params = {}) => {
-  const url = new URL(baseUrl)
-  Object.keys(params).forEach((key) => {
-    if (params[key] !== undefined && params[key] !== null) {
-      url.searchParams.append(key, params[key])
-    }
-  })
-  return url.toString()
-}
-
 // Ejemplos de uso con query parameters:
 // buildUrl(API_ENDPOINTS.PRODUCTOS, { categoria_id: 1, activo: true, page: 1, limit: 10 })
 // buildUrl(API_ENDPOINTS.COMPRAS, { page: 1, limit: 20 })
