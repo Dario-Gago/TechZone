@@ -86,9 +86,11 @@ techzone/
 │   ├── assets/
 │   ├── components/
 │   │   ├── Carousel.jsx
+│   │   ├── FeaturedProducts.jsx
 │   │   ├── Footer.jsx
 │   │   ├── Navbar.jsx
-│   │   └── PrivateRoute.jsx
+│   │   ├── PrivateRoute.jsx
+│   │   └── PublicRoute.jsx
 │   ├── contexts/
 │   │   └── AuthContext.jsx
 │   ├── pages/
@@ -100,8 +102,10 @@ techzone/
 │   ├── App.jsx
 │   ├── index.css
 │   └── main.jsx
+├── index.html
 ├── package.json
-└── README.md
+├── README.md
+└── vite.config.js
 ```
 
 ## 🎮 Funcionalidades
