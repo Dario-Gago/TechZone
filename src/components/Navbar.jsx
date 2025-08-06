@@ -78,7 +78,7 @@ const Navbar = () => {
                   className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
                 >
                   <User className="h-5 w-5" />
-                  <span className="text-sm">Iniciar sesión</span>
+                  <span className="text-sm font-medium">Iniciar sesión</span>
                 </Link>
                 <div className="h-4 w-px bg-gray-300"></div>
                 <Link
