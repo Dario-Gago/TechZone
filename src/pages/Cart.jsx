@@ -64,13 +64,13 @@ const Cart = () => {
   // Si no hay sesión iniciada, mostrar mensaje
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center p-8 max-w-md">
+      <div className="bg-gray-50 py-16 px-4">
+        <div className="text-center p-8 max-w-md mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Debes iniciar sesión
+            Inicia sesión para continuar
           </h2>
           <p className="text-gray-600 mb-6">
-            Para ver tu carrito de compras necesitas estar autenticado
+            Accede a tu cuenta para ver los productos que agregaste a tu carrito.
           </p>
 
           <div className="space-y-3">
@@ -96,7 +96,7 @@ const Cart = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex items-center mb-6">
