@@ -67,10 +67,10 @@ const Cart = () => {
       <div className="bg-gray-50 py-16 px-4">
         <div className="text-center p-8 max-w-md mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Debes iniciar sesión
+            Inicia sesión para continuar
           </h2>
           <p className="text-gray-600 mb-6">
-            Para ver tu carrito de compras necesitas estar autenticado
+            Accede a tu cuenta para ver los productos que agregaste a tu carrito.
           </p>
 
           <div className="space-y-3">
