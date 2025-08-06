@@ -169,10 +169,10 @@ Las contribuciones son bienvenidas. Para contribuir:
 
 <div align="center">
 
-|             **Dario Gago**              |             **Alberto Cid**              |
-| :-------------------------------------: | :--------------------------------------: |
-|           Frontend Developer            |            Frontend Developer            |
-| [GitHub](https://github.com/dario-gago) | [GitHub](https://github.com/alberto-cid) |
+|             **Dario Gago**              |           **Alberto Cid**           |
+| :-------------------------------------: | :---------------------------------: |
+|           Frontend Developer            |         Frontend Developer          |
+| [GitHub](https://github.com/dario-gago) | [GitHub](https://github.com/a-cidm) |
 
 </div>
 
