@@ -142,11 +142,10 @@ const Register = () => {
                   name="nombre"
                   type="text"
                   required
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${
-                    errors.nombre
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errors.nombre
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
-                  }`}
+                    }`}
                   placeholder="Tu nombre completo"
                   value={formData.nombre}
                   onChange={handleInputChange}
@@ -174,11 +173,10 @@ const Register = () => {
                   name="email"
                   type="email"
                   required
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${
-                    errors.email
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errors.email
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
-                  }`}
+                    }`}
                   placeholder="email@ejemplo.com"
                   value={formData.email}
                   onChange={handleInputChange}
@@ -206,11 +204,10 @@ const Register = () => {
                   name="password"
                   type={showPassword ? 'text' : 'password'}
                   required
-                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${
-                    errors.password
+                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errors.password
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
-                  }`}
+                    }`}
                   placeholder="Mínimo 8 caracteres"
                   value={formData.password}
                   onChange={handleInputChange}
@@ -249,11 +246,10 @@ const Register = () => {
                   name="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
                   required
-                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${
-                    errors.confirmPassword
+                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errors.confirmPassword
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
-                  }`}
+                    }`}
                   placeholder="Repite tu contraseña"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
@@ -293,11 +289,10 @@ const Register = () => {
                   id="telefono"
                   name="telefono"
                   type="tel"
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${
-                    errors.telefono
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errors.telefono
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
-                  }`}
+                    }`}
                   placeholder="+56 9 1234 5678"
                   value={formData.telefono}
                   onChange={handleInputChange}
@@ -331,16 +326,18 @@ const Register = () => {
                 />
               </div>
             </div>
+            <p className="mt-4 text-xs text-gray-500 text-center">
+              Los campos marcados con * son obligatorios
+            </p>
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition duration-200 ${
-              isLoading
+            className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition duration-200 ${isLoading
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
-            }`}
+              }`}
           >
             {isLoading ? (
               <div className="flex items-center">
@@ -363,9 +360,7 @@ const Register = () => {
           </div>
         </div>
 
-        <p className="mt-4 text-xs text-gray-500 text-center">
-          Los campos marcados con * son obligatorios
-        </p>
+
       </div>
     </div>
   )
