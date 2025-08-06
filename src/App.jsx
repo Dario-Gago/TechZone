@@ -11,6 +11,7 @@ import Cart from './pages/Cart'
 import Dashboard from './pages/Dashboard'
 import ProductDetail from './pages/ProductDetail'
 import CategoryPage from './pages/CategoryPage'
+import SearchPage from './pages/SearchPage'
 import PrivateRoute from './components/PrivateRoute'
 import PublicRoute from './components/PublicRoute'
 
@@ -30,6 +31,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/category/:categorySlug" element={<CategoryPage />} />
+                <Route path="/search" element={<SearchPage />} />
                 <Route
                   path="/login"
                   element={
