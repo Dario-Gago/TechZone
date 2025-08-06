@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import {
   Search,
   User,
@@ -18,6 +18,17 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const { isAuthenticated, logout } = useAuth()
   const { categories } = useProducts()
+  const location = useLocation()
+
+  // Función para determinar si una categoría está activa
+  const isCategoryActive = (categorySlug) => {
+    return location.pathname === `/category/${categorySlug}`
+  }
+
+  // Función para manejar el click en categoría
+  const handleCategoryClick = () => {
+    setIsMenuOpen(false)
+  }
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200">
@@ -128,12 +139,12 @@ const Navbar = () => {
       <div className="hidden lg:block bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center space-x-8 py-3 overflow-x-auto">
-            {categories.map((category, index) => (
+            {categories.map((category) => (
               <Link
                 key={category.id}
                 to={`/category/${category.slug}`}
                 className={`whitespace-nowrap text-sm font-medium transition-colors duration-200 hover:text-gray-900 ${
-                  index === 0
+                  isCategoryActive(category.slug)
                     ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
                     : 'text-gray-600'
                 }`}
@@ -198,13 +209,13 @@ const Navbar = () => {
             {/* Categorías Móvil */}
             <div className="border-t border-gray-200 pt-3">
               <div className="space-y-2">
-                {categories.map((category, index) => (
+                {categories.map((category) => (
                   <Link
                     key={category.id}
                     to={`/category/${category.slug}`}
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={handleCategoryClick}
                     className={`block w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                      index === 0
+                      isCategoryActive(category.slug)
                         ? 'bg-gray-900 text-white'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     }`}
