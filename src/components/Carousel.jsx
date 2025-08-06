@@ -68,32 +68,23 @@ const Carousel = () => {
         >
           <ChevronRight className="w-6 h-6 text-gray-800 group-hover:text-gray-900" />
         </button>
-      </div>
 
-      {/* Dots Indicator */}
-      <div className="flex justify-center space-x-3 py-6">
-        {images.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-200 ${
-              index === currentIndex
-                ? 'bg-gray-900 scale-125'
-                : 'bg-gray-300 hover:bg-gray-400'
-            }`}
-          />
-        ))}
-      </div>
-
-      {/* Progress Bar */}
-      <div className="px-6 pb-4">
-        <div className="w-full bg-gray-200 rounded-full h-1">
-          <div
-            className="bg-gray-900 h-1 rounded-full transition-all duration-300"
-            style={{ width: `${((currentIndex + 1) / images.length) * 100}%` }}
-          />
+        {/* Dots Indicator */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-3 z-10">
+          {images.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                index === currentIndex
+                  ? 'bg-black scale-125 shadow-lg'
+                  : 'bg-black/60 hover:bg-black/80'
+              }`}
+            />
+          ))}
         </div>
       </div>
+
     </div>
   )
 }
