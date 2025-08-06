@@ -8,7 +8,8 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Cart from './pages/Cart'
-
+import Dashboard from './pages/Dashboard'
+import PrivateRoute from './components/PrivateRoute'
 //Importo el contexto
 import { AuthProvider } from './contexts/AuthContext'
 const App = () => {
@@ -24,6 +25,14 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/cart" element={<Cart />} />
+              <Route
+                path="/dashboard"
+                element={
+                  <PrivateRoute>
+                    <Dashboard />
+                  </PrivateRoute>
+                }
+              />
             </Routes>
           </main>
           <Footer />
