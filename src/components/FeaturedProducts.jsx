@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 const FeaturedProducts = () => {
   const scrollRef = useRef(null)
@@ -129,9 +130,10 @@ const FeaturedProducts = () => {
         <div ref={scrollRef} className="overflow-x-auto scrollbar-hide px-12">
           <div className="flex gap-2 min-w-max">
             {products.map((product) => (
-              <div
+              <Link
                 key={product.id}
-                className="bg-white overflow-hidden flex-shrink-0 w-48 sm:w-52 md:w-56"
+                to={`/product/${product.id}`}
+                className="bg-white overflow-hidden flex-shrink-0 w-48 sm:w-52 md:w-56 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
               >
                 {/* Imagen del producto */}
                 <div className="relative bg-gray-100 h-70 flex items-center justify-center">
@@ -176,7 +178,7 @@ const FeaturedProducts = () => {
                     </p>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
