@@ -90,17 +90,6 @@ const Cart = () => {
               Crear Cuenta
             </Link>
           </div>
-
-          {/* Botón temporal para simular */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
-            <p className="text-xs text-gray-400 mb-2">Demo purposes:</p>
-            <button
-              onClick={() => setIsLoggedIn(true)}
-              className="text-sm text-blue-600 hover:text-blue-800 underline"
-            >
-              Simular usuario logueado
-            </button>
-          </div>
         </div>
       </div>
     )
