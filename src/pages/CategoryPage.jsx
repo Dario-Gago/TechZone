@@ -105,14 +105,7 @@ const CategoryPage = () => {
                     </p>
                   </div>
 
-                  {/* Estado del stock */}
-                  <div className="mt-3">
-                    {product.inStock ? (
-                      <span className="text-sm text-green-600 font-medium">En stock</span>
-                    ) : (
-                      <span className="text-sm text-red-600 font-medium">Agotado</span>
-                    )}
-                  </div>
+
                 </div>
               </Link>
             ))}
