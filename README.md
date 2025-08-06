@@ -3,7 +3,7 @@
 <div align="center">
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
-  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-grey?style=for-the-badge&logo=tailwind-css&logoColor=38B2AC" alt="Tailwind CSS">
   <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
 </div>
 
@@ -140,30 +140,13 @@ techzone/
 - **Footer**: Información de contacto y enlaces útiles
 - **Carousel**: Slider de productos y ofertas especiales
 
-## 🎨 Capturas de Pantalla
-
-_[Aquí puedes agregar capturas de pantalla de tu aplicación]_
-
 ## 🔮 Próximas Funcionalidades
 
 - [ ] Integración con backend para gestión de productos
 - [ ] Catálogo completo de productos gaming
-- [ ] Lista de deseos y favoritos
-- [ ] Sistema de reviews y calificaciones
 - [ ] Integración con pasarelas de pago
-- [ ] Notificaciones en tiempo real
-- [ ] Comparador de productos
-- [ ] Chat en vivo para soporte técnico
 
-## 🤝 Contribuciones
 
-Las contribuciones son bienvenidas. Para contribuir:
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
 
 ## 👨‍💻 Desarrolladores
 
@@ -171,7 +154,7 @@ Las contribuciones son bienvenidas. Para contribuir:
 
 |             **Dario Gago**              |           **Alberto Cid**           |
 | :-------------------------------------: | :---------------------------------: |
-|           Frontend Developer            |         Frontend Developer          |
+|           Full Stack Developer            |         Full Stack Developer          |
 | [GitHub](https://github.com/dario-gago) | [GitHub](https://github.com/a-cidm) |
 
 </div>
