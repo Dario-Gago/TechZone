@@ -97,7 +97,6 @@ techzone/
 │   │   ├── Home.jsx
 │   │   ├── Login.jsx
 │   │   └── Register.jsx
-│   ├── App.css
 │   ├── App.jsx
 │   ├── index.css
 │   └── main.jsx
