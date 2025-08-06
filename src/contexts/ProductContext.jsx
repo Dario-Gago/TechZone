@@ -43,7 +43,20 @@ export const ProductProvider = ({ children }) => {
     if (categorySlug === 'todo' || !categorySlug) {
       return products
     }
-    return products.filter(product => product.category === categorySlug)
+    
+    // Convertir slug de categoría a format interno del producto
+    let categoryKey = categorySlug
+    if (categorySlug === 'gaming-y-streaming') {
+      categoryKey = 'gaming-streaming'
+    } else if (categorySlug === 'conectividad-y-redes') {
+      categoryKey = 'conectividad-redes'
+    } else if (categorySlug === 'hogar-y-oficina') {
+      categoryKey = 'hogar-oficina'
+    } else if (categorySlug === 'audio-y-video') {
+      categoryKey = 'audio-video'
+    }
+    
+    return products.filter(product => product.category === categoryKey)
   }
 
   // Función para obtener productos destacados (primeros 6)
