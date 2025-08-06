@@ -1,10 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useProducts } from '../hooks/useProducts'
 
 const FeaturedProducts = () => {
+  const { getFeaturedProducts, formatPrice, loading } = useProducts()
   const scrollRef = useRef(null)
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
+
+  const products = getFeaturedProducts()
 
   const checkScrollability = () => {
     if (scrollRef.current) {
@@ -35,56 +39,18 @@ const FeaturedProducts = () => {
     }
   }
 
-  const products = [
-    {
-      id: 1,
-      name: "GeForce RTX 5060 OC, 8GB 128-bit, PCI-e 5.0 x8",
-      brand: "GIGABYTE",
-      originalPrice: 499999,
-      discountPrice: 389990,
-      discount: 20,
-      image: "https://placehold.co/200x380"
-    },
-    {
-      id: 2,
-      name: "Monitor 27\" Full HD, 200Hz, 1ms, Rapid IPS",
-      brand: "MSI",
-      originalPrice: 499999,
-      discountPrice: 389990,
-      discount: 20,
-      image: "https://placehold.co/200x380"
-    },
-    {
-      id: 3,
-      name: "Prime Radeon RX 9070 XT OC, 16GB GDDR6, 256-bit",
-      brand: "ASUS",
-      originalPrice: 499999,
-      discountPrice: 389990,
-      discount: 20,
-      image: "https://placehold.co/200x380"
-    },
-    {
-      id: 4,
-      name: "Audífonos Gamer Wireless HyperX Cloud Stinger USB",
-      brand: "HyperX",
-      originalPrice: 499999,
-      discountPrice: 389990,
-      discount: 20,
-      image: "https://placehold.co/200x380"
-    },
-    {
-      id: 5,
-      name: "Gabinete Gamer XYZ AIRONE 100 Mesh Black",
-      brand: "XYZ PC GEAR",
-      originalPrice: 499999,
-      discountPrice: 389990,
-      discount: 20,
-      image: "https://placehold.co/200x380"
-    }
-  ]
-
-  const formatPrice = (price) => {
-    return `$${price.toLocaleString('es-CL')}`
+  // Mostrar loading si los productos aún no se han cargado
+  if (loading) {
+    return (
+      <section className="py-12 px-4 max-w-7xl mx-auto">
+        <div className="text-center">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-300 rounded w-64 mx-auto mb-4"></div>
+            <div className="h-4 bg-gray-300 rounded w-48 mx-auto"></div>
+          </div>
+        </div>
+      </section>
+    )
   }
 
   return (

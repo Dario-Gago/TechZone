@@ -1,0 +1,178 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "GeForce RTX 5060 OC, 8GB 128-bit, PCI-e 5.0 x8",
+      "brand": "GIGABYTE",
+      "originalPrice": 499999,
+      "discountPrice": 389990,
+      "discount": 20,
+      "image": "https://placehold.co/400x400/1f2937/ffffff?text=RTX+5060",
+      "description": "Tarjeta gráfica de alto rendimiento para gaming y streaming profesional. Perfecta para juegos en 1440p con ray tracing.",
+      "features": [
+        "Arquitectura NVIDIA Ada Lovelace",
+        "8GB GDDR6X de memoria de video",
+        "Ray Tracing de 3ra generación",
+        "DLSS 3 con Frame Generation",
+        "Diseño con triple ventilador"
+      ],
+      "category": "componentes",
+      "subcategory": "tarjetas-graficas",
+      "shipping": "Envío en 3 - 4 días",
+      "inStock": true,
+      "stock": 15
+    },
+    {
+      "id": 2,
+      "name": "Monitor 27\" Full HD, 200Hz, 1ms, Rapid IPS",
+      "brand": "MSI",
+      "originalPrice": 299999,
+      "discountPrice": 239990,
+      "discount": 20,
+      "image": "https://placehold.co/400x400/1f2937/ffffff?text=Monitor+MSI",
+      "description": "Monitor gaming de alta frecuencia de actualización con tecnología IPS para colores vibrantes y tiempos de respuesta ultrarrápidos.",
+      "features": [
+        "Panel IPS de 27 pulgadas",
+        "Frecuencia de actualización de 200Hz",
+        "Tiempo de respuesta de 1ms",
+        "Compatible con FreeSync Premium",
+        "Conectividad HDMI 2.1 y DisplayPort"
+      ],
+      "category": "audio-video",
+      "subcategory": "monitores",
+      "shipping": "Envío en 2 - 3 días",
+      "inStock": true,
+      "stock": 8
+    },
+    {
+      "id": 3,
+      "name": "Prime Radeon RX 9070 XT OC, 16GB GDDR6, 256-bit",
+      "brand": "ASUS",
+      "originalPrice": 699999,
+      "discountPrice": 559990,
+      "discount": 20,
+      "image": "https://placehold.co/400x400/1f2937/ffffff?text=RX+9070+XT",
+      "description": "Potente tarjeta gráfica AMD con 16GB de memoria para gaming en 4K y creación de contenido profesional.",
+      "features": [
+        "Arquitectura RDNA 3 de AMD",
+        "16GB GDDR6 de memoria",
+        "Ray Tracing acelerado por hardware",
+        "AMD FidelityFX Super Resolution",
+        "Sistema de refrigeración triple axial"
+      ],
+      "category": "componentes",
+      "subcategory": "tarjetas-graficas",
+      "shipping": "Envío en 3 - 4 días",
+      "inStock": true,
+      "stock": 5
+    },
+    {
+      "id": 4,
+      "name": "Audífonos Gamer Wireless HyperX Cloud Stinger USB",
+      "brand": "HyperX",
+      "originalPrice": 149999,
+      "discountPrice": 119990,
+      "discount": 20,
+      "image": "https://placehold.co/400x400/1f2937/ffffff?text=HyperX+Cloud",
+      "description": "Audífonos gaming inalámbricos con sonido envolvente 7.1 virtual y micrófono con cancelación de ruido.",
+      "features": [
+        "Conectividad inalámbrica 2.4GHz",
+        "Sonido envolvente 7.1 virtual",
+        "Micrófono con cancelación de ruido",
+        "Batería de hasta 17 horas",
+        "Almohadillas de espuma viscoelástica"
+      ],
+      "category": "audio-video",
+      "subcategory": "audifonos",
+      "shipping": "Envío en 1 - 2 días",
+      "inStock": true,
+      "stock": 12
+    },
+    {
+      "id": 5,
+      "name": "Gabinete Gamer XYZ AIRONE 100 Mesh Black",
+      "brand": "XYZ PC GEAR",
+      "originalPrice": 199999,
+      "discountPrice": 159990,
+      "discount": 20,
+      "image": "https://placehold.co/400x400/1f2937/ffffff?text=Gabinete+XYZ",
+      "description": "Gabinete gaming mid-tower con panel frontal de malla para máximo flujo de aire y iluminación RGB.",
+      "features": [
+        "Panel frontal de malla para flujo de aire",
+        "Iluminación RGB personalizable",
+        "Soporte para tarjetas gráficas hasta 380mm",
+        "Pre-instalado con 3 ventiladores",
+        "Panel lateral de vidrio templado"
+      ],
+      "category": "componentes",
+      "subcategory": "gabinetes",
+      "shipping": "Envío en 3 - 5 días",
+      "inStock": true,
+      "stock": 7
+    },
+    {
+      "id": 6,
+      "name": "Procesador Intel Core i7-13700K",
+      "brand": "Intel",
+      "originalPrice": 599999,
+      "discountPrice": 479990,
+      "discount": 20,
+      "image": "https://placehold.co/400x400/1f2937/ffffff?text=Intel+i7",
+      "description": "Procesador de alto rendimiento con 16 núcleos y 24 hilos, ideal para gaming y creación de contenido.",
+      "features": [
+        "16 núcleos (8P + 8E) y 24 hilos",
+        "Frecuencia base de 3.4GHz",
+        "Frecuencia máxima de 5.4GHz",
+        "Cache L3 de 30MB",
+        "Socket LGA1700"
+      ],
+      "category": "componentes",
+      "subcategory": "procesadores",
+      "shipping": "Envío en 2 - 3 días",
+      "inStock": true,
+      "stock": 10
+    }
+  ],
+  "categories": [
+    {
+      "id": "todo",
+      "name": "Todo",
+      "slug": "todo"
+    },
+    {
+      "id": "gaming-streaming",
+      "name": "Gaming y Streaming",
+      "slug": "gaming-y-streaming"
+    },
+    {
+      "id": "computacion",
+      "name": "Computación",
+      "slug": "computacion"
+    },
+    {
+      "id": "componentes",
+      "name": "Componentes",
+      "slug": "componentes"
+    },
+    {
+      "id": "conectividad-redes",
+      "name": "Conectividad y Redes",
+      "slug": "conectividad-y-redes"
+    },
+    {
+      "id": "hogar-oficina",
+      "name": "Hogar y Oficina",
+      "slug": "hogar-y-oficina"
+    },
+    {
+      "id": "audio-video",
+      "name": "Audio y Video",
+      "slug": "audio-y-video"
+    },
+    {
+      "id": "otras-categorias",
+      "name": "Otras Categorías",
+      "slug": "otras-categorias"
+    }
+  ]
+}

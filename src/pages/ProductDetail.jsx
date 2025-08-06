@@ -1,32 +1,36 @@
 import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { ShoppingCart, Check } from 'lucide-react'
+import { useProducts } from '../hooks/useProducts'
 import FeaturedProducts from '../components/FeaturedProducts'
 
 const ProductDetail = () => {
+  const { id } = useParams()
+  const { getProductById, formatPrice, loading } = useProducts()
   const [quantity, setQuantity] = useState(1)
 
-  // Datos mock del producto - en una app real vendría de una API
-  const product = {
-    id: 1,
-    name: "GeForce RTX 5060 OC, 8GB 128-bit, PCI-e 5.0 x8",
-    brand: "GIGABYTE",
-    originalPrice: 119900,
-    discountPrice: 95900,
-    discount: 20,
-    image: "https://placehold.co/400x400",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit",
-    features: [
-      "Lorem ipsum dolor sit amet",
-      "Consectetur adipiscing elit",
-      "Nulla quam velit, vulputate eu pharetra nec",
-      "Mattis ac neque"
-    ],
-    shipping: "Envío en 3 - 4 días",
-    inStock: true
+  const product = getProductById(id)
+  // Manejar estados de carga y producto no encontrado
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-pulse text-center">
+          <div className="h-8 bg-gray-300 rounded w-48 mx-auto mb-4"></div>
+          <div className="h-4 bg-gray-300 rounded w-32 mx-auto"></div>
+        </div>
+      </div>
+    )
   }
 
-  const formatPrice = (price) => {
-    return `$${price.toLocaleString('es-CL')}`
+  if (!product) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Producto no encontrado</h1>
+          <p className="text-gray-600">El producto que buscas no existe o ha sido removido.</p>
+        </div>
+      </div>
+    )
   }
 
   const handleQuantityChange = (newQuantity) => {
