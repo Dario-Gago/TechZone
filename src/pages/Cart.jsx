@@ -64,8 +64,8 @@ const Cart = () => {
   // Si no hay sesión iniciada, mostrar mensaje
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center p-8 max-w-md">
+      <div className="bg-gray-50 py-16 px-4">
+        <div className="text-center p-8 max-w-md mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Debes iniciar sesión
           </h2>
