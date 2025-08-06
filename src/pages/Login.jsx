@@ -1,14 +1,28 @@
 import React, { useState } from 'react'
 import { Mail, Lock } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext' // Asegúrate de que la ruta esté correcta
+
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
+  const [error, setError] = useState(null)
+
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('Login attempt:', { email, password, rememberMe })
+
+    // Validar credenciales simuladas
+    if (email === 'gagodario1@gmail.com' && password === 'pass1234') {
+      const fakeToken = 'token_falso_123456789'
+      login(fakeToken) // Guardamos el token en el contexto
+      navigate('/') // Redirigir a home o donde quieras
+    } else {
+      setError('Correo o contraseña incorrectos')
+    }
   }
 
   return (
@@ -23,6 +37,12 @@ const Login = () => {
             contraseña.
           </p>
         </div>
+
+        {error && (
+          <div className="text-red-600 bg-red-100 px-4 py-2 rounded text-sm">
+            {error}
+          </div>
+        )}
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
@@ -110,7 +130,6 @@ const Login = () => {
 
           <div className="mt-6">
             <Link
-              type="button"
               to="/register"
               className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-200"
             >

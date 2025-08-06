@@ -1,10 +1,19 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, User, ShoppingCart, Menu, X, UserPlus } from 'lucide-react'
-
+import {
+  Search,
+  User,
+  ShoppingCart,
+  Menu,
+  X,
+  UserPlus,
+  LogOut
+} from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const { isAuthenticated, logout } = useAuth()
 
   const categories = [
     'Todo',
@@ -61,23 +70,34 @@ const Navbar = () => {
             </button>
 
             {/* Enlaces de Autenticación */}
-            <div className="hidden sm:flex items-center space-x-4">
-              <Link
-                to="/login"
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+            {!isAuthenticated && (
+              <div className="hidden sm:flex items-center space-x-4">
+                <Link
+                  to="/login"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                >
+                  <User className="h-5 w-5" />
+                  <span className="text-sm">Iniciar sesión</span>
+                </Link>
+                <div className="h-4 w-px bg-gray-300"></div>
+                <Link
+                  to="/register"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                >
+                  <UserPlus className="h-5 w-5" />
+                  <span className="text-sm font-medium">Registrarse</span>
+                </Link>
+              </div>
+            )}
+            {isAuthenticated && (
+              <button
+                onClick={logout}
+                className="hidden sm:flex items-center space-x-2 px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md border border-red-200 hover:border-red-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
               >
-                <User className="h-5 w-5" />
-                <span className="text-sm">Iniciar sesión</span>
-              </Link>
-              <div className="h-4 w-px bg-gray-300"></div>
-              <Link
-                to="/register"
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
-              >
-                <UserPlus className="h-5 w-5" />
-                <span className="text-sm font-medium">Registrarse</span>
-              </Link>
-            </div>
+                <LogOut className="h-4 w-4" />
+                <span>Cerrar sesión</span>
+              </button>
+            )}
 
             {/* Carrito */}
             <Link
@@ -144,24 +164,42 @@ const Navbar = () => {
         <div className="lg:hidden bg-white border-t border-gray-200">
           <div className="px-4 py-3 space-y-3">
             {/* Enlaces de Autenticación Móvil */}
-            <div className="sm:hidden space-y-2 py-2">
-              <Link
-                to="/login"
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <User className="h-5 w-5" />
-                <span className="text-sm">Iniciar sesión</span>
-              </Link>
-              <Link
-                to="/register"
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <UserPlus className="h-5 w-5" />
-                <span className="text-sm font-medium">Registrarse</span>
-              </Link>
-            </div>
+            {!isAuthenticated && (
+              <div className="sm:hidden space-y-2 py-2">
+                <Link
+                  to="/login"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <User className="h-5 w-5" />
+                  <span className="text-sm">Iniciar sesión</span>
+                </Link>
+                <Link
+                  to="/register"
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <UserPlus className="h-5 w-5" />
+                  <span className="text-sm font-medium">Registrarse</span>
+                </Link>
+              </div>
+            )}
+
+            {/* Botón de Logout para móvil */}
+            {isAuthenticated && (
+              <div className="py-2 border-b border-gray-200">
+                <button
+                  onClick={() => {
+                    logout()
+                    setIsMenuOpen(false)
+                  }}
+                  className="flex items-center space-x-2 w-full px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md border border-red-200 hover:border-red-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Cerrar sesión</span>
+                </button>
+              </div>
+            )}
 
             {/* Categorías Móvil */}
             <div className="border-t border-gray-200 pt-3">

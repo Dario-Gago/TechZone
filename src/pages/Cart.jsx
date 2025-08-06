@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import {
   ArrowLeft,
   Trash2,
@@ -13,7 +14,7 @@ import {
 
 const Cart = () => {
   // Simular estado de autenticación - cambia esto según tu lógica de auth
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { isAuthenticated } = useAuth()
 
   const [cartItems, setCartItems] = useState([
     {
@@ -61,7 +62,7 @@ const Cart = () => {
   const total = subtotal - discount
 
   // Si no hay sesión iniciada, mostrar mensaje
-  if (!isLoggedIn) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center p-8 max-w-md">
