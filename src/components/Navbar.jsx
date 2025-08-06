@@ -153,7 +153,7 @@ const Navbar = () => {
       {/* Menú de Categorías - Escritorio */}
       <div className="hidden lg:block bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-8 py-3 overflow-x-auto">
+          <div className="flex items-center justify-center space-x-8 py-3 overflow-x-auto">
             {categories.map((category, index) => (
               <Link
                 key={index}
