@@ -10,6 +10,8 @@ import Register from './pages/Register'
 import Cart from './pages/Cart'
 import Dashboard from './pages/Dashboard'
 import PrivateRoute from './components/PrivateRoute'
+import PublicRoute from './components/PublicRoute'
+
 //Importo el contexto
 import { AuthProvider } from './contexts/AuthContext'
 const App = () => {
@@ -22,8 +24,24 @@ const App = () => {
           <main>
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route
+                path="/login"
+                element={
+                  <PublicRoute>
+                    <Login />
+                  </PublicRoute>
+                }
+              />
+
+              <Route
+                path="/register"
+                element={
+                  <PublicRoute>
+                    <Register />
+                  </PublicRoute>
+                }
+              />
+
               <Route path="/cart" element={<Cart />} />
               <Route
                 path="/dashboard"
