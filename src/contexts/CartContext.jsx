@@ -1,22 +1,18 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, { createContext, useState } from 'react'
+import cartData from '../data/carrito.json' // Importamos los datos del carrito
 
 const CartContext = createContext()
 
 export const CartProvider = ({ children }) => {
-  // Estado del carrito con IDs de productos y cantidades
-  const [cartItems, setCartItems] = useState(() => {
-    // Cargar del localStorage si existe
-    const savedCart = localStorage.getItem('cart')
-    return savedCart ? JSON.parse(savedCart) : []
-  })
+  const [cartItems, setCartItems] = useState(cartData.cart.items || [])
 
-  // Guardar en localStorage cada vez que el carrito cambie
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cartItems))
-  }, [cartItems])
+  // Lista de productos disponibles (extraída del JSON)
+  const availableProducts = cartData.cart.items || []
 
-  // Agregar producto al carrito
   const addToCart = (productId, quantity = 1) => {
+    const product = availableProducts.find((p) => p.id === productId)
+    if (!product) return
+
     setCartItems((items) => {
       const existingItem = items.find((item) => item.id === productId)
       if (existingItem) {
@@ -26,12 +22,11 @@ export const CartProvider = ({ children }) => {
             : item
         )
       } else {
-        return [...items, { id: productId, quantity }]
+        return [...items, { ...product, quantity }]
       }
     })
   }
 
-  // Actualizar cantidad de un producto
   const updateQuantity = (id, newQuantity) => {
     if (newQuantity < 1) {
       removeFromCart(id)
@@ -44,30 +39,29 @@ export const CartProvider = ({ children }) => {
     )
   }
 
-  // Remover producto del carrito
   const removeFromCart = (id) => {
     setCartItems((items) => items.filter((item) => item.id !== id))
   }
 
-  // Limpiar carrito
   const clearCart = () => {
     setCartItems([])
   }
 
-  // Obtener cantidad total de productos
   const getTotalItems = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0)
   }
 
-  // Verificar si un producto está en el carrito
   const isInCart = (productId) => {
     return cartItems.some((item) => item.id === productId)
   }
 
-  // Obtener cantidad de un producto específico
   const getItemQuantity = (productId) => {
     const item = cartItems.find((item) => item.id === productId)
     return item ? item.quantity : 0
+  }
+
+  const getTotalPrice = () => {
+    return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   }
 
   const value = {
@@ -78,7 +72,9 @@ export const CartProvider = ({ children }) => {
     clearCart,
     getTotalItems,
     isInCart,
-    getItemQuantity
+    getItemQuantity,
+    getTotalPrice,
+    availableProducts // Exponemos los productos disponibles
   }
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

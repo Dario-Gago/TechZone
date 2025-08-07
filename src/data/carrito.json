@@ -1,0 +1,28 @@
+{
+  "cart": {
+    "items": [
+      {
+        "id": 1,
+        "name": "GeForce RTX 5060 OC, 8GB 128-bit, PCI-e 5.0 x8",
+        "brand": "GIGABYTE",
+        "price": 450000,
+        "originalPrice": 500000,
+        "discount": 10,
+        "quantity": 1,
+        "image": "https://placehold.co/400x400/1f2937/ffffff?text=RTX+5060",
+        "shipping": "Despacho gratis"
+      },
+      {
+        "id": 2,
+        "name": "Prime Radeon RX 9070 XT OC, 16GB GDDR6",
+        "brand": "ASUS",
+        "price": 559990,
+        "originalPrice": 599990,
+        "discount": 7,
+        "quantity": 1,
+        "image": "https://placehold.co/400x400/1f2937/ffffff?text=RX+9070+XT",
+        "shipping": "Despacho gratis"
+      }
+    ]
+  }
+}

@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
+import { useCart } from '../hooks/useCart'
+
 import {
   ArrowLeft,
   Trash2,
@@ -12,109 +14,13 @@ import {
 } from 'lucide-react'
 
 const Cart = () => {
-  // Datos de ejemplo para simular productos y carrito
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'GeForce RTX 5060 OC, 8GB 128-bit, PCI-e 5.0 x8',
-      brand: 'GIGABYTE',
-      originalPrice: 499999,
-      discountPrice: 389990,
-      discount: 20,
-      image: 'https://placehold.co/400x400/1f2937/ffffff?text=RTX+5060',
-      description:
-        'Tarjeta gráfica de alto rendimiento para gaming y streaming profesional. Perfecta para juegos en 1440p con ray tracing.',
-      features: [
-        'Arquitectura NVIDIA Ada Lovelace',
-        '8GB GDDR6X de memoria de video',
-        'Ray Tracing de 3ra generación',
-        'DLSS 3 con Frame Generation',
-        'Diseño con triple ventilador'
-      ],
-      category: 'componentes',
-      subcategory: 'tarjetas-graficas',
-      shipping: 'Envío en 3 - 4 días',
-      inStock: 1,
-      stock: 15,
-      quantity: 1
-    },
-    {
-      id: 2,
-      name: 'Prime Radeon RX 9070 XT OC, 16GB GDDR6',
-      brand: 'ASUS',
-      originalPrice: 699999,
-      discountPrice: 559990,
-      discount: 20,
-      image: 'https://placehold.co/400x400/1f2937/ffffff?text=RX+9070+XT',
-      description:
-        'Potente tarjeta gráfica AMD con 16GB de memoria para gaming en 4K y creación de contenido profesional.',
-      features: [
-        'Arquitectura RDNA 4',
-        '16GB GDDR6',
-        'Ray Tracing acelerado',
-        'AMD FidelityFX Super Resolution',
-        'Cold triple-fan cooling'
-      ],
-      category: 'componentes',
-      subcategory: 'tarjetas-graficas',
-      shipping: 'Envío en 3 - 4 días',
-      inStock: 1,
-      stock: 5,
-      quantity: 1
-    },
-    {
-      id: 3,
-      name: 'Intel Arc B580, 12GB GDDR6',
-      brand: 'Intel',
-      originalPrice: 249990,
-      discountPrice: 229990,
-      discount: 8,
-      image: 'https://placehold.co/400x400/1f2937/ffffff?text=Intel+Arc+B580',
-      description:
-        'Opción económica para gaming 1440p con buena estabilidad de drivers.',
-      features: [
-        '12GB GDDR6',
-        '≈92 FPS promedio en 1440p',
-        'Soporte básico para Ray Tracing'
-      ],
-      category: 'componentes',
-      subcategory: 'tarjetas-graficas',
-      shipping: 'Envío en 2 - 3 días',
-      inStock: 1,
-      stock: 20,
-      quantity: 1
-    }
-  ])
+  const { cartItems, updateQuantity, removeFromCart } = useCart()
 
   const isAuthenticated = true // Simulamos que el usuario está autenticado
 
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity < 1) return
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    )
-  }
-
-  const removeFromCart = (id) => {
-    setCartItems((items) => items.filter((item) => item.id !== id))
-  }
-
-  // Función para obtener los detalles completos de los productos en el carrito
-  const getCartItemsWithDetails = () => {
-    return cartItems.map((item) => ({
-      ...item,
-      // Convertir precios de centavos a pesos
-      price: item.originalPrice / 1000,
-      discountedPrice: item.discountPrice / 1000
-    }))
-  }
-
-  const cartItemsWithDetails = getCartItemsWithDetails()
-
-  const subtotal = cartItemsWithDetails.reduce(
-    (sum, item) => sum + item.discountedPrice * item.quantity,
+  // Calcular subtotal usando el precio directo de cada item
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
     0
   )
   const discount = 25.0
@@ -150,7 +56,7 @@ const Cart = () => {
   }
 
   // Si el carrito está vacío
-  if (cartItemsWithDetails.length === 0) {
+  if (cartItems.length === 0) {
     return (
       <div className="bg-gray-50 py-16 px-4">
         <div className="text-center p-8 max-w-md mx-auto">
@@ -197,7 +103,7 @@ const Cart = () => {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Pedido</h2>
 
             <div className="space-y-4">
-              {cartItemsWithDetails.map((item) => (
+              {cartItems.map((item) => (
                 <div
                   key={item.id}
                   className="bg-white rounded-lg p-6 shadow-sm"
@@ -220,9 +126,6 @@ const Cart = () => {
                             {item.name}
                           </h3>
                           <p className="text-sm text-gray-500">{item.brand}</p>
-                          <p className="text-sm text-gray-500 mt-1">
-                            Despacho: {item.shipping}
-                          </p>
                         </div>
                         <button
                           onClick={() => removeFromCart(item.id)}
@@ -257,24 +160,12 @@ const Cart = () => {
                         </div>
 
                         <div className="text-right">
-                          {item.discount > 0 && (
-                            <>
-                              <span className="text-sm text-gray-500 line-through">
-                                ${item.price.toLocaleString('es-CL')}
-                              </span>
-                              <span className="text-lg font-semibold text-gray-900 ml-2">
-                                ${item.discountedPrice.toLocaleString('es-CL')}
-                              </span>
-                              <div className="text-sm text-green-600">
-                                Ahorras un {item.discount}%
-                              </div>
-                            </>
-                          )}
-                          {item.discount === 0 && (
-                            <span className="text-lg font-semibold text-gray-900">
-                              ${item.discountedPrice.toLocaleString('es-CL')}
-                            </span>
-                          )}
+                          <span className="text-lg font-semibold text-gray-900">
+                            $
+                            {item.price === 1
+                              ? 'Precio especial'
+                              : item.price.toLocaleString('es-CL')}
+                          </span>
                         </div>
                       </div>
                     </div>
