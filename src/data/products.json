@@ -7,7 +7,7 @@
       "originalPrice": 499999,
       "discountPrice": 389990,
       "discount": 20,
-      "image": "https://placehold.co/400x400/1f2937/ffffff?text=RTX+5060",
+      "image": "https://media.solotodo.com/media/products/2096221_picture_1750156278.png",
       "description": "Tarjeta gráfica de alto rendimiento para gaming y streaming profesional. Perfecta para juegos en 1440p con ray tracing.",
       "features": [
         "Arquitectura NVIDIA Ada Lovelace",
@@ -29,7 +29,7 @@
       "originalPrice": 699999,
       "discountPrice": 559990,
       "discount": 20,
-      "image": "https://placehold.co/400x400/1f2937/ffffff?text=RX+9070+XT",
+      "image": "https://media.solotodo.com/media/products/2087610_picture_1747988354.jpg",
       "description": "Potente tarjeta gráfica AMD con 16GB de memoria para gaming en 4K y creación de contenido profesional.",
       "features": [
         "Arquitectura RDNA 4",
@@ -51,7 +51,7 @@
       "originalPrice": 249990,
       "discountPrice": 229990,
       "discount": 8,
-      "image": "https://placehold.co/400x400/1f2937/ffffff?text=Intel+Arc+B580",
+      "image": "https://media.solotodo.com/media/products/2106948_picture_1752788462.png",
       "description": "Opción económica para gaming 1440p con buena estabilidad de drivers.",
       "features": [
         "12GB GDDR6",
@@ -71,7 +71,7 @@
       "originalPrice": 749999,
       "discountPrice": 679990,
       "discount": 9,
-      "image": "https://placehold.co/400x400/1f2937/ffffff?text=RTX+5070+Ti",
+      "image": "https://media.solotodo.com/media/products/2021143_picture_1740499761.png",
       "description": "GPU de gama alta para gaming 4K y tareas creativas exigentes.",
       "features": [
         "16GB GDDR7",
@@ -91,7 +91,7 @@
       "originalPrice": 1599999,
       "discountPrice": 1499990,
       "discount": 6,
-      "image": "https://placehold.co/400x400/1f2937/ffffff?text=RTX+5090",
+      "image": "https://media.solotodo.com/media/products/2045141_picture_1742547900.png",
       "description": "Tope de gama para IA y creación profesional con VRAM masiva.",
       "features": [
         "32GB GDDR7",
@@ -112,7 +112,7 @@
       "originalPrice": 599999,
       "discountPrice": 479990,
       "discount": 20,
-      "image": "https://placehold.co/400x400/1f2937/ffffff?text=Intel+i7-13700K",
+      "image": "https://media.solotodo.com/media/products/1648741_picture_1664520596.jpg",
       "description": "Procesador de alto rendimiento con 16 núcleos para gaming y creación de contenido.",
       "features": [
         "16 núcleos (8P + 8E)",
@@ -127,15 +127,15 @@
     },
     {
       "id": 7,
-      "name": "AMD Ryzen 7 7800X3D, 3D‑VCache",
+      "name": "AMD Ryzen 7 7800X3D, 3D-VCache",
       "brand": "AMD",
       "originalPrice": 449999,
       "discountPrice": 399990,
       "discount": 11,
-      "image": "https://placehold.co/400x400/1f2937/ffffff?text=Ryzen+7+7800X3D",
+      "image": "https://media.solotodo.com/media/products/1754039_picture_1682576193.jpg",
       "description": "CPU con caché 3D para bajo retardo en juegos muy exigentes.",
       "features": [
-        "8 núcleos Zen 4 + 3D V‑Cache",
+        "8 núcleos Zen 4 + 3D V-Cache",
         "Soporte DDR5 / PCIe 5.0",
         "Alta frecuencia boost"
       ],
@@ -147,15 +147,15 @@
     },
     {
       "id": 8,
-      "name": "ASUS ZenWiFi BT10 Wi‑Fi 7 Mesh",
+      "name": "ASUS ZenWiFi BT10 Wi-Fi 7 Mesh",
       "brand": "ASUS",
       "originalPrice": 349990,
       "discountPrice": 319990,
       "discount": 9,
-      "image": "https://placehold.co/400x400/1f2937/ffffff?text=ZenWiFi+BT10",
-      "description": "Sistema mesh Wi‑Fi 7 con excelente cobertura y rendimiento para hogar/oficina.",
+      "image": "https://dlcdnwebimgs.asus.com/gain/dd0f2f91-cdef-4e8b-85d9-e92fd5f32d39/w692",
+      "description": "Sistema mesh Wi-Fi 7 con excelente cobertura y rendimiento para hogar/oficina.",
       "features": [
-        "Tri‑banda Wi‑Fi 7",
+        "Tri-banda Wi-Fi 7",
         "Hasta 18 Gbps agregada",
         "Configuración intuitiva"
       ],
@@ -167,15 +167,15 @@
     },
     {
       "id": 9,
-      "name": "Netgear Orbi 370 Wi‑Fi 7 Mesh",
+      "name": "Netgear Orbi 370 Wi-Fi 7 Mesh",
       "brand": "Netgear",
       "originalPrice": 299990,
       "discountPrice": 279990,
       "discount": 7,
-      "image": "https://placehold.co/400x400/1f2937/ffffff?text=Orbi+370",
-      "description": "Mesh Wi‑Fi 7 dual-band accesible, ideal para gaming doméstico.",
+      "image": "https://http2.mlstatic.com/D_NQ_NP_2X_656700-CBT80138544103_102024-F-sistema-wifi-mesh-netgear-orbi-770-series-rbe772-con-1-satel.webp",
+      "description": "Mesh Wi-Fi 7 dual-band accesible, ideal para gaming doméstico.",
       "features": [
-        "Wi‑Fi 7 dual-band",
+        "Wi-Fi 7 dual-band",
         "Multi-Link Operation",
         "Hasta 70 dispositivos"
       ],
@@ -187,13 +187,13 @@
     },
     {
       "id": 10,
-      "name": "GL‑iNet Flint 3 (GL‑BE9300) Wi‑Fi 7 Router",
-      "brand": "GL‑iNet",
+      "name": "GL-iNet Flint 3 (GL-BE9300) Wi-Fi 7 Router",
+      "brand": "GL-iNet",
       "originalPrice": 189990,
       "discountPrice": 169990,
       "discount": 10,
-      "image": "https://placehold.co/400x400/1f2937/ffffff?text=Flint+3",
-      "description": "Router Wi‑Fi 7 económico con OpenWRT y VPN integrado.",
+      "image": "https://http2.mlstatic.com/D_NQ_NP_2X_995376-CBT78623605293_082024-F-router-netgear-nighthawk-tribanda-wifi-7-rs300-de-93-gbps.webp",
+      "description": "Router Wi-Fi 7 económico con OpenWRT y VPN integrado.",
       "features": [
         "Hasta 9300 Mbps combinados",
         "5 puertos 2.5 GbE",
@@ -212,7 +212,7 @@
       "originalPrice": 379990,
       "discountPrice": 349990,
       "discount": 8,
-      "image": "https://placehold.co/400x400/1f2937/ffffff?text=Shure+MV7%2B",
+      "image": "https://http2.mlstatic.com/D_NQ_NP_2X_738701-MLU76928521245_062024-F.webp",
       "description": "Micrófono versátil con conectividad dual USB/XLR para streaming y podcasting profesional.",
       "features": [
         "Conectividad dual USB-C/XLR",
