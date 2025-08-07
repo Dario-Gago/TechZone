@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { useProducts } from '../hooks/useProducts'
 import {
   ArrowLeft,
   Trash2,
@@ -13,33 +14,32 @@ import {
 } from 'lucide-react'
 
 const Cart = () => {
-  // Simular estado de autenticación - cambia esto según tu lógica de auth
   const { isAuthenticated } = useAuth()
+  const { products } = useProducts()
 
+  // Estado del carrito con IDs de productos y cantidades
   const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Nombre Producto',
-      brand: 'Marca',
-      price: 95,
-      discountedPrice: 70,
-      discount: 25,
-      quantity: 1,
-      shipping: '2 - 4 días',
-      image: '/placeholder-product.jpg'
-    },
-    {
-      id: 2,
-      name: 'Nombre Producto',
-      brand: 'Marca',
-      price: 54,
-      discountedPrice: 54,
-      discount: 0,
-      quantity: 2,
-      shipping: '6 días',
-      image: '/placeholder-product.jpg'
-    }
+    { id: 1, quantity: 1 },
+    { id: 2, quantity: 2 }
   ])
+
+  // Función para obtener los detalles completos de los productos en el carrito
+  const getCartItemsWithDetails = () => {
+    return cartItems
+      .map((cartItem) => {
+        const product = products.find((p) => p.id === cartItem.id)
+        if (!product) return null
+
+        return {
+          ...product,
+          quantity: cartItem.quantity,
+          // Convertir precios de centavos a pesos
+          price: product.originalPrice / 1000,
+          discountedPrice: product.discountPrice / 1000
+        }
+      })
+      .filter(Boolean) // Filtrar productos no encontrados
+  }
 
   const updateQuantity = (id, newQuantity) => {
     if (newQuantity < 1) return
@@ -54,7 +54,24 @@ const Cart = () => {
     setCartItems((items) => items.filter((item) => item.id !== id))
   }
 
-  const subtotal = cartItems.reduce(
+  const addToCart = (productId, quantity = 1) => {
+    setCartItems((items) => {
+      const existingItem = items.find((item) => item.id === productId)
+      if (existingItem) {
+        return items.map((item) =>
+          item.id === productId
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        )
+      } else {
+        return [...items, { id: productId, quantity }]
+      }
+    })
+  }
+
+  const cartItemsWithDetails = getCartItemsWithDetails()
+
+  const subtotal = cartItemsWithDetails.reduce(
     (sum, item) => sum + item.discountedPrice * item.quantity,
     0
   )
@@ -70,7 +87,8 @@ const Cart = () => {
             Inicia sesión para continuar
           </h2>
           <p className="text-gray-600 mb-6">
-            Accede a tu cuenta para ver los productos que agregaste a tu carrito.
+            Accede a tu cuenta para ver los productos que agregaste a tu
+            carrito.
           </p>
 
           <div className="space-y-3">
@@ -90,6 +108,28 @@ const Cart = () => {
               Crear Cuenta
             </Link>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Si el carrito está vacío
+  if (cartItemsWithDetails.length === 0) {
+    return (
+      <div className="bg-gray-50 py-16 px-4">
+        <div className="text-center p-8 max-w-md mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Tu carrito está vacío
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Explora nuestros productos y agrega algunos a tu carrito.
+          </p>
+          <Link
+            to="/"
+            className="bg-gray-800 text-white px-6 py-3 rounded-md hover:bg-gray-900 transition duration-200 font-medium"
+          >
+            Continuar Comprando
+          </Link>
         </div>
       </div>
     )
@@ -124,14 +164,20 @@ const Cart = () => {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Pedido</h2>
 
             <div className="space-y-4">
-              {cartItems.map((item) => (
+              {cartItemsWithDetails.map((item) => (
                 <div
                   key={item.id}
                   className="bg-white rounded-lg p-6 shadow-sm"
                 >
                   <div className="flex items-start space-x-4">
                     {/* Product Image */}
-                    <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0"></div>
+                    <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0 overflow-hidden">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
 
                     {/* Product Details */}
                     <div className="flex-1">
@@ -181,10 +227,10 @@ const Cart = () => {
                           {item.discount > 0 && (
                             <>
                               <span className="text-sm text-gray-500 line-through">
-                                ${item.price}
+                                ${item.price.toLocaleString('es-CL')}
                               </span>
                               <span className="text-lg font-semibold text-gray-900 ml-2">
-                                ${item.discountedPrice}
+                                ${item.discountedPrice.toLocaleString('es-CL')}
                               </span>
                               <div className="text-sm text-green-600">
                                 Ahorras un {item.discount}%
@@ -193,7 +239,7 @@ const Cart = () => {
                           )}
                           {item.discount === 0 && (
                             <span className="text-lg font-semibold text-gray-900">
-                              ${item.discountedPrice}
+                              ${item.discountedPrice.toLocaleString('es-CL')}
                             </span>
                           )}
                         </div>
@@ -254,12 +300,14 @@ const Cart = () => {
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Artículos en el carrito</span>
-                  <span className="text-gray-900">${subtotal.toFixed(2)}</span>
+                  <span className="text-gray-900">
+                    ${subtotal.toLocaleString('es-CL')}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Descuento aplicado</span>
                   <span className="text-green-600">
-                    -${discount.toFixed(2)}
+                    -${discount.toLocaleString('es-CL')}
                   </span>
                 </div>
               </div>
@@ -268,7 +316,7 @@ const Cart = () => {
 
               <div className="flex justify-between text-lg font-semibold mb-6">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>${total.toLocaleString('es-CL')}</span>
               </div>
 
               <button className="w-full bg-gray-800 text-white py-3 px-4 rounded-md hover:bg-gray-900 transition duration-200 font-medium">
