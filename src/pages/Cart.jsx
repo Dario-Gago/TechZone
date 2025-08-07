@@ -1,8 +1,4 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
-import { useProducts } from '../hooks/useProducts'
-import { useCart } from '../hooks/useCart'
+import React, { useState } from 'react'
 import {
   ArrowLeft,
   Trash2,
@@ -15,26 +11,103 @@ import {
 } from 'lucide-react'
 
 const Cart = () => {
-  const { isAuthenticated } = useAuth()
-  const { products } = useProducts()
-  const { cartItems, updateQuantity, removeFromCart } = useCart()
+  // Datos de ejemplo para simular productos y carrito
+  const [cartItems, setCartItems] = useState([
+    {
+      id: 1,
+      name: 'GeForce RTX 5060 OC, 8GB 128-bit, PCI-e 5.0 x8',
+      brand: 'GIGABYTE',
+      originalPrice: 499999,
+      discountPrice: 389990,
+      discount: 20,
+      image: 'https://placehold.co/400x400/1f2937/ffffff?text=RTX+5060',
+      description:
+        'Tarjeta gráfica de alto rendimiento para gaming y streaming profesional. Perfecta para juegos en 1440p con ray tracing.',
+      features: [
+        'Arquitectura NVIDIA Ada Lovelace',
+        '8GB GDDR6X de memoria de video',
+        'Ray Tracing de 3ra generación',
+        'DLSS 3 con Frame Generation',
+        'Diseño con triple ventilador'
+      ],
+      category: 'componentes',
+      subcategory: 'tarjetas-graficas',
+      shipping: 'Envío en 3 - 4 días',
+      inStock: 1,
+      stock: 15,
+      quantity: 1
+    },
+    {
+      id: 2,
+      name: 'Prime Radeon RX 9070 XT OC, 16GB GDDR6',
+      brand: 'ASUS',
+      originalPrice: 699999,
+      discountPrice: 559990,
+      discount: 20,
+      image: 'https://placehold.co/400x400/1f2937/ffffff?text=RX+9070+XT',
+      description:
+        'Potente tarjeta gráfica AMD con 16GB de memoria para gaming en 4K y creación de contenido profesional.',
+      features: [
+        'Arquitectura RDNA 4',
+        '16GB GDDR6',
+        'Ray Tracing acelerado',
+        'AMD FidelityFX Super Resolution',
+        'Cold triple-fan cooling'
+      ],
+      category: 'componentes',
+      subcategory: 'tarjetas-graficas',
+      shipping: 'Envío en 3 - 4 días',
+      inStock: 1,
+      stock: 5,
+      quantity: 1
+    },
+    {
+      id: 3,
+      name: 'Intel Arc B580, 12GB GDDR6',
+      brand: 'Intel',
+      originalPrice: 249990,
+      discountPrice: 229990,
+      discount: 8,
+      image: 'https://placehold.co/400x400/1f2937/ffffff?text=Intel+Arc+B580',
+      description:
+        'Opción económica para gaming 1440p con buena estabilidad de drivers.',
+      features: [
+        '12GB GDDR6',
+        '≈92 FPS promedio en 1440p',
+        'Soporte básico para Ray Tracing'
+      ],
+      category: 'componentes',
+      subcategory: 'tarjetas-graficas',
+      shipping: 'Envío en 2 - 3 días',
+      inStock: 1,
+      stock: 20,
+      quantity: 1
+    }
+  ])
+
+  const isAuthenticated = true // Simulamos que el usuario está autenticado
+
+  const updateQuantity = (id, newQuantity) => {
+    if (newQuantity < 1) return
+    setCartItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      )
+    )
+  }
+
+  const removeFromCart = (id) => {
+    setCartItems((items) => items.filter((item) => item.id !== id))
+  }
 
   // Función para obtener los detalles completos de los productos en el carrito
   const getCartItemsWithDetails = () => {
-    return cartItems
-      .map((cartItem) => {
-        const product = products.find((p) => p.id === cartItem.id)
-        if (!product) return null
-
-        return {
-          ...product,
-          quantity: cartItem.quantity,
-          // Convertir precios de centavos a pesos
-          price: product.originalPrice / 1000,
-          discountedPrice: product.discountPrice / 1000
-        }
-      })
-      .filter(Boolean) // Filtrar productos no encontrados
+    return cartItems.map((item) => ({
+      ...item,
+      // Convertir precios de centavos a pesos
+      price: item.originalPrice / 1000,
+      discountedPrice: item.discountPrice / 1000
+    }))
   }
 
   const cartItemsWithDetails = getCartItemsWithDetails()
@@ -60,21 +133,15 @@ const Cart = () => {
           </p>
 
           <div className="space-y-3">
-            <Link
-              to="/login"
-              className="w-full bg-gray-800 text-white px-6 py-3 rounded-md hover:bg-gray-900 transition duration-200 font-medium block text-center"
-            >
+            <button className="w-full bg-gray-800 text-white px-6 py-3 rounded-md hover:bg-gray-900 transition duration-200 font-medium block text-center">
               Iniciar Sesión
-            </Link>
+            </button>
 
             <p className="text-gray-500 text-sm">¿No tienes cuenta?</p>
 
-            <Link
-              to="/register"
-              className="w-full border border-gray-300 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-50 transition duration-200 font-medium block text-center"
-            >
+            <button className="w-full border border-gray-300 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-50 transition duration-200 font-medium block text-center">
               Crear Cuenta
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -92,29 +159,23 @@ const Cart = () => {
           <p className="text-gray-600 mb-6">
             Explora nuestros productos y agrega algunos a tu carrito.
           </p>
-          <Link
-            to="/"
-            className="bg-gray-800 text-white px-6 py-3 rounded-md hover:bg-gray-900 transition duration-200 font-medium"
-          >
+          <button className="bg-gray-800 text-white px-6 py-3 rounded-md hover:bg-gray-900 transition duration-200 font-medium">
             Continuar Comprando
-          </Link>
+          </button>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-gray-50 min-h-screen">
       <div className="max-w-6xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex items-center mb-6">
-          <Link
-            to="/"
-            className="flex items-center text-gray-600 hover:text-gray-800"
-          >
+          <button className="flex items-center text-gray-600 hover:text-gray-800">
             <ArrowLeft className="h-5 w-5 mr-2" />
             Volver a la Tienda
-          </Link>
+          </button>
         </div>
 
         <div className="text-center mb-8">
@@ -161,7 +222,7 @@ const Cart = () => {
                         </div>
                         <button
                           onClick={() => removeFromCart(item.id)}
-                          className="text-gray-400 hover:text-red-500"
+                          className="text-gray-400 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="h-5 w-5" />
                         </button>
@@ -174,7 +235,7 @@ const Cart = () => {
                             onClick={() =>
                               updateQuantity(item.id, item.quantity - 1)
                             }
-                            className="p-1 hover:bg-gray-100"
+                            className="p-1 hover:bg-gray-100 transition-colors"
                           >
                             <Minus className="h-4 w-4" />
                           </button>
@@ -185,7 +246,7 @@ const Cart = () => {
                             onClick={() =>
                               updateQuantity(item.id, item.quantity + 1)
                             }
-                            className="p-1 hover:bg-gray-100"
+                            className="p-1 hover:bg-gray-100 transition-colors"
                           >
                             <Plus className="h-4 w-4" />
                           </button>
@@ -225,7 +286,7 @@ const Cart = () => {
               </h3>
 
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
+                <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
                   <div className="flex items-center space-x-3">
                     <RotateCcw className="h-5 w-5 text-gray-600" />
                     <span className="text-gray-700">
@@ -235,7 +296,7 @@ const Cart = () => {
                   <ChevronRight className="h-5 w-5 text-gray-400" />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
+                <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
                   <div className="flex items-center space-x-3">
                     <CreditCard className="h-5 w-5 text-gray-600" />
                     <span className="text-gray-700">
@@ -245,7 +306,7 @@ const Cart = () => {
                   <ChevronRight className="h-5 w-5 text-gray-400" />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm">
+                <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
                   <div className="flex items-center space-x-3">
                     <Truck className="h-5 w-5 text-gray-600" />
                     <span className="text-gray-700">
@@ -290,6 +351,10 @@ const Cart = () => {
               <button className="w-full bg-gray-800 text-white py-3 px-4 rounded-md hover:bg-gray-900 transition duration-200 font-medium">
                 PAGAR
               </button>
+
+              <div className="mt-4 text-xs text-gray-500 text-center">
+                (*) Aplican términos y condiciones
+              </div>
             </div>
           </div>
         </div>

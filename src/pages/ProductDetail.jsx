@@ -27,8 +27,12 @@ const ProductDetail = () => {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Producto no encontrado</h1>
-          <p className="text-gray-600">El producto que buscas no existe o ha sido removido.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Producto no encontrado
+          </h1>
+          <p className="text-gray-600">
+            El producto que buscas no existe o ha sido removido.
+          </p>
         </div>
       </div>
     )
@@ -42,7 +46,9 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     // Lógica para añadir al carrito
-    console.log(`Añadiendo ${quantity} unidades del producto ${product.id} al carrito`)
+    console.log(
+      `Añadiendo ${quantity} unidades del producto ${product.id} al carrito`
+    )
   }
 
   return (
@@ -111,7 +117,9 @@ const ProductDetail = () => {
             <div className="space-y-4">
               {/* Selector de cantidad */}
               <div className="flex items-center space-x-4">
-                <span className="text-sm font-medium text-gray-700">Cantidad:</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Cantidad:
+                </span>
                 <div className="flex items-center border border-gray-300 rounded">
                   <button
                     onClick={() => handleQuantityChange(quantity - 1)}
