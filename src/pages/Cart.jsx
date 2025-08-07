@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   ArrowLeft,
   Trash2,
@@ -172,10 +173,13 @@ const Cart = () => {
       <div className="max-w-6xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex items-center mb-6">
-          <button className="flex items-center text-gray-600 hover:text-gray-800">
+          <Link
+            to="/"
+            className="flex items-center text-gray-600 hover:text-gray-800"
+          >
             <ArrowLeft className="h-5 w-5 mr-2" />
             Volver a la Tienda
-          </button>
+          </Link>
         </div>
 
         <div className="text-center mb-8">
