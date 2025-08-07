@@ -19,52 +19,59 @@ import PublicRoute from './components/PublicRoute'
 //Importo el contexto
 import { AuthProvider } from './contexts/AuthContext'
 import { ProductProvider } from './contexts/ProductContext'
+import { CartProvider } from './contexts/CartContext'
+
 const App = () => {
   return (
     <Router>
       <div className="min-h-screen flex flex-col bg-gray-50">
         <AuthProvider>
           <ProductProvider>
-            <ScrollToTop>
-              <Navbar />
+            <CartProvider>
+              <ScrollToTop>
+                <Navbar />
 
-              <main className="flex-1">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/product/:id" element={<ProductDetail />} />
-                  <Route path="/category/:categorySlug" element={<CategoryPage />} />
-                  <Route path="/search" element={<SearchPage />} />
-                  <Route
-                    path="/login"
-                    element={
-                      <PublicRoute>
-                        <Login />
-                      </PublicRoute>
-                    }
-                  />
+                <main className="flex-1">
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/product/:id" element={<ProductDetail />} />
+                    <Route
+                      path="/category/:categorySlug"
+                      element={<CategoryPage />}
+                    />
+                    <Route path="/search" element={<SearchPage />} />
+                    <Route
+                      path="/login"
+                      element={
+                        <PublicRoute>
+                          <Login />
+                        </PublicRoute>
+                      }
+                    />
 
-                  <Route
-                    path="/register"
-                    element={
-                      <PublicRoute>
-                        <Register />
-                      </PublicRoute>
-                    }
-                  />
+                    <Route
+                      path="/register"
+                      element={
+                        <PublicRoute>
+                          <Register />
+                        </PublicRoute>
+                      }
+                    />
 
-                  <Route path="/cart" element={<Cart />} />
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <PrivateRoute>
-                        <Dashboard />
-                      </PrivateRoute>
-                    }
-                  />
-                </Routes>
-              </main>
-              <Footer />
-            </ScrollToTop>
+                    <Route path="/cart" element={<Cart />} />
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <PrivateRoute>
+                          <Dashboard />
+                        </PrivateRoute>
+                      }
+                    />
+                  </Routes>
+                </main>
+                <Footer />
+              </ScrollToTop>
+            </CartProvider>
           </ProductProvider>
         </AuthProvider>
       </div>

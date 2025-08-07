@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useProducts } from '../hooks/useProducts'
+import { useCart } from '../hooks/useCart'
 import {
   ArrowLeft,
   Trash2,
@@ -16,12 +17,7 @@ import {
 const Cart = () => {
   const { isAuthenticated } = useAuth()
   const { products } = useProducts()
-
-  // Estado del carrito con IDs de productos y cantidades
-  const [cartItems, setCartItems] = useState([
-    { id: 1, quantity: 1 },
-    { id: 2, quantity: 2 }
-  ])
+  const { cartItems, updateQuantity, removeFromCart } = useCart()
 
   // Función para obtener los detalles completos de los productos en el carrito
   const getCartItemsWithDetails = () => {
@@ -39,34 +35,6 @@ const Cart = () => {
         }
       })
       .filter(Boolean) // Filtrar productos no encontrados
-  }
-
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity < 1) return
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    )
-  }
-
-  const removeItem = (id) => {
-    setCartItems((items) => items.filter((item) => item.id !== id))
-  }
-
-  const addToCart = (productId, quantity = 1) => {
-    setCartItems((items) => {
-      const existingItem = items.find((item) => item.id === productId)
-      if (existingItem) {
-        return items.map((item) =>
-          item.id === productId
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        )
-      } else {
-        return [...items, { id: productId, quantity }]
-      }
-    })
   }
 
   const cartItemsWithDetails = getCartItemsWithDetails()
@@ -192,7 +160,7 @@ const Cart = () => {
                           </p>
                         </div>
                         <button
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeFromCart(item.id)}
                           className="text-gray-400 hover:text-red-500"
                         >
                           <Trash2 className="h-5 w-5" />
