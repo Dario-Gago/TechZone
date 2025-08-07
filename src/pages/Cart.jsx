@@ -14,17 +14,14 @@ import {
 } from 'lucide-react'
 
 const Cart = () => {
-  const { cartItems, updateQuantity, removeFromCart } = useCart()
+  const { cartItems, updateQuantity, removeFromCart, getTotalPrice } = useCart()
 
   const isAuthenticated = true // Simulamos que el usuario está autenticado
 
-  // Calcular subtotal usando el precio directo de cada item
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  )
-  const discount = 25.0
-  const total = subtotal - discount
+  // Usar el total calculado del contexto que ya tiene los precios actuales
+  const total = getTotalPrice()
+  const discount = 25000 // Descuento fijo por simplicidad
+  const subtotal = total + discount
 
   // Si no hay sesión iniciada, mostrar mensaje
   if (!isAuthenticated) {
@@ -140,18 +137,18 @@ const Cart = () => {
                         <div className="flex items-center border rounded-md">
                           <button
                             onClick={() =>
-                              updateQuantity(item.id, item.quantity - 1)
+                              updateQuantity(item.id, item.cartQuantity - 1)
                             }
                             className="p-1 hover:bg-gray-100 transition-colors"
                           >
                             <Minus className="h-4 w-4" />
                           </button>
                           <span className="px-3 py-1 text-sm">
-                            {item.quantity}
+                            {item.cartQuantity}
                           </span>
                           <button
                             onClick={() =>
-                              updateQuantity(item.id, item.quantity + 1)
+                              updateQuantity(item.id, item.cartQuantity + 1)
                             }
                             className="p-1 hover:bg-gray-100 transition-colors"
                           >
@@ -160,12 +157,20 @@ const Cart = () => {
                         </div>
 
                         <div className="text-right">
-                          <span className="text-lg font-semibold text-gray-900">
-                            $
-                            {item.price === 1
-                              ? 'Precio especial'
-                              : item.price.toLocaleString('es-CL')}
-                          </span>
+                          {item.discountPrice && item.discountPrice < item.originalPrice ? (
+                            <div>
+                              <span className="text-sm text-gray-500 line-through">
+                                ${item.originalPrice.toLocaleString('es-CL')}
+                              </span>
+                              <span className="text-lg font-semibold text-gray-900 ml-2">
+                                ${item.discountPrice.toLocaleString('es-CL')}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="text-lg font-semibold text-gray-900">
+                              ${item.originalPrice.toLocaleString('es-CL')}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
