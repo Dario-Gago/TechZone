@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 
 const Carrito = () => {
-  const { elementosCarrito, actualizarCantidad, eliminarDelCarrito, obtenerPrecioTotal } = useCarrito()
+  const { articulosCarrito, actualizarCantidad, removerDelCarrito, obtenerPrecioTotal } = useCarrito()
 
   const estaAutenticado = true // Simulamos que el usuario está autenticado
 
@@ -53,7 +53,7 @@ const Carrito = () => {
   }
 
   // Si el carrito está vacío
-  if (elementosCarrito.length === 0) {
+  if (articulosCarrito.length === 0) {
     return (
       <div className="bg-gray-50 py-16 px-4">
         <div className="text-center p-8 max-w-md mx-auto">
@@ -100,7 +100,7 @@ const Carrito = () => {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Pedido</h2>
 
             <div className="space-y-4">
-              {elementosCarrito.map((item) => (
+              {articulosCarrito.map((item) => (
                 <div
                   key={item.id}
                   className="bg-white rounded-lg p-6 shadow-sm"
@@ -125,7 +125,7 @@ const Carrito = () => {
                           <p className="text-sm text-gray-500">{item.brand}</p>
                         </div>
                         <button
-                          onClick={() => eliminarDelCarrito(item.id)}
+                          onClick={() => removerDelCarrito(item.id)}
                           className="text-gray-400 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="h-5 w-5" />
@@ -137,18 +137,18 @@ const Carrito = () => {
                         <div className="flex items-center border rounded-md">
                           <button
                             onClick={() =>
-                              actualizarCantidad(item.id, item.cartQuantity - 1)
+                              actualizarCantidad(item.id, item.cantidadCarrito - 1)
                             }
                             className="p-1 hover:bg-gray-100 transition-colors"
                           >
                             <Minus className="h-4 w-4" />
                           </button>
                           <span className="px-3 py-1 text-sm">
-                            {item.cartQuantity}
+                            {item.cantidadCarrito}
                           </span>
                           <button
                             onClick={() =>
-                              actualizarCantidad(item.id, item.cartQuantity + 1)
+                              actualizarCantidad(item.id, item.cantidadCarrito + 1)
                             }
                             className="p-1 hover:bg-gray-100 transition-colors"
                           >
@@ -168,7 +168,7 @@ const Carrito = () => {
                             </div>
                           ) : (
                             <span className="text-lg font-semibold text-gray-900">
-                              ${item.originalPrice.toLocaleString('es-CL')}
+                              ${item.precioFinal.toLocaleString('es-CL')}
                             </span>
                           )}
                         </div>
