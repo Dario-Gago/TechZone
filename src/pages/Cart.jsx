@@ -14,7 +14,12 @@ import {
 } from 'lucide-react'
 
 const Carrito = () => {
-  const { articulosCarrito, actualizarCantidad, removerDelCarrito, obtenerPrecioTotal } = useCarrito()
+  const {
+    articulosCarrito,
+    actualizarCantidad,
+    removerDelCarrito,
+    obtenerPrecioTotal
+  } = useCarrito()
 
   const estaAutenticado = true // Simulamos que el usuario está autenticado
 
@@ -63,9 +68,12 @@ const Carrito = () => {
           <p className="text-gray-600 mb-6">
             Explora nuestros productos y agrega algunos a tu carrito.
           </p>
-          <button className="bg-gray-800 text-white px-6 py-3 rounded-md hover:bg-gray-900 transition duration-200 font-medium">
+          <Link
+            to="/category/todo"
+            className="bg-gray-800 text-white px-6 py-3 rounded-md hover:bg-gray-900 transition duration-200 font-medium"
+          >
             Continuar Comprando
-          </button>
+          </Link>
         </div>
       </div>
     )
@@ -137,7 +145,10 @@ const Carrito = () => {
                         <div className="flex items-center border rounded-md">
                           <button
                             onClick={() =>
-                              actualizarCantidad(item.id, item.cantidadCarrito - 1)
+                              actualizarCantidad(
+                                item.id,
+                                item.cantidadCarrito - 1
+                              )
                             }
                             className="p-1 hover:bg-gray-100 transition-colors"
                           >
@@ -148,7 +159,10 @@ const Carrito = () => {
                           </span>
                           <button
                             onClick={() =>
-                              actualizarCantidad(item.id, item.cantidadCarrito + 1)
+                              actualizarCantidad(
+                                item.id,
+                                item.cantidadCarrito + 1
+                              )
                             }
                             className="p-1 hover:bg-gray-100 transition-colors"
                           >
@@ -157,7 +171,8 @@ const Carrito = () => {
                         </div>
 
                         <div className="text-right">
-                          {item.discountPrice && item.discountPrice < item.originalPrice ? (
+                          {item.discountPrice &&
+                          item.discountPrice < item.originalPrice ? (
                             <div>
                               <span className="text-sm text-gray-500 line-through">
                                 ${item.originalPrice.toLocaleString('es-CL')}
