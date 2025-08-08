@@ -13,6 +13,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useProducts } from '../hooks/useProducts'
 import { useCart } from '../hooks/useCart'
 import SearchBar from './SearchBar'
+import Logo from '../assets/Logo.png'
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -43,12 +44,11 @@ const Navbar = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <Link to="/" className="flex items-center">
-                <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center mr-2">
-                  <span className="text-white text-sm font-bold">@</span>
-                </div>
-                <span className="text-xl font-semibold text-gray-900">
-                  TechZone
-                </span>
+                <img 
+                  src={Logo} 
+                  alt="TechZone" 
+                  className="h-8 w-auto"
+                />
               </Link>
             </div>
           </div>
