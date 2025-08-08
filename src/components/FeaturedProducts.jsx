@@ -64,7 +64,7 @@ const ProductosDestacados = () => {
         </p>
       </div>
 
-      {/* Carrusel horizontal con navegación */}
+      {/* Slider horizontal con navegación */}
       <div className="relative">
         {/* Botón izquierdo */}
         {puedeDesplazarIzquierda && (
@@ -92,7 +92,7 @@ const ProductosDestacados = () => {
           </button>
         )}
 
-        {/* Contenedor del carrusel */}
+        {/* Contenedor del Slider */}
         <div ref={referenciaScroll} className="overflow-x-auto scrollbar-hide px-12">
           <div className="flex gap-2 min-w-max">
             {productos.map((producto) => (
@@ -155,4 +155,3 @@ const ProductosDestacados = () => {
 
 // Exportación con compatibilidad
 export default ProductosDestacados
-export const FeaturedProducts = ProductosDestacados

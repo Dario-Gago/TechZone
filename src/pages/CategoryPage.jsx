@@ -132,5 +132,3 @@ const PaginaCategoria = () => {
 }
 
 export default PaginaCategoria
-// Compatibilidad hacia atrás
-export { PaginaCategoria as CategoryPage }

@@ -479,5 +479,3 @@ const PanelUsuario = () => {
 }
 
 export default PanelUsuario
-// Compatibilidad hacia atrás
-export { PanelUsuario as Dashboard }

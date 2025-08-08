@@ -9,6 +9,3 @@ export const useProductos = () => {
   }
   return context
 }
-
-// Mantener exportación original para compatibilidad
-export const useProducts = useProductos

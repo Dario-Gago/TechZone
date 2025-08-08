@@ -264,5 +264,3 @@ const Carrito = () => {
 }
 
 export default Carrito
-// Compatibilidad hacia atrás
-export { Carrito as Cart }

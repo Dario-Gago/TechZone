@@ -369,5 +369,3 @@ const Registro = () => {
 }
 
 export default Registro
-// Compatibilidad hacia atrás
-export { Registro as Register }

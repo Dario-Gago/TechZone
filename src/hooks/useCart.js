@@ -9,6 +9,3 @@ export const useCarrito = () => {
   }
   return context
 }
-
-// Mantener exportación original para compatibilidad
-export const useCart = useCarrito

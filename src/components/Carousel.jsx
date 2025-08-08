@@ -4,7 +4,7 @@ import rtx5000 from '../assets/rtx5000.png'
 import rxAMD from '../assets/rxAMD.png'
 import asus from '../assets/asus.png'
 
-const Carrusel = () => {
+const Slider = () => {
   const [indiceActual, setIndiceActual] = useState(0)
 
   const imagenes = [
@@ -43,7 +43,7 @@ const Carrusel = () => {
 
   return (
     <div className="w-full bg-white">
-      {/* Contenedor del Carrusel */}
+      {/* Contenedor del Slider */}
       <div className="relative w-full">
         {/* Contenedor de Imagen */}
         <div className="relative w-full h-64 md:h-96 lg:h-[500px] overflow-hidden bg-gray-100 flex items-center justify-center">
@@ -92,5 +92,4 @@ const Carrusel = () => {
 }
 
 // Exportación con compatibilidad
-export default Carrusel
-export const Carousel = Carrusel
+export default Slider

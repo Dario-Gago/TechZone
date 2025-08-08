@@ -1,11 +1,11 @@
 import React from 'react'
-import Carrusel from '../components/Carousel'
+import Slider from '../components/Carousel'
 import ProductosDestacados from '../components/FeaturedProducts'
 
 const Inicio = () => {
   return (
     <div>
-      <Carrusel />
+      <Slider />
       <ProductosDestacados />
     </div>
   )
@@ -13,4 +13,3 @@ const Inicio = () => {
 
 // Exportación con compatibilidad
 export default Inicio
-export const Home = Inicio

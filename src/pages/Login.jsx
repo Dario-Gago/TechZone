@@ -149,5 +149,3 @@ const IniciarSesion = () => {
 }
 
 export default IniciarSesion
-// Compatibilidad hacia atrás
-export { IniciarSesion as Login }

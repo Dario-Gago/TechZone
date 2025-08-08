@@ -175,5 +175,3 @@ const DetalleProducto = () => {
 }
 
 export default DetalleProducto
-// Compatibilidad hacia atrás
-export { DetalleProducto as ProductDetail }

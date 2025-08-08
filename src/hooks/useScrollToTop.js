@@ -18,5 +18,3 @@ export const useDesplazarHaciaArriba = () => {
 }
 
 export default useDesplazarHaciaArriba
-// Compatibilidad hacia atrás
-export { useDesplazarHaciaArriba as useScrollToTop }

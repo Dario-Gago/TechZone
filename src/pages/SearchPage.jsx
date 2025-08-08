@@ -160,5 +160,3 @@ const PaginaBusqueda = () => {
 }
 
 export default PaginaBusqueda
-// Compatibilidad hacia atrás
-export { PaginaBusqueda as SearchPage }
