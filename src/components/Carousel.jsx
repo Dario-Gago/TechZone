@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import rtx5000 from '../assets/rtx5000.png'
+import rxAMD from '../assets/rxAMD.png'
+import asus from '../assets/asus.png'
 
 const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -7,18 +10,18 @@ const Carousel = () => {
   const images = [
     {
       id: 1,
-      src: 'https://dlcdnwebimgs.asus.com/gain/f1d62101-2045-4a90-ba86-2cd1f1317ffd/',
-      alt: 'Monitor'
+      src: asus,
+      alt: 'ASUS'
     },
     {
       id: 2,
-      src: 'https://sony.scene7.com/is/image/sonyglobalsolutions/wh-ch520_Primary_image?$categorypdpnav$&fmt=png-alpha',
-      alt: 'Auriculares'
+      src: rxAMD,
+      alt: 'AMD RX'
     },
     {
       id: 3,
-      src: 'https://assets2.razerzone.com/images/pnx.assets/89b592e45a60be05a671c021f3363ac0/daessential-500x500.png',
-      alt: 'Mouse'
+      src: rtx5000,
+      alt: 'NVIDIA RTX 5000'
     }
   ]
 
@@ -47,7 +50,7 @@ const Carousel = () => {
           <img
             src={images[currentIndex].src}
             alt={images[currentIndex].alt}
-            className="max-w-full max-h-full object-contain transition-opacity duration-500"
+            className="w-full h-full object-cover transition-opacity duration-500"
           />
 
           {/* Gradient Overlay for better button visibility */}
