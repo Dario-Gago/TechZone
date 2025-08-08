@@ -9,29 +9,30 @@ import {
   UserPlus,
   LogOut
 } from 'lucide-react'
-import { useAuth } from '../contexts/AuthContext'
-import { useProducts } from '../hooks/useProducts'
-import { useCart } from '../hooks/useCart'
-import SearchBar from './SearchBar'
+import { useAutenticacion } from '../contexts/AuthContext'
+import { useProductos } from '../hooks/useProducts'
+import { useCarrito } from '../hooks/useCart'
+import BarraDeBusqueda from './SearchBar'
+import Logo from '../assets/Logo.png'
 
-const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const { isAuthenticated, logout } = useAuth()
-  const { categories } = useProducts()
-  const { getTotalItems } = useCart()
+const BarraNavegacion = () => {
+  const [estaMenuAbierto, setEstaMenuAbierto] = useState(false)
+  const [estaBusquedaAbierta, setEstaBusquedaAbierta] = useState(false)
+  const { estaAutenticado, cerrarSesion } = useAutenticacion()
+  const { categorias } = useProductos()
+  const { obtenerTotalItems } = useCarrito()
   const location = useLocation()
 
-  const totalItems = getTotalItems()
+  const totalArticulos = obtenerTotalItems()
 
   // Función para determinar si una categoría está activa
-  const isCategoryActive = (categorySlug) => {
+  const esCategoriaActiva = (categorySlug) => {
     return location.pathname === `/category/${categorySlug}`
   }
 
   // Función para manejar el click en categoría
-  const handleCategoryClick = () => {
-    setIsMenuOpen(false)
+  const manejarClicCategoria = () => {
+    setEstaMenuAbierto(false)
   }
 
   return (
@@ -43,33 +44,32 @@ const Navbar = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <Link to="/" className="flex items-center">
-                <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center mr-2">
-                  <span className="text-white text-sm font-bold">@</span>
-                </div>
-                <span className="text-xl font-semibold text-gray-900">
-                  TechZone
-                </span>
+                <img 
+                  src={Logo} 
+                  alt="TechZone" 
+                  className="h-8 w-auto"
+                />
               </Link>
             </div>
           </div>
 
           {/* Barra de Búsqueda - Escritorio */}
           <div className="hidden md:block flex-1 max-w-2xl mx-8">
-            <SearchBar />
+            <BarraDeBusqueda />
           </div>
 
           {/* Iconos del Lado Derecho */}
           <div className="flex items-center space-x-4">
             {/* Icono de Búsqueda - Móvil */}
             <button
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              onClick={() => setEstaBusquedaAbierta(!estaBusquedaAbierta)}
               className="md:hidden p-2 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
               <Search className="h-5 w-5" />
             </button>
 
             {/* Enlaces de Autenticación */}
-            {!isAuthenticated && (
+            {!estaAutenticado && (
               <div className="hidden sm:flex items-center space-x-4">
                 <Link
                   to="/login"
@@ -90,7 +90,7 @@ const Navbar = () => {
             )}
 
             {/* Enlaces cuando está autenticado - Escritorio */}
-            {isAuthenticated && (
+            {estaAutenticado && (
               <div className="hidden sm:flex items-center space-x-4">
                 <Link
                   to="/dashboard"
@@ -100,7 +100,7 @@ const Navbar = () => {
                   <span>Mi cuenta</span>
                 </Link>
                 <button
-                  onClick={logout}
+                  onClick={cerrarSesion}
                   className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md border border-red-200 hover:border-red-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                   <LogOut className="h-4 w-4" />
@@ -115,19 +115,19 @@ const Navbar = () => {
               className="p-2 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 relative transition-colors duration-200"
             >
               <ShoppingCart className="h-5 w-5" />
-              {totalItems > 0 && (
+              {totalArticulos > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] text-[10px]">
-                  {totalItems > 99 ? '99+' : totalItems}
+                  {totalArticulos > 99 ? '99+' : totalArticulos}
                 </span>
               )}
             </Link>
 
             {/* Botón de Menú Móvil */}
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={() => setEstaMenuAbierto(!estaMenuAbierto)}
               className="lg:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900"
             >
-              {isMenuOpen ? (
+              {estaMenuAbierto ? (
                 <X className="h-5 w-5" />
               ) : (
                 <Menu className="h-5 w-5" />
@@ -137,9 +137,9 @@ const Navbar = () => {
         </div>
 
         {/* Barra de Búsqueda Móvil */}
-        {isSearchOpen && (
+        {estaBusquedaAbierta && (
           <div className="md:hidden pb-4">
-            <SearchBar />
+            <BarraDeBusqueda />
           </div>
         )}
       </div>
@@ -148,12 +148,12 @@ const Navbar = () => {
       <div className="hidden lg:block bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center space-x-8 py-3 overflow-x-auto">
-            {categories.map((category) => (
+            {categorias.map((category) => (
               <Link
                 key={category.id}
                 to={`/category/${category.slug}`}
                 className={`whitespace-nowrap text-sm font-medium transition-colors duration-200 hover:text-gray-900 ${
-                  isCategoryActive(category.slug)
+                  esCategoriaActiva(category.slug)
                     ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
                     : 'text-gray-600'
                 }`}
@@ -166,16 +166,16 @@ const Navbar = () => {
       </div>
 
       {/* Menú Móvil */}
-      {isMenuOpen && (
+      {estaMenuAbierto && (
         <div className="lg:hidden bg-white border-t border-gray-200">
           <div className="px-4 py-3 space-y-3">
             {/* Enlaces de Autenticación Móvil */}
-            {!isAuthenticated && (
+            {!estaAutenticado && (
               <div className="sm:hidden space-y-2 py-2">
                 <Link
                   to="/login"
                   className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => setEstaMenuAbierto(false)}
                 >
                   <User className="h-5 w-5" />
                   <span className="text-sm">Iniciar sesión</span>
@@ -183,7 +183,7 @@ const Navbar = () => {
                 <Link
                   to="/register"
                   className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors duration-200"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => setEstaMenuAbierto(false)}
                 >
                   <UserPlus className="h-5 w-5" />
                   <span className="text-sm font-medium">Registrarse</span>
@@ -192,20 +192,20 @@ const Navbar = () => {
             )}
 
             {/* Enlaces cuando está autenticado - Móvil */}
-            {isAuthenticated && (
+            {estaAutenticado && (
               <div className="py-2 border-b border-gray-200 space-y-2">
                 <Link
                   to="/dashboard"
                   className="flex items-center space-x-2 w-full px-3 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md border border-gray-300 hover:border-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={() => setEstaMenuAbierto(false)}
                 >
                   <User className="h-4 w-4" />
                   <span>Mi cuenta</span>
                 </Link>
                 <button
                   onClick={() => {
-                    logout()
-                    setIsMenuOpen(false)
+                    cerrarSesion()
+                    setEstaMenuAbierto(false)
                   }}
                   className="flex items-center space-x-2 w-full px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md border border-red-200 hover:border-red-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
@@ -218,13 +218,13 @@ const Navbar = () => {
             {/* Categorías Móvil */}
             <div className="border-t border-gray-200 pt-3">
               <div className="space-y-2">
-                {categories.map((category) => (
+                {categorias.map((category) => (
                   <Link
                     key={category.id}
                     to={`/category/${category.slug}`}
-                    onClick={handleCategoryClick}
+                    onClick={manejarClicCategoria}
                     className={`block w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                      isCategoryActive(category.slug)
+                      esCategoriaActiva(category.slug)
                         ? 'bg-gray-900 text-white'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     }`}
@@ -241,4 +241,6 @@ const Navbar = () => {
   )
 }
 
-export default Navbar
+// Exportación con compatibilidad
+export default BarraNavegacion
+export const Navbar = BarraNavegacion

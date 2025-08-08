@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useCart } from '../hooks/useCart'
+import { useCarrito } from '../hooks/useCart'
 
 import {
   ArrowLeft,
@@ -13,18 +13,18 @@ import {
   ChevronRight
 } from 'lucide-react'
 
-const Cart = () => {
-  const { cartItems, updateQuantity, removeFromCart, getTotalPrice } = useCart()
+const Carrito = () => {
+  const { elementosCarrito, actualizarCantidad, eliminarDelCarrito, obtenerPrecioTotal } = useCarrito()
 
-  const isAuthenticated = true // Simulamos que el usuario está autenticado
+  const estaAutenticado = true // Simulamos que el usuario está autenticado
 
   // Usar el total calculado del contexto que ya tiene los precios actuales
-  const total = getTotalPrice()
-  const discount = 25000 // Descuento fijo por simplicidad
-  const subtotal = total + discount
+  const total = obtenerPrecioTotal()
+  const descuento = 25000 // Descuento fijo por simplicidad
+  const subtotal = total + descuento
 
   // Si no hay sesión iniciada, mostrar mensaje
-  if (!isAuthenticated) {
+  if (!estaAutenticado) {
     return (
       <div className="bg-gray-50 py-16 px-4">
         <div className="text-center p-8 max-w-md mx-auto">
@@ -53,7 +53,7 @@ const Cart = () => {
   }
 
   // Si el carrito está vacío
-  if (cartItems.length === 0) {
+  if (elementosCarrito.length === 0) {
     return (
       <div className="bg-gray-50 py-16 px-4">
         <div className="text-center p-8 max-w-md mx-auto">
@@ -100,7 +100,7 @@ const Cart = () => {
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Pedido</h2>
 
             <div className="space-y-4">
-              {cartItems.map((item) => (
+              {elementosCarrito.map((item) => (
                 <div
                   key={item.id}
                   className="bg-white rounded-lg p-6 shadow-sm"
@@ -125,7 +125,7 @@ const Cart = () => {
                           <p className="text-sm text-gray-500">{item.brand}</p>
                         </div>
                         <button
-                          onClick={() => removeFromCart(item.id)}
+                          onClick={() => eliminarDelCarrito(item.id)}
                           className="text-gray-400 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="h-5 w-5" />
@@ -137,7 +137,7 @@ const Cart = () => {
                         <div className="flex items-center border rounded-md">
                           <button
                             onClick={() =>
-                              updateQuantity(item.id, item.cartQuantity - 1)
+                              actualizarCantidad(item.id, item.cartQuantity - 1)
                             }
                             className="p-1 hover:bg-gray-100 transition-colors"
                           >
@@ -148,7 +148,7 @@ const Cart = () => {
                           </span>
                           <button
                             onClick={() =>
-                              updateQuantity(item.id, item.cartQuantity + 1)
+                              actualizarCantidad(item.id, item.cartQuantity + 1)
                             }
                             className="p-1 hover:bg-gray-100 transition-colors"
                           >
@@ -236,7 +236,7 @@ const Cart = () => {
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Descuento aplicado</span>
                   <span className="text-green-600">
-                    -${discount.toLocaleString('es-CL')}
+                    -${descuento.toLocaleString('es-CL')}
                   </span>
                 </div>
               </div>
@@ -263,4 +263,4 @@ const Cart = () => {
   )
 }
 
-export default Cart
+export default Carrito

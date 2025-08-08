@@ -1,14 +1,15 @@
 import React from 'react'
-import Carousel from '../components/Carousel'
-import FeaturedProducts from '../components/FeaturedProducts'
+import Slider from '../components/Carousel'
+import ProductosDestacados from '../components/FeaturedProducts'
 
-const Home = () => {
+const Inicio = () => {
   return (
     <div>
-      <Carousel></Carousel>
-      <FeaturedProducts />
+      <Slider />
+      <ProductosDestacados />
     </div>
   )
 }
 
-export default Home
+// Exportación con compatibilidad
+export default Inicio

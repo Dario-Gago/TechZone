@@ -1,15 +1,17 @@
-// components/PrivateRoute.jsx
+// components/RutaPrivada.jsx
 import { Navigate } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
+import { useAutenticacion } from '../contexts/AuthContext'
 
-const PrivateRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth()
+const RutaPrivada = ({ children }) => {
+  const { estaAutenticado } = useAutenticacion()
 
-  if (!isAuthenticated) {
+  if (!estaAutenticado) {
     return <Navigate to="/login" replace />
   }
 
   return children
 }
 
-export default PrivateRoute
+// Exportación con compatibilidad
+export default RutaPrivada
+export const PrivateRoute = RutaPrivada

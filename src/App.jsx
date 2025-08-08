@@ -5,7 +5,7 @@ import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
 
 // Importa tus componentes de páginas
-import Home from './pages/Home'
+import Inicio from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Cart from './pages/Cart'
@@ -13,27 +13,27 @@ import Dashboard from './pages/Dashboard'
 import ProductDetail from './pages/ProductDetail'
 import CategoryPage from './pages/CategoryPage'
 import SearchPage from './pages/SearchPage'
-import PrivateRoute from './components/PrivateRoute'
-import PublicRoute from './components/PublicRoute'
+import RutaPrivada from './components/PrivateRoute'
+import RutaPublica from './components/PublicRoute'
 
 //Importo el contexto
-import { AuthProvider } from './contexts/AuthContext'
-import { ProductProvider } from './contexts/ProductContext'
-import { CartProvider } from './contexts/CartContext'
+import { ProveedorAutenticacion } from './contexts/AuthContext'
+import { ProveedorProducto } from './contexts/ProductContext'
+import { ProveedorCarrito } from './contexts/CartContext'
 
 const App = () => {
   return (
     <Router>
       <div className="min-h-screen flex flex-col bg-gray-50">
-        <AuthProvider>
-          <ProductProvider>
-            <CartProvider>
+        <ProveedorAutenticacion>
+          <ProveedorProducto>
+            <ProveedorCarrito>
               <ScrollToTop>
                 <Navbar />
 
                 <main className="flex-1">
                   <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<Inicio />} />
                     <Route path="/product/:id" element={<ProductDetail />} />
                     <Route
                       path="/category/:categorySlug"
@@ -43,18 +43,18 @@ const App = () => {
                     <Route
                       path="/login"
                       element={
-                        <PublicRoute>
+                        <RutaPublica>
                           <Login />
-                        </PublicRoute>
+                        </RutaPublica>
                       }
                     />
 
                     <Route
                       path="/register"
                       element={
-                        <PublicRoute>
+                        <RutaPublica>
                           <Register />
-                        </PublicRoute>
+                        </RutaPublica>
                       }
                     />
 
@@ -62,18 +62,18 @@ const App = () => {
                     <Route
                       path="/dashboard"
                       element={
-                        <PrivateRoute>
+                        <RutaPrivada>
                           <Dashboard />
-                        </PrivateRoute>
+                        </RutaPrivada>
                       }
                     />
                   </Routes>
                 </main>
                 <Footer />
               </ScrollToTop>
-            </CartProvider>
-          </ProductProvider>
-        </AuthProvider>
+            </ProveedorCarrito>
+          </ProveedorProducto>
+        </ProveedorAutenticacion>
       </div>
     </Router>
   )

@@ -1,46 +1,46 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useProducts } from '../hooks/useProducts'
+import { useProductos } from '../hooks/useProducts'
 
-const FeaturedProducts = () => {
-  const { getFeaturedProducts, formatPrice, loading } = useProducts()
-  const scrollRef = useRef(null)
-  const [canScrollLeft, setCanScrollLeft] = useState(false)
-  const [canScrollRight, setCanScrollRight] = useState(true)
+const ProductosDestacados = () => {
+  const { obtenerProductosDestacados, formatearPrecio, cargando } = useProductos()
+  const referenciaScroll = useRef(null)
+  const [puedeDesplazarIzquierda, setPuedeDesplazarIzquierda] = useState(false)
+  const [puedeDesplazarDerecha, setPuedeDesplazarDerecha] = useState(true)
 
-  const products = getFeaturedProducts()
+  const productos = obtenerProductosDestacados()
 
-  const checkScrollability = () => {
-    if (scrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
-      setCanScrollLeft(scrollLeft > 0)
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1)
+  const verificarDesplazamiento = () => {
+    if (referenciaScroll.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = referenciaScroll.current
+      setPuedeDesplazarIzquierda(scrollLeft > 0)
+      setPuedeDesplazarDerecha(scrollLeft < scrollWidth - clientWidth - 1)
     }
   }
 
   useEffect(() => {
-    checkScrollability()
-    const scrollElement = scrollRef.current
-    if (scrollElement) {
-      scrollElement.addEventListener('scroll', checkScrollability)
-      return () => scrollElement.removeEventListener('scroll', checkScrollability)
+    verificarDesplazamiento()
+    const elementoScroll = referenciaScroll.current
+    if (elementoScroll) {
+      elementoScroll.addEventListener('scroll', verificarDesplazamiento)
+      return () => elementoScroll.removeEventListener('scroll', verificarDesplazamiento)
     }
   }, [])
 
-  const scrollLeft = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -300, behavior: 'smooth' })
+  const desplazarIzquierda = () => {
+    if (referenciaScroll.current) {
+      referenciaScroll.current.scrollBy({ left: -300, behavior: 'smooth' })
     }
   }
 
-  const scrollRight = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' })
+  const desplazarDerecha = () => {
+    if (referenciaScroll.current) {
+      referenciaScroll.current.scrollBy({ left: 300, behavior: 'smooth' })
     }
   }
 
   // Mostrar loading si los productos aún no se han cargado
-  if (loading) {
+  if (cargando) {
     return (
       <section className="py-12 px-4 max-w-7xl mx-auto">
         <div className="text-center">
@@ -64,12 +64,12 @@ const FeaturedProducts = () => {
         </p>
       </div>
 
-      {/* Carousel horizontal con navegación */}
+      {/* Slider horizontal con navegación */}
       <div className="relative">
         {/* Botón izquierdo */}
-        {canScrollLeft && (
+        {puedeDesplazarIzquierda && (
           <button
-            onClick={scrollLeft}
+            onClick={desplazarIzquierda}
             className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-50 transition-colors"
             aria-label="Anterior"
           >
@@ -80,9 +80,9 @@ const FeaturedProducts = () => {
         )}
 
         {/* Botón derecho */}
-        {canScrollRight && (
+        {puedeDesplazarDerecha && (
           <button
-            onClick={scrollRight}
+            onClick={desplazarDerecha}
             className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-50 transition-colors"
             aria-label="Siguiente"
           >
@@ -92,42 +92,42 @@ const FeaturedProducts = () => {
           </button>
         )}
 
-        {/* Contenedor del carousel */}
-        <div ref={scrollRef} className="overflow-x-auto scrollbar-hide px-12">
+        {/* Contenedor del Slider */}
+        <div ref={referenciaScroll} className="overflow-x-auto scrollbar-hide px-12">
           <div className="flex gap-2 min-w-max">
-            {products.map((product) => (
+            {productos.map((producto) => (
               <Link
-                key={product.id}
-                to={`/product/${product.id}`}
+                key={producto.id}
+                to={`/product/${producto.id}`}
                 className="bg-white overflow-hidden flex-shrink-0 w-48 sm:w-52 md:w-56 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
               >
                 {/* Imagen del producto */}
                 <div className="relative bg-gray-100 h-70 flex items-center justify-center">
                   <img
-                    src={product.image}
-                    alt={product.name}
+                    src={producto.image}
+                    alt={producto.name}
                     className="w-full h-full object-contain"
                   />
                   
                   {/* Badge de descuento */}
                   <div className="absolute top-2 right-2 bg-red-500 text-white px-1.5 py-0.5 rounded text-xs font-bold">
-                    -{product.discount}%
+                    -{producto.discount}%
                   </div>
                 </div>
 
                 {/* Información del producto */}
                 <div className="p-3">
                   {/* Marca */}
-                  {product.brand && (
+                  {producto.brand && (
                     <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                      {product.brand}
+                      {producto.brand}
                     </p>
                   )}
 
                   {/* Nombre del producto - altura fija para consistencia */}
                   <div className="h-10 mb-2">
                     <h3 className="text-xs font-medium text-gray-800 line-clamp-2 leading-tight">
-                      {product.name}
+                      {producto.name}
                     </h3>
                   </div>
 
@@ -135,12 +135,12 @@ const FeaturedProducts = () => {
                   <div className="space-y-1">
                     {/* Precio original tachado */}
                     <p className="text-sm text-gray-500 line-through">
-                      {formatPrice(product.originalPrice)}
+                      {formatearPrecio(producto.originalPrice)}
                     </p>
                     
                     {/* Precio con descuento */}
                     <p className="text-xl font-bold text-gray-900">
-                      {formatPrice(product.discountPrice)}
+                      {formatearPrecio(producto.discountPrice)}
                     </p>
                   </div>
                 </div>
@@ -153,4 +153,5 @@ const FeaturedProducts = () => {
   )
 }
 
-export default FeaturedProducts
+// Exportación con compatibilidad
+export default ProductosDestacados
