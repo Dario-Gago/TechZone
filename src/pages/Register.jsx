@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { Mail, Lock, User, Phone, MapPin, Eye, EyeOff } from 'lucide-react'
 import { Link } from 'react-router-dom'
-const Register = () => {
-  const [formData, setFormData] = useState({
+
+const Registro = () => {
+  const [datosFormulario, setDatosFormulario] = useState({
     nombre: '',
     email: '',
     password: '',
@@ -10,92 +11,92 @@ const Register = () => {
     telefono: '',
     direccion: ''
   })
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [errors, setErrors] = useState({})
-  const [isLoading, setIsLoading] = useState(false)
+  const [mostrarContrasena, setMostrarContrasena] = useState(false)
+  const [mostrarConfirmarContrasena, setMostrarConfirmarContrasena] = useState(false)
+  const [errores, setErrores] = useState({})
+  const [estaCargando, setEstaCargando] = useState(false)
 
-  const validateForm = () => {
-    const newErrors = {}
+  const validarFormulario = () => {
+    const nuevosErrores = {}
 
     // Validar nombre
-    if (!formData.nombre.trim()) {
-      newErrors.nombre = 'El nombre es requerido'
-    } else if (formData.nombre.length > 100) {
-      newErrors.nombre = 'El nombre no puede exceder 100 caracteres'
+    if (!datosFormulario.nombre.trim()) {
+      nuevosErrores.nombre = 'El nombre es requerido'
+    } else if (datosFormulario.nombre.length > 100) {
+      nuevosErrores.nombre = 'El nombre no puede exceder 100 caracteres'
     }
 
     // Validar email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!formData.email.trim()) {
-      newErrors.email = 'El email es requerido'
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Ingresa un email válido'
-    } else if (formData.email.length > 100) {
-      newErrors.email = 'El email no puede exceder 100 caracteres'
+    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!datosFormulario.email.trim()) {
+      nuevosErrores.email = 'El email es requerido'
+    } else if (!regexEmail.test(datosFormulario.email)) {
+      nuevosErrores.email = 'Ingresa un email válido'
+    } else if (datosFormulario.email.length > 100) {
+      nuevosErrores.email = 'El email no puede exceder 100 caracteres'
     }
 
     // Validar contraseña
-    if (!formData.password) {
-      newErrors.password = 'La contraseña es requerida'
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'La contraseña debe tener al menos 8 caracteres'
+    if (!datosFormulario.password) {
+      nuevosErrores.password = 'La contraseña es requerida'
+    } else if (datosFormulario.password.length < 8) {
+      nuevosErrores.password = 'La contraseña debe tener al menos 8 caracteres'
     }
 
     // Validar confirmación de contraseña
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Las contraseñas no coinciden'
+    if (datosFormulario.password !== datosFormulario.confirmPassword) {
+      nuevosErrores.confirmPassword = 'Las contraseñas no coinciden'
     }
 
     // Validar teléfono (opcional pero con formato)
-    if (formData.telefono && formData.telefono.length > 20) {
-      newErrors.telefono = 'El teléfono no puede exceder 20 caracteres'
+    if (datosFormulario.telefono && datosFormulario.telefono.length > 20) {
+      nuevosErrores.telefono = 'El teléfono no puede exceder 20 caracteres'
     }
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    setErrores(nuevosErrores)
+    return Object.keys(nuevosErrores).length === 0
   }
 
-  const handleInputChange = (e) => {
+  const manejarCambioInput = (e) => {
     const { name, value } = e.target
-    setFormData((prev) => ({
+    setDatosFormulario((prev) => ({
       ...prev,
       [name]: value
     }))
 
     // Limpiar error específico cuando el usuario empiece a escribir
-    if (errors[name]) {
-      setErrors((prev) => ({
+    if (errores[name]) {
+      setErrores((prev) => ({
         ...prev,
         [name]: ''
       }))
     }
   }
 
-  const handleSubmit = async () => {
-    if (!validateForm()) {
+  const manejarEnvio = async () => {
+    if (!validarFormulario()) {
       return
     }
 
-    setIsLoading(true)
+    setEstaCargando(true)
 
     try {
       // Simular llamada a API
       console.log('Datos de registro:', {
-        nombre: formData.nombre,
-        email: formData.email,
-        password: formData.password, // En producción, esto se hashearía en el backend
-        telefono: formData.telefono || null,
-        direccion: formData.direccion || null
+        nombre: datosFormulario.nombre,
+        email: datosFormulario.email,
+        password: datosFormulario.password, // En producción, esto se hashearía en el backend
+        telefono: datosFormulario.telefono || null,
+        direccion: datosFormulario.direccion || null
       })
 
       // Simular delay de API
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      alert('¡Registro exitoso! Bienvenido/a ' + formData.nombre)
+      alert('¡Registro exitoso! Bienvenido/a ' + datosFormulario.nombre)
 
       // Resetear formulario
-      setFormData({
+      setDatosFormulario({
         nombre: '',
         email: '',
         password: '',
@@ -107,7 +108,7 @@ const Register = () => {
       console.error('Error en el registro:', error)
       alert('Error al registrar usuario. Intenta nuevamente.')
     } finally {
-      setIsLoading(false)
+      setEstaCargando(false)
     }
   }
 
@@ -142,17 +143,17 @@ const Register = () => {
                   name="nombre"
                   type="text"
                   required
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errors.nombre
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errores.nombre
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
                     }`}
                   placeholder="Tu nombre completo"
-                  value={formData.nombre}
-                  onChange={handleInputChange}
+                  value={datosFormulario.nombre}
+                  onChange={manejarCambioInput}
                 />
               </div>
-              {errors.nombre && (
-                <p className="mt-1 text-sm text-red-600">{errors.nombre}</p>
+              {errores.nombre && (
+                <p className="mt-1 text-sm text-red-600">{errores.nombre}</p>
               )}
             </div>
 
@@ -173,17 +174,17 @@ const Register = () => {
                   name="email"
                   type="email"
                   required
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errors.email
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errores.email
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
                     }`}
                   placeholder="email@ejemplo.com"
-                  value={formData.email}
-                  onChange={handleInputChange}
+                  value={datosFormulario.email}
+                  onChange={manejarCambioInput}
                 />
               </div>
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              {errores.email && (
+                <p className="mt-1 text-sm text-red-600">{errores.email}</p>
               )}
             </div>
 
@@ -202,30 +203,30 @@ const Register = () => {
                 <input
                   id="password"
                   name="password"
-                  type={showPassword ? 'text' : 'password'}
+                  type={mostrarContrasena ? 'text' : 'password'}
                   required
-                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errors.password
+                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errores.password
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
                     }`}
                   placeholder="Mínimo 8 caracteres"
-                  value={formData.password}
-                  onChange={handleInputChange}
+                  value={datosFormulario.password}
+                  onChange={manejarCambioInput}
                 />
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setMostrarContrasena(!mostrarContrasena)}
                 >
-                  {showPassword ? (
+                  {mostrarContrasena ? (
                     <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                   ) : (
                     <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                   )}
                 </button>
               </div>
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+              {errores.password && (
+                <p className="mt-1 text-sm text-red-600">{errores.password}</p>
               )}
             </div>
 
@@ -244,31 +245,31 @@ const Register = () => {
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'}
+                  type={mostrarConfirmarContrasena ? 'text' : 'password'}
                   required
-                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errors.confirmPassword
+                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errores.confirmPassword
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
                     }`}
                   placeholder="Repite tu contraseña"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
+                  value={datosFormulario.confirmPassword}
+                  onChange={manejarCambioInput}
                 />
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  onClick={() => setMostrarConfirmarContrasena(!mostrarConfirmarContrasena)}
                 >
-                  {showConfirmPassword ? (
+                  {mostrarConfirmarContrasena ? (
                     <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                   ) : (
                     <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                   )}
                 </button>
               </div>
-              {errors.confirmPassword && (
+              {errores.confirmPassword && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors.confirmPassword}
+                  {errores.confirmPassword}
                 </p>
               )}
             </div>
@@ -289,17 +290,17 @@ const Register = () => {
                   id="telefono"
                   name="telefono"
                   type="tel"
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errors.telefono
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errores.telefono
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
                     }`}
                   placeholder="+56 9 1234 5678"
-                  value={formData.telefono}
-                  onChange={handleInputChange}
+                  value={datosFormulario.telefono}
+                  onChange={manejarCambioInput}
                 />
               </div>
-              {errors.telefono && (
-                <p className="mt-1 text-sm text-red-600">{errors.telefono}</p>
+              {errores.telefono && (
+                <p className="mt-1 text-sm text-red-600">{errores.telefono}</p>
               )}
             </div>
 
@@ -321,8 +322,8 @@ const Register = () => {
                   rows={3}
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 resize-none"
                   placeholder="Tu dirección completa (opcional)"
-                  value={formData.direccion}
-                  onChange={handleInputChange}
+                  value={datosFormulario.direccion}
+                  onChange={manejarCambioInput}
                 />
               </div>
             </div>
@@ -333,13 +334,14 @@ const Register = () => {
 
           <button
             type="submit"
-            disabled={isLoading}
-            className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition duration-200 ${isLoading
+            disabled={estaCargando}
+            onClick={manejarEnvio}
+            className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition duration-200 ${estaCargando
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
               }`}
           >
-            {isLoading ? (
+            {estaCargando ? (
               <div className="flex items-center">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                 Creando cuenta...
@@ -366,4 +368,6 @@ const Register = () => {
   )
 }
 
-export default Register
+export default Registro
+// Compatibilidad hacia atrás
+export { Registro as Register }

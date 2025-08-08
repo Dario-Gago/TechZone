@@ -2,46 +2,46 @@ import React, { createContext, useState, useEffect } from 'react'
 import productsData from '../data/products.json'
 
 // Crear el contexto
-const ProductContext = createContext()
+const ContextoProducto = createContext()
 
 // Proveedor del contexto
-export const ProductProvider = ({ children }) => {
-  const [products, setProducts] = useState([])
-  const [categories, setCategories] = useState([])
-  const [loading, setLoading] = useState(true)
+export const ProveedorProducto = ({ children }) => {
+  const [productos, setProductos] = useState([])
+  const [categorias, setCategorias] = useState([])
+  const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
 
   // Simular carga de datos (preparación para futura API)
   useEffect(() => {
-    const loadProducts = async () => {
+    const cargarProductos = async () => {
       try {
-        setLoading(true)
+        setCargando(true)
         // Simular delay de API
         await new Promise(resolve => setTimeout(resolve, 500))
         
-        setProducts(productsData.products)
-        setCategories(productsData.categories)
+        setProductos(productsData.products)
+        setCategorias(productsData.categories)
         setError(null)
       } catch (err) {
         setError('Error al cargar los productos')
         console.error('Error loading products:', err)
       } finally {
-        setLoading(false)
+        setCargando(false)
       }
     }
 
-    loadProducts()
+    cargarProductos()
   }, [])
 
   // Función para obtener producto por ID
-  const getProductById = (id) => {
-    return products.find(product => product.id === parseInt(id))
+  const obtenerProductoPorId = (id) => {
+    return productos.find(producto => producto.id === parseInt(id))
   }
 
   // Función para obtener productos por categoría
-  const getProductsByCategory = (categorySlug) => {
+  const obtenerProductosPorCategoria = (categorySlug) => {
     if (categorySlug === 'todo' || !categorySlug) {
-      return products
+      return productos
     }
     
     // Convertir slug de categoría a format interno del producto
@@ -56,60 +56,73 @@ export const ProductProvider = ({ children }) => {
       categoryKey = 'audio-video'
     }
     
-    return products.filter(product => product.category === categoryKey)
+    return productos.filter(producto => producto.category === categoryKey)
   }
 
   // Función para obtener productos destacados (primeros 6)
-  const getFeaturedProducts = () => {
-    return products.slice(0, 6)
+  const obtenerProductosDestacados = () => {
+    return productos.slice(0, 6)
   }
 
   // Función para buscar productos
-  const searchProducts = (query) => {
-    if (!query.trim()) return products
+  const buscarProductos = (query) => {
+    if (!query.trim()) return productos
     
-    const searchTerm = query.toLowerCase()
-    return products.filter(product => 
-      product.name.toLowerCase().includes(searchTerm) ||
-      product.brand.toLowerCase().includes(searchTerm) ||
-      product.description.toLowerCase().includes(searchTerm)
+    const terminoBusqueda = query.toLowerCase()
+    return productos.filter(producto => 
+      producto.name.toLowerCase().includes(terminoBusqueda) ||
+      producto.brand.toLowerCase().includes(terminoBusqueda) ||
+      producto.description.toLowerCase().includes(terminoBusqueda)
     )
   }
 
   // Función para actualizar stock (preparación para carrito)
-  const updateProductStock = (productId, newStock) => {
-    setProducts(prevProducts => 
-      prevProducts.map(product => 
-        product.id === productId 
-          ? { ...product, stock: newStock }
-          : product
+  const actualizarStockProducto = (idProducto, nuevoStock) => {
+    setProductos(productosAnteriores => 
+      productosAnteriores.map(producto => 
+        producto.id === idProducto 
+          ? { ...producto, stock: nuevoStock }
+          : producto
       )
     )
   }
 
   // Función para formatear precios
-  const formatPrice = (price) => {
-    return `$${price.toLocaleString('es-CL')}`
+  const formatearPrecio = (precio) => {
+    return `$${precio.toLocaleString('es-CL')}`
   }
 
   const value = {
-    products,
-    categories,
-    loading,
+    productos,
+    categorias,
+    cargando,
     error,
-    getProductById,
-    getProductsByCategory,
-    getFeaturedProducts,
-    searchProducts,
-    updateProductStock,
-    formatPrice
+    obtenerProductoPorId,
+    obtenerProductosPorCategoria,
+    obtenerProductosDestacados,
+    buscarProductos,
+    actualizarStockProducto,
+    formatearPrecio,
+    // Mantener compatibilidad con nombres en inglés
+    products: productos,
+    categories: categorias,
+    loading: cargando,
+    getProductById: obtenerProductoPorId,
+    getProductsByCategory: obtenerProductosPorCategoria,
+    getFeaturedProducts: obtenerProductosDestacados,
+    searchProducts: buscarProductos,
+    updateProductStock: actualizarStockProducto,
+    formatPrice: formatearPrecio
   }
 
   return (
-    <ProductContext.Provider value={value}>
+    <ContextoProducto.Provider value={value}>
       {children}
-    </ProductContext.Provider>
+    </ContextoProducto.Provider>
   )
 }
 
-export default ProductContext
+// Exportaciones para compatibilidad
+export default ContextoProducto
+export const ProductContext = ContextoProducto
+export const ProductProvider = ProveedorProducto

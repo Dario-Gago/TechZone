@@ -1,30 +1,30 @@
 import React, { useState } from 'react'
 import { Mail, Lock } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext' // Asegúrate de que la ruta esté correcta
+import { useAutenticacion } from '../contexts/AuthContext'
 
-const Login = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [rememberMe, setRememberMe] = useState(false)
+const IniciarSesion = () => {
+  const [correo, setCorreo] = useState('')
+  const [contrasena, setContrasena] = useState('')
+  const [recordarme, setRecordarme] = useState(false)
   const [error, setError] = useState(null)
 
-  const { login } = useAuth()
+  const { iniciarSesion } = useAutenticacion()
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const manejarEnvio = (e) => {
     e.preventDefault()
 
     // Simulación de credenciales y rol de administrador
-    if (email === 'gagodario1@gmail.com' && password === 'pass1234') {
-      const fakeToken = 'token_falso_123456789'
-      const isAdmin = true // este usuario es admin
-      login(fakeToken, isAdmin)
+    if (correo === 'gagodario1@gmail.com' && contrasena === 'pass1234') {
+      const tokenFalso = 'token_falso_123456789'
+      const esAdmin = true // este usuario es admin
+      iniciarSesion(tokenFalso, esAdmin)
       navigate('/')
-    } else if (email === 'usuario@normal.com' && password === 'pass1234') {
-      const fakeToken = 'token_usuario_normal'
-      const isAdmin = false
-      login(fakeToken, isAdmin)
+    } else if (correo === 'usuario@normal.com' && contrasena === 'pass1234') {
+      const tokenFalso = 'token_usuario_normal'
+      const esAdmin = false
+      iniciarSesion(tokenFalso, esAdmin)
       navigate('/')
     } else {
       setError('Correo o contraseña incorrectos')
@@ -50,7 +50,7 @@ const Login = () => {
           </div>
         )}
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={manejarEnvio}>
           <div className="space-y-4">
             <div>
               <label
@@ -70,8 +70,8 @@ const Login = () => {
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="email@address.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={correo}
+                  onChange={(e) => setCorreo(e.target.value)}
                 />
               </div>
             </div>
@@ -94,8 +94,8 @@ const Login = () => {
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
                   placeholder="••••••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={contrasena}
+                  onChange={(e) => setContrasena(e.target.value)}
                 />
               </div>
             </div>
@@ -123,8 +123,8 @@ const Login = () => {
               name="remember-me"
               type="checkbox"
               className="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
+              checked={recordarme}
+              onChange={(e) => setRecordarme(e.target.checked)}
             />
             <label
               htmlFor="remember-me"
@@ -148,4 +148,6 @@ const Login = () => {
   )
 }
 
-export default Login
+export default IniciarSesion
+// Compatibilidad hacia atrás
+export { IniciarSesion as Login }

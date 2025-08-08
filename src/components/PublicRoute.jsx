@@ -1,15 +1,17 @@
-// components/PublicRoute.jsx
+// components/RutaPublica.jsx
 import { Navigate } from 'react-router-dom'
-import { useAuth } from '../contexts/AuthContext'
+import { useAutenticacion } from '../contexts/AuthContext'
 
-const PublicRoute = ({ children }) => {
-  const { isAuthenticated } = useAuth()
+const RutaPublica = ({ children }) => {
+  const { estaAutenticado } = useAutenticacion()
 
-  if (isAuthenticated) {
+  if (estaAutenticado) {
     return <Navigate to="/dashboard" replace />
   }
 
   return children
 }
 
-export default PublicRoute
+// Exportación con compatibilidad
+export default RutaPublica
+export const PublicRoute = RutaPublica

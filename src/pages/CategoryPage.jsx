@@ -1,20 +1,20 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { useProducts } from '../hooks/useProducts'
+import { useProductos } from '../hooks/useProducts'
 
-const CategoryPage = () => {
+const PaginaCategoria = () => {
   const { categorySlug } = useParams()
-  const { getProductsByCategory, categories, formatPrice, loading } = useProducts()
+  const { obtenerProductosPorCategoria, categorias, formatearPrecio, cargando } = useProductos()
   
   // Obtener productos de la categoría
-  const products = getProductsByCategory(categorySlug)
+  const productos = obtenerProductosPorCategoria(categorySlug)
   
   // Encontrar el nombre de la categoría
-  const currentCategory = categories.find(cat => cat.slug === categorySlug)
-  const categoryName = currentCategory ? currentCategory.name : 'Todos los productos'
+  const categoriaActual = categorias.find(cat => cat.slug === categorySlug)
+  const nombreCategoria = categoriaActual ? categoriaActual.name : 'Todos los productos'
 
-  if (loading) {
+  if (cargando) {
     return (
       <div className="bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -44,17 +44,17 @@ const CategoryPage = () => {
         {/* Encabezado de la categoría */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {categoryName}
+            {nombreCategoria}
           </h1>
           <p className="text-gray-600">
-            {products.length} producto{products.length !== 1 ? 's' : ''} encontrado{products.length !== 1 ? 's' : ''}
+            {productos.length} producto{productos.length !== 1 ? 's' : ''} encontrado{productos.length !== 1 ? 's' : ''}
           </p>
         </div>
 
         {/* Grid de productos */}
-        {products.length > 0 ? (
+        {productos.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {products.map((product) => (
+            {productos.map((product) => (
               <Link
                 key={product.id}
                 to={`/product/${product.id}`}
@@ -95,13 +95,13 @@ const CategoryPage = () => {
                     {/* Precio original tachado */}
                     {product.discount > 0 && (
                       <p className="text-sm text-gray-500 line-through">
-                        {formatPrice(product.originalPrice)}
+                        {formatearPrecio(product.originalPrice)}
                       </p>
                     )}
                     
                     {/* Precio con descuento */}
                     <p className="text-xl font-bold text-gray-900">
-                      {formatPrice(product.discountPrice)}
+                      {formatearPrecio(product.discountPrice)}
                     </p>
                   </div>
                 </div>
@@ -131,4 +131,6 @@ const CategoryPage = () => {
   )
 }
 
-export default CategoryPage
+export default PaginaCategoria
+// Compatibilidad hacia atrás
+export { PaginaCategoria as CategoryPage }

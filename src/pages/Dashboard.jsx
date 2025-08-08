@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { ShoppingCart, Calendar, DollarSign, Filter } from 'lucide-react'
-import { useAuth } from '../contexts/AuthContext'
-import productsData from '../data/products.json'
+import { useAutenticacion } from '../contexts/AuthContext'
+import datosProductos from '../data/products.json'
 
-const Dashboard = () => {
-  const { user } = useAuth() // Obtener información del usuario
-  const [selectedCategory, setSelectedCategory] = useState('todo')
+const PanelUsuario = () => {
+  const { usuario } = useAutenticacion() // Obtener información del usuario
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todo')
 
-  const [purchases] = useState([
+  const [compras] = useState([
     {
       id: 1,
       item: 'GeForce RTX 5060 OC, 8GB 128-bit, PCI-e 5.0 x8',
@@ -82,16 +82,16 @@ const Dashboard = () => {
     }
   ])
 
-  const [categories, setCategories] = useState([])
+  const [categorias, setCategorias] = useState([])
 
   // Cargar categorías desde JSON al montar el componente
   useEffect(() => {
-    setCategories(productsData.categories)
+    setCategorias(datosProductos.categories)
   }, [])
 
   // Función para formatear nombres de categorías
-  const formatCategoryName = (category) => {
-    const categoryMap = {
+  const formatearNombreCategoria = (categoria) => {
+    const mapaCategoria = {
       'gaming-streaming': 'Gaming y Streaming',
       computacion: 'Computación',
       componentes: 'Componentes',
@@ -100,55 +100,55 @@ const Dashboard = () => {
       'audio-video': 'Audio y Video',
       'otras-categorias': 'Otras Categorías'
     }
-    return categoryMap[category] || 'Otras Categorías'
+    return mapaCategoria[categoria] || 'Otras Categorías'
   }
 
   // Función para filtrar compras según la categoría seleccionada
-  const filterByCategory = (items, categorySlug) => {
-    if (categorySlug === 'todo') return items
+  const filtrarPorCategoria = (items, slugCategoria) => {
+    if (slugCategoria === 'todo') return items
 
-    const categoryName = categories.find((cat) => cat.id === categorySlug)?.name
-    if (!categoryName) return items
+    const nombreCategoria = categorias.find((cat) => cat.id === slugCategoria)?.name
+    if (!nombreCategoria) return items
 
     return items.filter(
       (item) =>
-        item.category === categoryName ||
-        item.category === formatCategoryName(categorySlug)
+        item.category === nombreCategoria ||
+        item.category === formatearNombreCategoria(slugCategoria)
     )
   }
 
   // Compras filtradas
-  const filteredPurchases = filterByCategory(purchases, selectedCategory)
+  const comprasFiltradas = filtrarPorCategoria(compras, categoriaSeleccionada)
 
-  const totalSpent = filteredPurchases.reduce(
-    (total, purchase) => total + purchase.amount,
+  const totalGastado = comprasFiltradas.reduce(
+    (total, compra) => total + compra.amount,
     0
   )
-  const thisMonthPurchases = filteredPurchases.filter(
-    (purchase) => new Date(purchase.date).getMonth() === new Date().getMonth()
+  const comprasEsteMes = comprasFiltradas.filter(
+    (compra) => new Date(compra.date).getMonth() === new Date().getMonth()
   )
-  const monthlyTotal = thisMonthPurchases.reduce(
-    (total, purchase) => total + purchase.amount,
+  const totalMensual = comprasEsteMes.reduce(
+    (total, compra) => total + compra.amount,
     0
   )
 
-  const formatCurrency = (amount) => {
+  const formatearMoneda = (cantidad) => {
     return new Intl.NumberFormat('es-CL', {
       style: 'currency',
       currency: 'CLP'
-    }).format(amount)
+    }).format(cantidad)
   }
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('es-CL', {
+  const formatearFecha = (cadenaFecha) => {
+    return new Date(cadenaFecha).toLocaleDateString('es-CL', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     })
   }
 
-  const getCategoryColor = (category) => {
-    const colors = {
+  const obtenerColorCategoria = (categoria) => {
+    const colores = {
       Componentes: 'bg-blue-100 text-blue-800',
       'Gaming y Streaming': 'bg-purple-100 text-purple-800',
       Computación: 'bg-green-100 text-green-800',
@@ -157,11 +157,11 @@ const Dashboard = () => {
       'Audio y Video': 'bg-indigo-100 text-indigo-800',
       'Otras Categorías': 'bg-pink-100 text-pink-800'
     }
-    return colors[category] || colors['Otras Categorías']
+    return colores[categoria] || colores['Otras Categorías']
   }
 
   // Componente de filtro de categorías
-  const CategoryFilter = () => (
+  const FiltroCategorias = () => (
     <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
       <div className="flex items-center space-x-3 mb-4">
         <Filter className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
@@ -171,36 +171,36 @@ const Dashboard = () => {
       </div>
 
       <div className="flex flex-wrap gap-2 sm:gap-3">
-        {categories.map((category) => (
+        {categorias.map((categoria) => (
           <button
-            key={category.id}
-            onClick={() => setSelectedCategory(category.id)}
+            key={categoria.id}
+            onClick={() => setCategoriaSeleccionada(categoria.id)}
             className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 ${
-              selectedCategory === category.id
+              categoriaSeleccionada === categoria.id
                 ? 'bg-blue-600 text-white shadow-md'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            {category.name}
-            {category.id !== 'todo' && (
+            {categoria.name}
+            {categoria.id !== 'todo' && (
               <span className="ml-1 sm:ml-2 text-xs opacity-75">
-                ({filterByCategory(purchases, category.id).length})
+                ({filtrarPorCategoria(compras, categoria.id).length})
               </span>
             )}
           </button>
         ))}
       </div>
 
-      {selectedCategory !== 'todo' && (
+      {categoriaSeleccionada !== 'todo' && (
         <div className="mt-4 p-3 bg-blue-50 rounded-lg">
           <p className="text-sm text-blue-800">
             <span className="font-medium">
               Mostrando{' '}
-              {selectedCategory === 'todo'
+              {categoriaSeleccionada === 'todo'
                 ? 'todas las categorías'
-                : categories.find((c) => c.id === selectedCategory)?.name}
+                : categorias.find((c) => c.id === categoriaSeleccionada)?.name}
             </span>
-            <span className="ml-2">({filteredPurchases.length} compras)</span>
+            <span className="ml-2">({comprasFiltradas.length} compras)</span>
           </p>
         </div>
       )}
@@ -219,10 +219,10 @@ const Dashboard = () => {
               </div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                  Hola, {user?.name || 'Usuario'}
+                  Hola, {usuario?.name || 'Usuario'}
                 </h1>
                 <p className="text-sm sm:text-base text-gray-600">
-                  {user?.email || 'usuario@ejemplo.com'}
+                  {usuario?.email || 'usuario@ejemplo.com'}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
                   Aquí puedes ver el historial de todas tus compras
@@ -233,7 +233,7 @@ const Dashboard = () => {
         </div>
 
         {/* Category Filter */}
-        <CategoryFilter />
+        <FiltroCategorias />
 
         {/* User Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
@@ -244,7 +244,7 @@ const Dashboard = () => {
                   Total Gastado
                 </p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                  {formatCurrency(totalSpent)}
+                  {formatearMoneda(totalGastado)}
                 </p>
               </div>
               <div className="bg-blue-100 p-2 sm:p-3 rounded-full flex-shrink-0 ml-2">
@@ -260,7 +260,7 @@ const Dashboard = () => {
                   Compras Este Mes
                 </p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900 truncate">
-                  {formatCurrency(monthlyTotal)}
+                  {formatearMoneda(totalMensual)}
                 </p>
               </div>
               <div className="bg-green-100 p-2 sm:p-3 rounded-full flex-shrink-0 ml-2">
@@ -276,7 +276,7 @@ const Dashboard = () => {
                   Total Productos
                 </p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">
-                  {filteredPurchases.length}
+                  {comprasFiltradas.length}
                 </p>
               </div>
               <div className="bg-purple-100 p-2 sm:p-3 rounded-full flex-shrink-0 ml-2">
@@ -294,24 +294,24 @@ const Dashboard = () => {
                 <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
                 <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
                   Historial de Compras
-                  {selectedCategory !== 'todo' && (
+                  {categoriaSeleccionada !== 'todo' && (
                     <span className="ml-2 text-sm font-normal text-gray-500">
-                      ({categories.find((c) => c.id === selectedCategory)?.name}
+                      ({categorias.find((c) => c.id === categoriaSeleccionada)?.name}
                       )
                     </span>
                   )}
                 </h2>
               </div>
               <div className="text-sm text-gray-500">
-                {filteredPurchases.length} compras
+                {comprasFiltradas.length} compras
               </div>
             </div>
           </div>
 
           <div className="p-4 sm:p-6">
-            {filteredPurchases.length > 0 ? (
+            {comprasFiltradas.length > 0 ? (
               <div className="space-y-4">
-                {filteredPurchases.map((purchase) => (
+                {comprasFiltradas.map((purchase) => (
                   <div
                     key={purchase.id}
                     className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow"
@@ -339,10 +339,10 @@ const Dashboard = () => {
                           </div>
                           <div className="text-left sm:text-right flex-shrink-0">
                             <p className="text-xl sm:text-2xl font-bold text-green-600">
-                              {formatCurrency(purchase.amount)}
+                              {formatearMoneda(purchase.amount)}
                             </p>
                             <p className="text-xs sm:text-sm text-gray-500">
-                              {formatDate(purchase.date)}
+                              {formatearFecha(purchase.date)}
                             </p>
                           </div>
                         </div>
@@ -350,7 +350,7 @@ const Dashboard = () => {
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
                           <div className="flex items-center space-x-3">
                             <span
-                              className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-full ${getCategoryColor(
+                              className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-full ${obtenerColorCategoria(
                                 purchase.category
                               )}`}
                             >
@@ -359,7 +359,7 @@ const Dashboard = () => {
                           </div>
                           <div className="text-xs sm:text-sm text-gray-500">
                             <span>
-                              🛒 Comprado el {formatDate(purchase.date)}
+                              🛒 Comprado el {formatearFecha(purchase.date)}
                             </span>
                           </div>
                         </div>
@@ -383,14 +383,14 @@ const Dashboard = () => {
         </div>
 
         {/* Purchase Summary by Category - Only show if showing all categories */}
-        {selectedCategory === 'todo' && (
+        {categoriaSeleccionada === 'todo' && (
           <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
               Gastos por Categoría
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {Object.entries(
-                purchases.reduce((acc, purchase) => {
+                compras.reduce((acc, purchase) => {
                   acc[purchase.category] =
                     (acc[purchase.category] || 0) + purchase.amount
                   return acc
@@ -398,17 +398,17 @@ const Dashboard = () => {
               ).map(([category, total]) => (
                 <div key={category} className="text-center">
                   <div
-                    className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium mb-2 ${getCategoryColor(
+                    className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium mb-2 ${obtenerColorCategoria(
                       category
                     )}`}
                   >
                     <span className="truncate block">{category}</span>
                   </div>
                   <p className="text-sm sm:text-lg font-bold text-gray-900 truncate">
-                    {formatCurrency(total)}
+                    {formatearMoneda(total)}
                   </p>
                   <p className="text-xs text-gray-500">
-                    {purchases.filter((p) => p.category === category).length}{' '}
+                    {compras.filter((p) => p.category === category).length}{' '}
                     compras
                   </p>
                 </div>
@@ -421,15 +421,15 @@ const Dashboard = () => {
         <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">
             📅 Compras Recientes (Este Mes)
-            {selectedCategory !== 'todo' && (
+            {categoriaSeleccionada !== 'todo' && (
               <span className="ml-2 text-sm font-normal text-gray-500">
-                ({categories.find((c) => c.id === selectedCategory)?.name})
+                ({categorias.find((c) => c.id === categoriaSeleccionada)?.name})
               </span>
             )}
           </h3>
-          {thisMonthPurchases.length > 0 ? (
+          {comprasEsteMes.length > 0 ? (
             <div className="space-y-3">
-              {thisMonthPurchases.map((purchase) => (
+              {comprasEsteMes.map((purchase) => (
                 <div
                   key={`recent-${purchase.id}`}
                   className="flex flex-col sm:flex-row items-start sm:items-center justify-between py-3 border-b border-gray-100 last:border-b-0 space-y-2 sm:space-y-0"
@@ -451,10 +451,10 @@ const Dashboard = () => {
                   </div>
                   <div className="text-left sm:text-right flex-shrink-0">
                     <p className="font-bold text-green-600 text-sm sm:text-base">
-                      {formatCurrency(purchase.amount)}
+                      {formatearMoneda(purchase.amount)}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {formatDate(purchase.date)}
+                      {formatearFecha(purchase.date)}
                     </p>
                   </div>
                 </div>
@@ -464,10 +464,10 @@ const Dashboard = () => {
             <div className="text-center py-8 text-gray-500">
               <ShoppingCart className="w-12 h-12 mx-auto mb-4 opacity-50" />
               <p className="text-sm sm:text-base">
-                {selectedCategory === 'todo'
+                {categoriaSeleccionada === 'todo'
                   ? 'No tienes compras este mes'
                   : `No tienes compras este mes en ${
-                      categories.find((c) => c.id === selectedCategory)?.name
+                      categorias.find((c) => c.id === categoriaSeleccionada)?.name
                     }`}
               </p>
             </div>
@@ -478,4 +478,6 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default PanelUsuario
+// Compatibilidad hacia atrás
+export { PanelUsuario as Dashboard }

@@ -1,72 +1,72 @@
 import React, { createContext, useState, useContext } from 'react'
-import ProductContext from './ProductContext'
+import ContextoProducto from './ProductContext'
 import cartData from '../data/carrito.json' // Solo para datos iniciales del carrito
 
-const CartContext = createContext()
+const ContextoCarrito = createContext()
 
-export const CartProvider = ({ children }) => {
-  const { getProductById } = useContext(ProductContext)
-  const [cartItems, setCartItems] = useState(cartData.cart.items || [])
+export const ProveedorCarrito = ({ children }) => {
+  const { obtenerProductoPorId } = useContext(ContextoProducto)
+  const [articulosCarrito, setArticulosCarrito] = useState(cartData.cart.items || [])
 
   // Función para obtener el producto completo con datos actuales
-  const getCartItemWithProductData = (cartItem) => {
-    const product = getProductById(cartItem.productId)
-    if (!product) return null
+  const obtenerItemCarritoConDatos = (itemCarrito) => {
+    const producto = obtenerProductoPorId(itemCarrito.productId)
+    if (!producto) return null
     
     return {
-      ...product,
-      cartQuantity: cartItem.quantity,
+      ...producto,
+      cantidadCarrito: itemCarrito.quantity,
       // Usar precio actual del producto, no datos obsoletos
-      finalPrice: product.discountPrice || product.originalPrice
+      precioFinal: producto.discountPrice || producto.originalPrice
     }
   }
 
   // Función para obtener todos los items del carrito con datos completos
-  const getCartItemsWithProductData = () => {
-    return cartItems
-      .map(getCartItemWithProductData)
+  const obtenerItemsCarritoConDatos = () => {
+    return articulosCarrito
+      .map(obtenerItemCarritoConDatos)
       .filter(item => item !== null) // Filtrar productos que ya no existen
   }
 
-  const addToCart = (productId, quantity = 1) => {
-    const product = getProductById(productId)
-    if (!product || product.stock < quantity) return false
+  const agregarAlCarrito = (idProducto, cantidad = 1) => {
+    const producto = obtenerProductoPorId(idProducto)
+    if (!producto || producto.stock < cantidad) return false
 
-    setCartItems((items) => {
-      const existingItemIndex = items.findIndex((item) => item.productId === productId)
+    setArticulosCarrito((items) => {
+      const indiceItemExistente = items.findIndex((item) => item.productId === idProducto)
       
-      if (existingItemIndex >= 0) {
+      if (indiceItemExistente >= 0) {
         // Si el producto ya está en el carrito, actualizar cantidad
-        const newQuantity = items[existingItemIndex].quantity + quantity
-        if (newQuantity > product.stock) return items // No exceder stock
+        const nuevaCantidad = items[indiceItemExistente].quantity + cantidad
+        if (nuevaCantidad > producto.stock) return items // No exceder stock
         
         return items.map((item, index) =>
-          index === existingItemIndex
-            ? { ...item, quantity: newQuantity }
+          index === indiceItemExistente
+            ? { ...item, quantity: nuevaCantidad }
             : item
         )
       } else {
         // Agregar nuevo producto al carrito
-        return [...items, { productId, quantity }]
+        return [...items, { productId: idProducto, quantity: cantidad }]
       }
     })
     
     return true
   }
 
-  const updateQuantity = (productId, newQuantity) => {
-    if (newQuantity < 1) {
-      removeFromCart(productId)
+  const actualizarCantidad = (idProducto, nuevaCantidad) => {
+    if (nuevaCantidad < 1) {
+      removerDelCarrito(idProducto)
       return
     }
     
-    const product = getProductById(productId)
-    if (!product || newQuantity > product.stock) return false
+    const producto = obtenerProductoPorId(idProducto)
+    if (!producto || nuevaCantidad > producto.stock) return false
     
-    setCartItems((items) =>
+    setArticulosCarrito((items) =>
       items.map((item) =>
-        item.productId === productId 
-          ? { ...item, quantity: newQuantity } 
+        item.productId === idProducto 
+          ? { ...item, quantity: nuevaCantidad } 
           : item
       )
     )
@@ -74,49 +74,64 @@ export const CartProvider = ({ children }) => {
     return true
   }
 
-  const removeFromCart = (productId) => {
-    setCartItems((items) => items.filter((item) => item.productId !== productId))
+  const removerDelCarrito = (idProducto) => {
+    setArticulosCarrito((items) => items.filter((item) => item.productId !== idProducto))
   }
 
-  const clearCart = () => {
-    setCartItems([])
+  const limpiarCarrito = () => {
+    setArticulosCarrito([])
   }
 
-  const getTotalItems = () => {
-    return cartItems.reduce((total, item) => total + item.quantity, 0)
+  const obtenerTotalItems = () => {
+    return articulosCarrito.reduce((total, item) => total + item.quantity, 0)
   }
 
-  const isInCart = (productId) => {
-    return cartItems.some((item) => item.productId === productId)
+  const estaEnCarrito = (idProducto) => {
+    return articulosCarrito.some((item) => item.productId === idProducto)
   }
 
-  const getItemQuantity = (productId) => {
-    const item = cartItems.find((item) => item.productId === productId)
+  const obtenerCantidadItem = (idProducto) => {
+    const item = articulosCarrito.find((item) => item.productId === idProducto)
     return item ? item.quantity : 0
   }
 
-  const getTotalPrice = () => {
-    return getCartItemsWithProductData().reduce((sum, item) => {
-      if (!item) return sum
-      return sum + item.finalPrice * item.cartQuantity
+  const obtenerPrecioTotal = () => {
+    return obtenerItemsCarritoConDatos().reduce((suma, item) => {
+      if (!item) return suma
+      return suma + item.precioFinal * item.cantidadCarrito
     }, 0)
   }
 
   const value = {
-    cartItems: getCartItemsWithProductData(), // Retornar items con datos completos
-    rawCartItems: cartItems, // Para acceso directo a los datos básicos
-    addToCart,
-    updateQuantity,
-    removeFromCart,
-    clearCart,
-    getTotalItems,
-    isInCart,
-    getItemQuantity,
-    getTotalPrice,
-    getCartItemWithProductData
+    articulosCarrito: obtenerItemsCarritoConDatos(), // Retornar items con datos completos
+    articulosCarritoBasicos: articulosCarrito, // Para acceso directo a los datos básicos
+    obtenerItemCarritoConDatos,
+    agregarAlCarrito,
+    actualizarCantidad,
+    removerDelCarrito,
+    limpiarCarrito,
+    obtenerTotalItems,
+    estaEnCarrito,
+    obtenerCantidadItem,
+    obtenerPrecioTotal,
+    // Mantener compatibilidad con nombres en inglés
+    cartItems: obtenerItemsCarritoConDatos(),
+    rawCartItems: articulosCarrito,
+    getCartItemWithProductData: obtenerItemCarritoConDatos,
+    addToCart: agregarAlCarrito,
+    updateQuantity: actualizarCantidad,
+    removeFromCart: removerDelCarrito,
+    clearCart: limpiarCarrito,
+    getTotalItems: obtenerTotalItems,
+    isInCart: estaEnCarrito,
+    getItemQuantity: obtenerCantidadItem,
+    getTotalPrice: obtenerPrecioTotal
   }
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>
+  return <ContextoCarrito.Provider value={value}>{children}</ContextoCarrito.Provider>
 }
 
-export default CartContext
+// Exportaciones para compatibilidad
+export default ContextoCarrito
+export const CartContext = ContextoCarrito
+export const CartProvider = ProveedorCarrito

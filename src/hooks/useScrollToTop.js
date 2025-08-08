@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom'
  * Hook personalizado que hace scroll al inicio de la página 
  * cada vez que cambia la ruta
  */
-export const useScrollToTop = () => {
+export const useDesplazarHaciaArriba = () => {
   const { pathname } = useLocation()
 
   useEffect(() => {
@@ -17,4 +17,6 @@ export const useScrollToTop = () => {
   }, [pathname])
 }
 
-export default useScrollToTop
+export default useDesplazarHaciaArriba
+// Compatibilidad hacia atrás
+export { useDesplazarHaciaArriba as useScrollToTop }

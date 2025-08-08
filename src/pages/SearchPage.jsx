@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { useProducts } from '../hooks/useProducts'
+import { useProductos } from '../hooks/useProducts'
 
-const SearchPage = () => {
-  const [searchParams] = useSearchParams()
-  const { searchProducts, formatPrice, loading } = useProducts()
-  const [searchResults, setSearchResults] = useState([])
+const PaginaBusqueda = () => {
+  const [parametrosBusqueda] = useSearchParams()
+  const { buscarProductos, formatearPrecio, cargando } = useProductos()
+  const [resultadosBusqueda, setResultadosBusqueda] = useState([])
   
-  const query = searchParams.get('q') || ''
+  const consulta = parametrosBusqueda.get('q') || ''
 
   useEffect(() => {
-    if (query && !loading) {
-      const results = searchProducts(query)
-      setSearchResults(results)
+    if (consulta && !cargando) {
+      const resultados = buscarProductos(consulta)
+      setResultadosBusqueda(resultados)
     }
-  }, [query, loading, searchProducts])
+  }, [consulta, cargando, buscarProductos])
 
-  if (loading) {
+  if (cargando) {
     return (
       <div className="bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -49,20 +49,20 @@ const SearchPage = () => {
             Resultados de búsqueda
           </h1>
           <p className="text-gray-600">
-            {query && (
+            {consulta && (
               <>
-                Buscando por: <strong>"{query}"</strong> - 
+                Buscando por: <strong>"{consulta}"</strong> - 
               </>
             )}
             {" "}
-            {searchResults.length} resultado{searchResults.length !== 1 ? 's' : ''} encontrado{searchResults.length !== 1 ? 's' : ''}
+            {resultadosBusqueda.length} resultado{resultadosBusqueda.length !== 1 ? 's' : ''} encontrado{resultadosBusqueda.length !== 1 ? 's' : ''}
           </p>
         </div>
 
         {/* Resultados de búsqueda */}
-        {searchResults.length > 0 ? (
+        {resultadosBusqueda.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {searchResults.map((product) => (
+            {resultadosBusqueda.map((product) => (
               <Link
                 key={product.id}
                 to={`/product/${product.id}`}
@@ -103,13 +103,13 @@ const SearchPage = () => {
                     {/* Precio original tachado */}
                     {product.discount > 0 && (
                       <p className="text-sm text-gray-500 line-through">
-                        {formatPrice(product.originalPrice)}
+                        {formatearPrecio(product.originalPrice)}
                       </p>
                     )}
                     
                     {/* Precio con descuento */}
                     <p className="text-xl font-bold text-gray-900">
-                      {formatPrice(product.discountPrice)}
+                      {formatearPrecio(product.discountPrice)}
                     </p>
                   </div>
 
@@ -125,14 +125,14 @@ const SearchPage = () => {
               </Link>
             ))}
           </div>
-        ) : query ? (
+        ) : consulta ? (
           <div className="text-center py-12">
             <div className="max-w-md mx-auto">
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 No se encontraron productos
               </h3>
               <p className="text-gray-600 mb-6">
-                No hay productos que coincidan con tu búsqueda "{query}". Intenta con otras palabras clave.
+                No hay productos que coincidan con tu búsqueda "{consulta}". Intenta con otras palabras clave.
               </p>
               <Link
                 to="/"
@@ -159,4 +159,6 @@ const SearchPage = () => {
   )
 }
 
-export default SearchPage
+export default PaginaBusqueda
+// Compatibilidad hacia atrás
+export { PaginaBusqueda as SearchPage }

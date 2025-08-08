@@ -1,9 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useProducts } from '../hooks/useProducts'
+import { useProductos } from '../hooks/useProducts'
 
-const Footer = () => {
-  const { categories } = useProducts()
+const PieDePagina = () => {
+  const { categorias } = useProductos()
 
   return (
     <footer className="bg-gray-100 py-12 px-6">
@@ -23,13 +23,13 @@ const Footer = () => {
               Categorías
             </h3>
             <ul className="space-y-3">
-              {categories.slice(0, 4).map((category) => (
-                <li key={category.id}>
+              {categorias.slice(0, 4).map((categoria) => (
+                <li key={categoria.id}>
                   <Link
-                    to={`/category/${category.slug}`}
+                    to={`/category/${categoria.slug}`}
                     className="text-gray-600 hover:text-gray-800 transition-colors"
                   >
-                    {category.name}
+                    {categoria.name}
                   </Link>
                 </li>
               ))}
@@ -42,13 +42,13 @@ const Footer = () => {
               Categorías
             </h3>
             <ul className="space-y-3">
-              {categories.slice(4).map((category) => (
-                <li key={category.id}>
+              {categorias.slice(4).map((categoria) => (
+                <li key={categoria.id}>
                   <Link
-                    to={`/category/${category.slug}`}
+                    to={`/category/${categoria.slug}`}
                     className="text-gray-600 hover:text-gray-800 transition-colors"
                   >
-                    {category.name}
+                    {categoria.name}
                   </Link>
                 </li>
               ))}
@@ -86,4 +86,6 @@ const Footer = () => {
   )
 }
 
-export default Footer
+export default PieDePagina
+// Compatibilidad hacia atrás
+export { PieDePagina as Footer }

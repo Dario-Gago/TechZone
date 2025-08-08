@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ShoppingCart, Check } from 'lucide-react'
-import { useProducts } from '../hooks/useProducts'
-import FeaturedProducts from '../components/FeaturedProducts'
+import { useProductos } from '../hooks/useProducts'
+import ProductosDestacados from '../components/FeaturedProducts'
 
-const ProductDetail = () => {
+const DetalleProducto = () => {
   const { id } = useParams()
-  const { getProductById, formatPrice, loading } = useProducts()
-  const [quantity, setQuantity] = useState(1)
+  const { obtenerProductoPorId, formatearPrecio, cargando } = useProductos()
+  const [cantidad, setCantidad] = useState(1)
 
-  const product = getProductById(id)
+  const producto = obtenerProductoPorId(id)
 
   // Manejar estados de carga y producto no encontrado
-  if (loading) {
+  if (cargando) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="animate-pulse text-center">
@@ -23,7 +23,7 @@ const ProductDetail = () => {
     )
   }
 
-  if (!product) {
+  if (!producto) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
@@ -38,16 +38,16 @@ const ProductDetail = () => {
     )
   }
 
-  const handleQuantityChange = (newQuantity) => {
-    if (newQuantity >= 1) {
-      setQuantity(newQuantity)
+  const manejarCambioCantidad = (nuevaCantidad) => {
+    if (nuevaCantidad >= 1) {
+      setCantidad(nuevaCantidad)
     }
   }
 
-  const handleAddToCart = () => {
+  const manejarAgregarCarrito = () => {
     // Lógica para añadir al carrito
     console.log(
-      `Añadiendo ${quantity} unidades del producto ${product.id} al carrito`
+      `Añadiendo ${cantidad} unidades del producto ${producto.id} al carrito`
     )
   }
 
@@ -60,8 +60,8 @@ const ProductDetail = () => {
           <div className="flex justify-center">
             <div className="bg-gray-100 rounded-lg p-8 w-full max-w-md">
               <img
-                src={product.image}
-                alt={product.name}
+                src={producto.image}
+                alt={producto.name}
                 className="w-full h-auto object-contain"
               />
             </div>
@@ -72,10 +72,10 @@ const ProductDetail = () => {
             {/* Título y marca */}
             <div>
               <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-                {product.name}
+                {producto.name}
               </h1>
-              {product.brand && (
-                <p className="text-lg text-gray-600 mb-4">{product.brand}</p>
+              {producto.brand && (
+                <p className="text-lg text-gray-600 mb-4">{producto.brand}</p>
               )}
             </div>
 
@@ -83,28 +83,28 @@ const ProductDetail = () => {
             <div className="space-y-2">
               <div className="flex items-center space-x-3">
                 <span className="text-2xl text-gray-500 line-through">
-                  {formatPrice(product.originalPrice)}
+                  {formatearPrecio(producto.originalPrice)}
                 </span>
                 <span className="bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
-                  -{product.discount}%
+                  -{producto.discount}%
                 </span>
               </div>
               <div className="text-4xl font-bold text-gray-900">
-                {formatPrice(product.discountPrice)}
+                {formatearPrecio(producto.discountPrice)}
               </div>
             </div>
 
             {/* Descripción */}
             <div>
               <p className="text-gray-600 leading-relaxed">
-                {product.description}
+                {producto.description}
               </p>
             </div>
 
             {/* Características */}
             <div>
               <ul className="space-y-3">
-                {product.features.map((feature, index) => (
+                {producto.features.map((feature, index) => (
                   <li key={index} className="flex items-start space-x-3">
                     <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <span className="text-gray-700">{feature}</span>
@@ -122,17 +122,17 @@ const ProductDetail = () => {
                 </span>
                 <div className="flex items-center border border-gray-300 rounded">
                   <button
-                    onClick={() => handleQuantityChange(quantity - 1)}
+                    onClick={() => manejarCambioCantidad(cantidad - 1)}
                     className="px-3 py-1 hover:bg-gray-100 transition-colors"
-                    disabled={quantity <= 1}
+                    disabled={cantidad <= 1}
                   >
                     -
                   </button>
                   <span className="px-4 py-1 border-x border-gray-300 min-w-[3rem] text-center">
-                    {quantity}
+                    {cantidad}
                   </span>
                   <button
-                    onClick={() => handleQuantityChange(quantity + 1)}
+                    onClick={() => manejarCambioCantidad(cantidad + 1)}
                     className="px-3 py-1 hover:bg-gray-100 transition-colors"
                   >
                     +
@@ -142,7 +142,7 @@ const ProductDetail = () => {
 
               {/* Botón añadir al carrito */}
               <button
-                onClick={handleAddToCart}
+                onClick={manejarAgregarCarrito}
                 className="w-full bg-gray-700 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center space-x-2"
               >
                 <ShoppingCart className="h-5 w-5" />
@@ -151,12 +151,12 @@ const ProductDetail = () => {
 
               {/* Información de envío */}
               <div className="text-center">
-                <p className="text-sm text-gray-600">{product.shipping}</p>
+                <p className="text-sm text-gray-600">{producto.shipping}</p>
               </div>
             </div>
 
             {/* Estado del stock */}
-            {product.inStock && (
+            {producto.inStock && (
               <div className="flex items-center space-x-2 text-green-600">
                 <Check className="h-4 w-4" />
                 <span className="text-sm font-medium">En stock</span>
@@ -168,10 +168,12 @@ const ProductDetail = () => {
 
       {/* Sección de productos destacados */}
       <div className="bg-gray-50">
-        <FeaturedProducts />
+        <ProductosDestacados />
       </div>
     </div>
   )
 }
 
-export default ProductDetail
+export default DetalleProducto
+// Compatibilidad hacia atrás
+export { DetalleProducto as ProductDetail }
