@@ -3,7 +3,7 @@ import { ShoppingCart, Calendar, DollarSign, Filter } from 'lucide-react'
 import { useAutenticacion } from '../contexts/AuthContext'
 import datosProductos from '../data/products.json'
 
-const PanelUsuario = () => {
+const Dashboard = () => {
   const { usuario } = useAutenticacion() // Obtener información del usuario
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todo')
 
@@ -478,4 +478,4 @@ const PanelUsuario = () => {
   )
 }
 
-export default PanelUsuario
+export default Dashboard
