@@ -21,13 +21,14 @@
 
 ### ✨ Características Principales
 
-- � **E-commerce Completo**: Sistema integral de productos, categorías y navegación
+- 🛒 **E-commerce Completo**: Sistema integral de productos, categorías y navegación
 - 📱 **Responsive Design**: Experiencia optimizada en todos los dispositivos  
 - 🔍 **Búsqueda Inteligente**: Sistema de búsqueda en tiempo real con filtros avanzados
 - 🗂️ **Navegación por Categorías**: Filtrado dinámico por categorías de productos
 - 📄 **Páginas de Detalle**: Información completa de productos con imágenes y especificaciones
-- 🛒 **Carrito Dinámico**: Gestión fluida de productos con actualización en tiempo real
-- � **Autenticación Segura**: Sistema de login/registro con rutas protegidas
+- 🛒 **Carrito Dinámico**: Gestión completa de productos con actualización en tiempo real
+- 💳 **Sistema de Checkout**: Proceso completo de compra con pagos y envíos
+- 🔐 **Autenticación Segura**: Sistema de login/registro con rutas protegidas
 - ⚡ **Rendimiento Optimizado**: Context API, hooks personalizados y componentes reutilizables
 - 🎨 **UI/UX Moderna**: Interfaz atractiva con Tailwind CSS y componentes interactivos
 - 📊 **Estado Global**: Gestión centralizada con Context API y hooks personalizados
@@ -42,8 +43,8 @@
 - **Lucide React** - Biblioteca de iconos moderna y consistente
 
 ### Arquitectura y Patrones
-- **Context API** - Gestión de estado global (Auth y Products)
-- **Custom Hooks** - Lógica reutilizable (`useProducts`, `useAuth`)
+- **Context API** - Gestión de estado global (Auth, Products y Cart)
+- **Custom Hooks** - Lógica reutilizable (`useProducts`, `useAuth`, `useCart`)
 - **Component Composition** - Componentes reutilizables y modulares
 - **Render Props** - Patrones avanzados de React
 
@@ -102,27 +103,41 @@ TechZone/
 ├── public/
 ├── src/
 │   ├── components/          # Componentes reutilizables
-│   │   ├── Carousel.jsx         # Carrusel de productos
+│   │   ├── Carousel.jsx         # Slider de productos
 │   │   ├── FeaturedProducts.jsx # Productos destacados
 │   │   ├── Footer.jsx           # Pie de página
 │   │   ├── Navbar.jsx           # Navegación principal
 │   │   ├── SearchBar.jsx        # Barra de búsqueda
+│   │   ├── CartItem.jsx         # Item del carrito
+│   │   ├── CheckoutHeader.jsx   # Header del checkout
+│   │   ├── OrderSummary.jsx     # Resumen de pedido
+│   │   ├── PaymentForm.jsx      # Formulario de pago
+│   │   ├── PaymentMethods.jsx   # Métodos de pago
+│   │   ├── ShippingOptions.jsx  # Opciones de envío
+│   │   ├── UserInfo.jsx         # Información del usuario
 │   │   ├── PrivateRoute.jsx     # Rutas protegidas
 │   │   └── PublicRoute.jsx      # Rutas públicas
 │   ├── contexts/            # Contextos globales
 │   │   ├── AuthContext.jsx      # Autenticación
-│   │   └── ProductContext.jsx   # Productos y categorías
+│   │   ├── ProductContext.jsx   # Productos y categorías
+│   │   └── CartContext.jsx      # Carrito de compras
 │   ├── hooks/               # Hooks personalizados
-│   │   └── useProducts.js       # Hook para productos
+│   │   ├── useProducts.js       # Hook para productos
+│   │   ├── useAuth.js           # Hook para autenticación
+│   │   ├── useCart.js           # Hook para carrito
+│   │   └── dataHelpers.js       # Helpers para datos
 │   ├── pages/               # Páginas principales
 │   │   ├── Home.jsx             # Página de inicio
 │   │   ├── ProductDetail.jsx    # Detalle del producto
 │   │   ├── CategoryPage.jsx     # Productos por categoría
 │   │   ├── SearchPage.jsx       # Resultados de búsqueda
 │   │   ├── Cart.jsx             # Carrito de compras
+│   │   ├── Checkout.jsx         # Proceso de compra
+│   │   ├── PaymentSuccess.jsx   # Confirmación de pago
 │   │   ├── Dashboard.jsx        # Panel de usuario
 │   │   ├── Login.jsx            # Iniciar sesión
-│   │   └── Register.jsx         # Registro
+│   │   ├── Register.jsx         # Registro
+│   │   └── Contact.jsx          # Página de contacto
 │   ├── data/                # Datos y configuración
 │   │   └── products.json        # Base de datos de productos
 │   ├── App.jsx              # Componente principal
@@ -142,7 +157,7 @@ TechZone/
 - **PublicRoute**: Redirección automática si ya está autenticado
 
 ### 🏠 Página Principal (Home)
-- **Hero Section**: Carrusel interactivo de productos destacados
+- **Hero Section**: Slider interactivo de productos destacados
 - **Productos Destacados**: Slider horizontal con navegación
 - **Navegación por Categorías**: Acceso directo a secciones especializadas
 - **Diseño Responsive**: Adaptado a móviles, tablets y desktop
@@ -165,10 +180,19 @@ TechZone/
 - **Grid Responsivo**: Diseño adaptable con información completa
 - **Contadores**: Número de productos encontrados por categoría
 
-### 🛒 Carrito de Compras (En desarrollo)
-- **Gestión de Productos**: Añadir/eliminar productos
-- **Actualización Dinámica**: Cantidades y totales en tiempo real
+### 🛒 Carrito de Compras
+- **Gestión Completa**: Añadir/eliminar productos con actualización dinámica
+- **Cálculo Automático**: Totales, descuentos y promociones en tiempo real
 - **Persistencia**: Mantenimiento del carrito entre sesiones
+- **Estado Global**: Integración con CartContext para acceso universal
+- **Validaciones**: Control de stock y cantidades máximas
+
+### 💳 Sistema de Checkout
+- **Proceso Completo**: Flujo de compra desde carrito hasta confirmación
+- **Métodos de Pago**: Tarjetas de crédito/débito con validaciones
+- **Opciones de Envío**: Retiro en tienda o entrega a domicilio
+- **Información de Usuario**: Gestión de datos personales y direcciones
+- **Confirmación**: Página de éxito con detalles del pedido
 
 ### 📊 Dashboard de Usuario
 - **Panel Personalizado**: Información del usuario autenticado
@@ -186,7 +210,8 @@ TechZone/
 ### Context API y Estado Global
 - **ProductContext**: Gestión centralizada de productos y categorías
 - **AuthContext**: Estado de autenticación global
-- **Custom Hooks**: `useProducts` para lógica de negocio reutilizable
+- **CartContext**: Gestión del carrito de compras y operaciones
+- **Custom Hooks**: `useProducts`, `useAuth`, `useCart` para lógica reutilizable
 
 ### Rutas y Navegación
 ```
@@ -197,6 +222,9 @@ TechZone/
 /login - Autenticación de usuarios
 /register - Registro de nuevos usuarios
 /cart - Carrito de compras
+/checkout - Proceso de compra
+/payment-success - Confirmación de pago exitoso
+/contact - Página de contacto
 /dashboard - Panel de usuario (ruta protegida)
 ```
 
@@ -216,18 +244,21 @@ TechZone/
 
 ### Backend Integration
 - [ ] Migración a PostgreSQL con pgAdmin
-- [ ] API RESTful para productos y usuarios
+- [ ] API RESTful para productos, usuarios y pedidos
 - [ ] Autenticación JWT con refresh tokens
+- [ ] Sistema de inventario en tiempo real
 
-### E-commerce Features
-- [ ] Carrito de compras completamente funcional
-- [ ] Sistema de checkout y pagos
-- [ ] Gestión de pedidos y historial
+### E-commerce Features Avanzadas
+- [ ] Sistema de reviews y calificaciones
+- [ ] Wishlist de productos favoritos
+- [ ] Comparador de productos
+- [ ] Sistema de notificaciones
+- [ ] Historial de pedidos detallado
 
 ## 📱 Demo
 
 ### Página Principal
-- Carrusel interactivo con productos destacados
+- Slider interactivo con productos destacados
 - Navegación por categorías dinámicas
 - Diseño responsive y moderno
 
