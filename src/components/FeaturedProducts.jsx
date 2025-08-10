@@ -99,10 +99,10 @@ const ProductosDestacados = () => {
               <Link
                 key={producto.id}
                 to={`/product/${producto.id}`}
-                className="bg-white overflow-hidden flex-shrink-0 w-48 sm:w-52 md:w-56 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+                className="bg-white rounded-lg overflow-hidden flex-shrink-0 w-48 sm:w-52 md:w-56 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
               >
                 {/* Imagen del producto */}
-                <div className="relative bg-gray-100 h-70 flex items-center justify-center">
+                <div className="relative bg-white h-70 flex items-center justify-center">
                   <img
                     src={producto.image}
                     alt={producto.name}

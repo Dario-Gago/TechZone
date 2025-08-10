@@ -69,7 +69,7 @@ const PaginaBusqueda = () => {
                 className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-200"
               >
                 {/* Imagen del producto */}
-                <div className="relative bg-gray-100 h-48 flex items-center justify-center">
+                <div className="relative bg-white h-48 flex items-center justify-center">
                   <img
                     src={product.image}
                     alt={product.name}

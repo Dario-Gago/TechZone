@@ -6,7 +6,7 @@ const PieDePagina = () => {
   const { categorias } = useProductos()
 
   return (
-    <footer className="bg-gray-100 py-12 px-6">
+    <footer className="bg-gray-200 py-12 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Ayuda Section */}
