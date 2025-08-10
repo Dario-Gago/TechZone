@@ -86,7 +86,7 @@ const Carrito = () => {
         <div className="flex items-center mb-6">
           <Link
             to="/"
-            className="flex items-center text-gray-600 hover:text-gray-800"
+            className="flex items-center text-gray-900 hover:text-gray-800"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
             Volver a la Tienda
@@ -263,9 +263,12 @@ const Carrito = () => {
                 <span>${total.toLocaleString('es-CL')}</span>
               </div>
 
-              <button className="w-full bg-gray-800 text-white py-3 px-4 rounded-md hover:bg-gray-900 transition duration-200 font-medium">
+              <Link 
+                to="/checkout"
+                className="w-full bg-gray-800 text-white py-3 px-4 rounded-md hover:bg-gray-900 transition duration-200 font-medium block text-center"
+              >
                 PAGAR
-              </button>
+              </Link>
 
               <div className="mt-4 text-xs text-gray-500 text-center">
                 (*) Aplican términos y condiciones
