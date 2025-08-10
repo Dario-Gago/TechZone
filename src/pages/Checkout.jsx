@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useCarrito } from '../hooks/useCart'
 import { useAutenticacion } from '../contexts/AuthContext'
+import { Navigate, Link } from 'react-router-dom'
 import CheckoutHeader from '../components/CheckoutHeader'
 import UserInfo from '../components/UserInfo'
 import CartItem from '../components/CartItem'
@@ -10,7 +11,7 @@ import OrderSummary from '../components/OrderSummary'
 
 const Checkout = () => {
   const { articulosCarrito, obtenerPrecioTotal, actualizarCantidad, eliminarDelCarrito } = useCarrito()
-  const { usuario } = useAutenticacion()
+  const { usuario, estaAutenticado } = useAutenticacion()
   
   const [metodoEnvio, setMetodoEnvio] = useState('retiro')
   const [metodoPago, setMetodoPago] = useState('credit-card')
@@ -21,6 +22,16 @@ const Checkout = () => {
     cvv: '',
     cardName: ''
   })
+
+  // Redirigir a login si no está autenticado
+  if (!estaAutenticado) {
+    return <Navigate to="/login" state={{ from: '/checkout' }} replace />
+  }
+  
+  // Si el carrito está vacío, redirigir al carrito
+  if (articulosCarrito.length === 0) {
+    return <Navigate to="/cart" replace />
+  }
 
   const totalCarrito = obtenerPrecioTotal()
   const envioRetiro = 0

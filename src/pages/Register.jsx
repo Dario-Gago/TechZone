@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Mail, Lock, User, Phone, MapPin, Eye, EyeOff } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useAutenticacion } from '../contexts/AuthContext'
 
 const Registro = () => {
   const [datosFormulario, setDatosFormulario] = useState({
@@ -15,6 +16,13 @@ const Registro = () => {
   const [mostrarConfirmarContrasena, setMostrarConfirmarContrasena] = useState(false)
   const [errores, setErrores] = useState({})
   const [estaCargando, setEstaCargando] = useState(false)
+
+  const { iniciarSesion } = useAutenticacion()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  // Obtener la ruta de donde vino el usuario
+  const from = location.state?.from || '/'
 
   const validarFormulario = () => {
     const nuevosErrores = {}
@@ -93,7 +101,20 @@ const Registro = () => {
       // Simular delay de API
       await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      alert('¡Registro exitoso! Bienvenido/a ' + datosFormulario.nombre)
+      // Crear usuario y iniciar sesión automáticamente
+      const tokenFalso = 'token_nuevo_usuario_' + Date.now()
+      const datosUsuario = {
+        name: datosFormulario.nombre,
+        email: datosFormulario.email,
+        telefono: datosFormulario.telefono,
+        direccion: datosFormulario.direccion,
+        role: 'user'
+      }
+      
+      iniciarSesion(tokenFalso, false, datosUsuario)
+      
+      // Redirigir a donde el usuario venía (checkout u home)
+      navigate(from, { replace: true })
 
       // Resetear formulario
       setDatosFormulario({
@@ -120,9 +141,22 @@ const Registro = () => {
             Crear Cuenta
           </h1>
           <p className="text-gray-600">
-            Completa tus datos para registrarte en nuestra plataforma
+            {from === '/checkout' 
+              ? 'Crea tu cuenta para completar tu compra de forma segura'
+              : 'Completa tus datos para registrarte en nuestra plataforma'
+            }
           </p>
         </div>
+
+        {/* Mensaje especial para checkout */}
+        {from === '/checkout' && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+            <p className="text-sm text-green-800">
+              <span className="font-semibold">¡Es rápido y fácil!</span><br />
+              Al crear una cuenta podrás guardar tu información, ver el historial de compras y realizar futuras compras más rápido.
+            </p>
+          </div>
+        )}
 
         <div className="mt-8 space-y-6">
           <div className="space-y-4">
