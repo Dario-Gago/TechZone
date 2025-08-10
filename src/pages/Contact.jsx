@@ -133,7 +133,7 @@ const Contact = () => {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                className="w-full py-3 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors duration-200"
               >
                 Enviar Mensaje
               </button>
