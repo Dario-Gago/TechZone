@@ -58,7 +58,7 @@ const DetalleProducto = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Imagen del producto */}
           <div className="flex justify-center">
-            <div className="bg-gray-100 rounded-lg p-8 w-full max-w-md">
+            <div className="bg-white rounded-lg p-8 w-full max-w-md">
               <img
                 src={producto.image}
                 alt={producto.name}
