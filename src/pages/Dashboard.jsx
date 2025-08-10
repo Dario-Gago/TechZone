@@ -5,7 +5,7 @@ import {
   obtenerComprasUsuario, 
   obtenerEstadisticasAdmin,
   obtenerUsuario
-} from '../data/dataHelpers'
+} from '../hooks/dataHelpers'
 import datosUsuarios from '../data/usuarios.json'
 import datosProductos from '../data/products.json'
 import datosPedidos from '../data/pedidos.json'
