@@ -80,8 +80,8 @@ const Slider = () => {
               onClick={() => irADiapositiva(indice)}
               className={`w-3 h-3 rounded-full transition-all duration-200 ${
                 indice === indiceActual
-                  ? 'bg-black scale-125 shadow-lg'
-                  : 'bg-black/60 hover:bg-black/80'
+                  ? 'bg-white scale-125 shadow-lg'
+                  : 'bg-sky-400/60 hover:bg-black/80'
               }`}
             />
           ))}
