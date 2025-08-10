@@ -1,0 +1,84 @@
+{
+  "pedidos": [
+    {
+      "pedido_id": 1,
+      "usuario_id": 1,
+      "fecha_pedido": "2025-08-05T10:30:00.000Z",
+      "total": 389990,
+      "descuento": 0,
+      "estado_pedido": "entregado"
+    },
+    {
+      "pedido_id": 2,
+      "usuario_id": 1,
+      "fecha_pedido": "2025-08-03T14:15:00.000Z",
+      "total": 399990,
+      "descuento": 50000,
+      "estado_pedido": "entregado"
+    },
+    {
+      "pedido_id": 3,
+      "usuario_id": 1,
+      "fecha_pedido": "2025-07-28T09:45:00.000Z",
+      "total": 229990,
+      "descuento": 0,
+      "estado_pedido": "entregado"
+    },
+    {
+      "pedido_id": 4,
+      "usuario_id": 2,
+      "fecha_pedido": "2025-08-07T16:20:00.000Z",
+      "total": 679990,
+      "descuento": 70000,
+      "estado_pedido": "en_proceso"
+    },
+    {
+      "pedido_id": 5,
+      "usuario_id": 3,
+      "fecha_pedido": "2025-08-08T11:00:00.000Z",
+      "total": 1149990,
+      "descuento": 150000,
+      "estado_pedido": "confirmado"
+    },
+    {
+      "pedido_id": 6,
+      "usuario_id": 2,
+      "fecha_pedido": "2025-08-06T13:30:00.000Z",
+      "total": 319990,
+      "descuento": 30000,
+      "estado_pedido": "entregado"
+    },
+    {
+      "pedido_id": 7,
+      "usuario_id": 4,
+      "fecha_pedido": "2025-08-04T08:15:00.000Z",
+      "total": 179990,
+      "descuento": 20000,
+      "estado_pedido": "entregado"
+    },
+    {
+      "pedido_id": 8,
+      "usuario_id": 3,
+      "fecha_pedido": "2025-08-02T17:45:00.000Z",
+      "total": 129990,
+      "descuento": 0,
+      "estado_pedido": "entregado"
+    },
+    {
+      "pedido_id": 9,
+      "usuario_id": 5,
+      "fecha_pedido": "2025-08-01T12:20:00.000Z",
+      "total": 559990,
+      "descuento": 140000,
+      "estado_pedido": "entregado"
+    },
+    {
+      "pedido_id": 10,
+      "usuario_id": 4,
+      "fecha_pedido": "2025-07-30T15:10:00.000Z",
+      "total": 479990,
+      "descuento": 120000,
+      "estado_pedido": "entregado"
+    }
+  ]
+}

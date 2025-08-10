@@ -1,0 +1,104 @@
+{
+  "envios": [
+    {
+      "envio_id": 1,
+      "pedido_id": 1,
+      "tipo_entrega": "domicilio",
+      "direccion_envio": "Av. Providencia 1234, Providencia, Santiago",
+      "sucursal_retiro": null,
+      "fecha_entrega_estimada": "2025-08-08",
+      "costo": 5990,
+      "estado_envio": "entregado"
+    },
+    {
+      "envio_id": 2,
+      "pedido_id": 2,
+      "tipo_entrega": "sucursal",
+      "direccion_envio": null,
+      "sucursal_retiro": "TechZone Las Condes - Mall Parque Arauco",
+      "fecha_entrega_estimada": "2025-08-06",
+      "costo": 0,
+      "estado_envio": "entregado"
+    },
+    {
+      "envio_id": 3,
+      "pedido_id": 3,
+      "tipo_entrega": "domicilio",
+      "direccion_envio": "Calle San Martín 567, Ñuñoa, Santiago",
+      "sucursal_retiro": null,
+      "fecha_entrega_estimada": "2025-07-31",
+      "costo": 3990,
+      "estado_envio": "entregado"
+    },
+    {
+      "envio_id": 4,
+      "pedido_id": 4,
+      "tipo_entrega": "domicilio",
+      "direccion_envio": "Paseo Bulnes 890, Santiago Centro",
+      "sucursal_retiro": null,
+      "fecha_entrega_estimada": "2025-08-12",
+      "costo": 7990,
+      "estado_envio": "en_transito"
+    },
+    {
+      "envio_id": 5,
+      "pedido_id": 5,
+      "tipo_entrega": "sucursal",
+      "direccion_envio": null,
+      "sucursal_retiro": "TechZone Maipú - Mall Plaza Oeste",
+      "fecha_entrega_estimada": "2025-08-11",
+      "costo": 0,
+      "estado_envio": "preparando"
+    },
+    {
+      "envio_id": 6,
+      "pedido_id": 6,
+      "tipo_entrega": "domicilio",
+      "direccion_envio": "Av. Vitacura 3456, Vitacura, Santiago",
+      "sucursal_retiro": null,
+      "fecha_entrega_estimada": "2025-08-09",
+      "costo": 4990,
+      "estado_envio": "entregado"
+    },
+    {
+      "envio_id": 7,
+      "pedido_id": 7,
+      "tipo_entrega": "sucursal",
+      "direccion_envio": null,
+      "sucursal_retiro": "TechZone Centro - Portal La Dehesa",
+      "fecha_entrega_estimada": "2025-08-07",
+      "costo": 0,
+      "estado_envio": "entregado"
+    },
+    {
+      "envio_id": 8,
+      "pedido_id": 8,
+      "tipo_entrega": "domicilio",
+      "direccion_envio": "Calle Los Aromos 789, La Florida, Santiago",
+      "sucursal_retiro": null,
+      "fecha_entrega_estimada": "2025-08-05",
+      "costo": 6990,
+      "estado_envio": "entregado"
+    },
+    {
+      "envio_id": 9,
+      "pedido_id": 9,
+      "tipo_entrega": "domicilio",
+      "direccion_envio": "Av. Independencia 2345, Independencia, Santiago",
+      "sucursal_retiro": null,
+      "fecha_entrega_estimada": "2025-08-04",
+      "costo": 5990,
+      "estado_envio": "entregado"
+    },
+    {
+      "envio_id": 10,
+      "pedido_id": 10,
+      "tipo_entrega": "sucursal",
+      "direccion_envio": null,
+      "sucursal_retiro": "TechZone San Miguel - Mall Plaza Sur",
+      "fecha_entrega_estimada": "2025-08-02",
+      "costo": 0,
+      "estado_envio": "entregado"
+    }
+  ]
+}

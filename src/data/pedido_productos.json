@@ -1,0 +1,64 @@
+{
+  "pedido_productos": [
+    {
+      "pedido_id": 1,
+      "producto_id": 1,
+      "cantidad": 1,
+      "precio_unitario": 389990
+    },
+    {
+      "pedido_id": 2,
+      "producto_id": 26,
+      "cantidad": 1,
+      "precio_unitario": 399990
+    },
+    {
+      "pedido_id": 3,
+      "producto_id": 3,
+      "cantidad": 1,
+      "precio_unitario": 229990
+    },
+    {
+      "pedido_id": 4,
+      "producto_id": 4,
+      "cantidad": 1,
+      "precio_unitario": 679990
+    },
+    {
+      "pedido_id": 5,
+      "producto_id": 31,
+      "cantidad": 1,
+      "precio_unitario": 1149990
+    },
+    {
+      "pedido_id": 6,
+      "producto_id": 8,
+      "cantidad": 1,
+      "precio_unitario": 319990
+    },
+    {
+      "pedido_id": 7,
+      "producto_id": 21,
+      "cantidad": 1,
+      "precio_unitario": 179990
+    },
+    {
+      "pedido_id": 8,
+      "producto_id": 36,
+      "cantidad": 1,
+      "precio_unitario": 129990
+    },
+    {
+      "pedido_id": 9,
+      "producto_id": 2,
+      "cantidad": 1,
+      "precio_unitario": 559990
+    },
+    {
+      "pedido_id": 10,
+      "producto_id": 6,
+      "cantidad": 1,
+      "precio_unitario": 479990
+    }
+  ]
+}
