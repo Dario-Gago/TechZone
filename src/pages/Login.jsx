@@ -16,12 +16,12 @@ const IniciarSesion = () => {
     e.preventDefault()
 
     // Simulación de credenciales y rol de administrador
-    if (correo === 'gagodario1@gmail.com' && contrasena === 'pass1234') {
+    if (correo === 'admin@techzone.com' && contrasena === 'pass1234') {
       const tokenFalso = 'token_falso_123456789'
       const esAdmin = true // este usuario es admin
       iniciarSesion(tokenFalso, esAdmin)
       navigate('/')
-    } else if (correo === 'usuario@normal.com' && contrasena === 'pass1234') {
+    } else if (correo === 'usuario@techzone.com' && contrasena === 'pass1234') {
       const tokenFalso = 'token_usuario_normal'
       const esAdmin = false
       iniciarSesion(tokenFalso, esAdmin)
