@@ -10,7 +10,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
-import PaymentSuccess from './pages/PaymentSuccess'
+import PagoExitoso from './pages/PagoExitoso'
 import Dashboard from './pages/Dashboard'
 import ProductDetail from './pages/ProductDetail'
 import CategoryPage from './pages/CategoryPage'
@@ -65,7 +65,7 @@ const App = () => {
                     <Route path="/checkout" element={<Checkout />} />
                     <Route
                       path="/payment-success"
-                      element={<PaymentSuccess />}
+                      element={<PagoExitoso />}
                     />
                     <Route
                       path="/dashboard"

@@ -17,7 +17,7 @@ const Carrito = () => {
   const {
     articulosCarrito,
     actualizarCantidad,
-    removerDelCarrito,
+    eliminarDelCarrito,
     obtenerPrecioTotal
   } = useCarrito()
 
@@ -133,7 +133,7 @@ const Carrito = () => {
                           <p className="text-sm text-gray-500">{item.brand}</p>
                         </div>
                         <button
-                          onClick={() => removerDelCarrito(item.id)}
+                          onClick={() => eliminarDelCarrito(item.id)}
                           className="text-gray-400 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="h-5 w-5" />

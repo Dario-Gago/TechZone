@@ -47,11 +47,6 @@ export const ProveedorAutenticacion = ({ children }) => {
     setUsuario(null)
   }
 
-  const actualizarUsuario = (datosUsuario) => {
-    localStorage.setItem('user', JSON.stringify(datosUsuario))
-    setUsuario(datosUsuario)
-  }
-
   const estaAutenticado = !!token
 
   return (
@@ -62,15 +57,7 @@ export const ProveedorAutenticacion = ({ children }) => {
         cerrarSesion,
         estaAutenticado,
         esAdmin,
-        usuario,
-        actualizarUsuario,
-        // Mantener compatibilidad con nombres en inglés
-        login: iniciarSesion,
-        logout: cerrarSesion,
-        isAuthenticated: estaAutenticado,
-        isAdmin: esAdmin,
-        user: usuario,
-        updateUser: actualizarUsuario
+        usuario
       }}
     >
       {children}

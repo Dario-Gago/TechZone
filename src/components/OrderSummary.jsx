@@ -7,7 +7,7 @@ const OrderSummary = ({
   ahorrosAplicados, 
   promocionMODUPS, 
   finalTotal, 
-  formatPrice
+  formatearPrecio
 }) => {
   const navigate = useNavigate()
 
@@ -22,29 +22,29 @@ const OrderSummary = ({
       <div className="space-y-4">
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Artículos en el carrito</span>
-          <span className="text-gray-900 font-medium">{formatPrice(totalCarrito)}</span>
+          <span className="text-gray-900 font-medium">{formatearPrecio(totalCarrito)}</span>
         </div>
         
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Envío</span>
-          <span className="text-gray-900 font-medium">{formatPrice(envio)}</span>
+          <span className="text-gray-900 font-medium">{formatearPrecio(envio)}</span>
         </div>
         
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">Ahorros aplicados</span>
-          <span className="text-gray-400">-{formatPrice(ahorrosAplicados)}</span>
+          <span className="text-gray-400">-{formatearPrecio(ahorrosAplicados)}</span>
         </div>
         
         <div className="flex justify-between text-sm">
           <span className="text-gray-500">Promoción MODUPS</span>
-          <span className="text-gray-400">-{formatPrice(promocionMODUPS)}</span>
+          <span className="text-gray-400">-{formatearPrecio(promocionMODUPS)}</span>
         </div>
         
         <hr className="my-6 border-gray-200" />
         
         <div className="flex justify-between text-xl font-bold">
           <span>Total</span>
-          <span>{formatPrice(finalTotal)}</span>
+          <span>{formatearPrecio(finalTotal)}</span>
         </div>
       </div>
 

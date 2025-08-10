@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ShippingOptions = ({ shippingMethod, onShippingChange, formatPrice, envioRetiro, envioEntrega }) => {
+const ShippingOptions = ({ metodoEnvio, alCambiarEnvio, formatearPrecio, envioRetiro, envioEntrega }) => {
   return (
     <div className="space-y-4">
       <div className="border border-gray-200 rounded-lg p-4">
@@ -10,8 +10,8 @@ const ShippingOptions = ({ shippingMethod, onShippingChange, formatPrice, envioR
             id="retiro"
             name="shipping"
             value="retiro"
-            checked={shippingMethod === 'retiro'}
-            onChange={(e) => onShippingChange(e.target.value)}
+            checked={metodoEnvio === 'retiro'}
+            onChange={(e) => alCambiarEnvio(e.target.value)}
             className="text-blue-600 mt-1"
           />
           <label htmlFor="retiro" className="flex-1">
@@ -25,7 +25,7 @@ const ShippingOptions = ({ shippingMethod, onShippingChange, formatPrice, envioR
                   <button className="text-sm text-gray-600 underline hover:text-gray-800 mt-1">Cambiar</button>
                 </div>
               </div>
-              <span className="font-semibold text-gray-900">{formatPrice(envioRetiro)}</span>
+              <span className="font-semibold text-gray-900">{formatearPrecio(envioRetiro)}</span>
             </div>
           </label>
         </div>
@@ -38,8 +38,8 @@ const ShippingOptions = ({ shippingMethod, onShippingChange, formatPrice, envioR
             id="entrega"
             name="shipping"
             value="entrega"
-            checked={shippingMethod === 'entrega'}
-            onChange={(e) => onShippingChange(e.target.value)}
+            checked={metodoEnvio === 'entrega'}
+            onChange={(e) => alCambiarEnvio(e.target.value)}
             className="text-blue-600 mt-1"
           />
           <label htmlFor="entrega" className="flex-1">
@@ -48,7 +48,7 @@ const ShippingOptions = ({ shippingMethod, onShippingChange, formatPrice, envioR
                 <p className="font-medium text-gray-900">Entrega a domicilio</p>
                 <p className="text-sm text-gray-500">Disponibilidad: 3 - 5 días</p>
               </div>
-              <span className="font-semibold text-gray-900">{formatPrice(envioEntrega)}</span>
+              <span className="font-semibold text-gray-900">{formatearPrecio(envioEntrega)}</span>
             </div>
           </label>
         </div>
