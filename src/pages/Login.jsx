@@ -19,12 +19,22 @@ const IniciarSesion = () => {
     if (correo === 'admin@techzone.com' && contrasena === 'pass1234') {
       const tokenFalso = 'token_falso_123456789'
       const esAdmin = true // este usuario es admin
-      iniciarSesion(tokenFalso, esAdmin)
+      const datosUsuario = {
+        name: 'Admin TechZone',
+        email: 'admin@techzone.com',
+        role: 'admin'
+      }
+      iniciarSesion(tokenFalso, esAdmin, datosUsuario)
       navigate('/')
     } else if (correo === 'usuario@techzone.com' && contrasena === 'pass1234') {
       const tokenFalso = 'token_usuario_normal'
       const esAdmin = false
-      iniciarSesion(tokenFalso, esAdmin)
+      const datosUsuario = {
+        name: 'Usuario TechZone',
+        email: 'usuario@techzone.com',
+        role: 'user'
+      }
+      iniciarSesion(tokenFalso, esAdmin, datosUsuario)
       navigate('/')
     } else {
       setError('Correo o contraseña incorrectos')
@@ -42,6 +52,19 @@ const IniciarSesion = () => {
             Inicie sesión ingresando su dirección de correo electrónico y
             contraseña.
           </p>
+        </div>
+
+        {/* Credenciales de demostración */}
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h3 className="text-sm font-semibold text-blue-900 mb-2">Credenciales de demostración:</h3>
+          <div className="space-y-2 text-sm">
+            <div>
+              <span className="font-medium text-blue-800">Admin:</span> admin@techzone.com / pass1234
+            </div>
+            <div>
+              <span className="font-medium text-blue-800">Usuario:</span> usuario@techzone.com / pass1234
+            </div>
+          </div>
         </div>
 
         {error && (

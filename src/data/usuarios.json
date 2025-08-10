@@ -1,0 +1,40 @@
+{
+  "usuarios": [
+    {
+      "usuario_id": 1,
+      "nombre": "Usuario TechZone",
+      "email": "usuario@techzone.com",
+      "rol": "user"
+    },
+    {
+      "usuario_id": 2,
+      "nombre": "Carlos Martínez",
+      "email": "carlos.martinez@example.com",
+      "rol": "user"
+    },
+    {
+      "usuario_id": 3,
+      "nombre": "María González",
+      "email": "maria.gonzalez@example.com",
+      "rol": "user"
+    },
+    {
+      "usuario_id": 4,
+      "nombre": "Diego López",
+      "email": "diego.lopez@example.com",
+      "rol": "user"
+    },
+    {
+      "usuario_id": 5,
+      "nombre": "Ana Silva",
+      "email": "ana.silva@example.com",
+      "rol": "user"
+    },
+    {
+      "usuario_id": 100,
+      "nombre": "Admin TechZone",
+      "email": "admin@techzone.com",
+      "rol": "admin"
+    }
+  ]
+}
