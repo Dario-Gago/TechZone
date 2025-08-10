@@ -4,7 +4,7 @@ import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 import { faCcPaypal, faCcApplePay } from '@fortawesome/free-brands-svg-icons'
 import PaymentForm from './PaymentForm'
 
-const PaymentMethods = ({ paymentMethod, onPaymentChange, formData, onInputChange }) => {
+const PaymentMethods = ({ metodoPago, alCambiarPago, formData, onInputChange }) => {
   return (
     <div className="space-y-4">
       {/* Credit Card Option */}
@@ -15,8 +15,8 @@ const PaymentMethods = ({ paymentMethod, onPaymentChange, formData, onInputChang
             id="credit-card"
             name="payment"
             value="credit-card"
-            checked={paymentMethod === 'credit-card'}
-            onChange={(e) => onPaymentChange(e.target.value)}
+            checked={metodoPago === 'credit-card'}
+            onChange={(e) => alCambiarPago(e.target.value)}
             className="text-blue-600"
           />
           <label htmlFor="credit-card" className="font-medium">Tarjeta de débito/crédito</label>
@@ -25,7 +25,7 @@ const PaymentMethods = ({ paymentMethod, onPaymentChange, formData, onInputChang
           </div>
         </div>
         
-        {paymentMethod === 'credit-card' && (
+        {metodoPago === 'credit-card' && (
           <PaymentForm formData={formData} onInputChange={onInputChange} />
         )}
       </div>
@@ -38,8 +38,8 @@ const PaymentMethods = ({ paymentMethod, onPaymentChange, formData, onInputChang
             id="paypal"
             name="payment"
             value="paypal"
-            checked={paymentMethod === 'paypal'}
-            onChange={(e) => onPaymentChange(e.target.value)}
+            checked={metodoPago === 'paypal'}
+            onChange={(e) => alCambiarPago(e.target.value)}
             className="text-blue-600"
           />
           <label htmlFor="paypal" className="font-medium">PayPal</label>
@@ -57,8 +57,8 @@ const PaymentMethods = ({ paymentMethod, onPaymentChange, formData, onInputChang
             id="apple-pay"
             name="payment"
             value="apple-pay"
-            checked={paymentMethod === 'apple-pay'}
-            onChange={(e) => onPaymentChange(e.target.value)}
+            checked={metodoPago === 'apple-pay'}
+            onChange={(e) => alCambiarPago(e.target.value)}
             className="text-blue-600"
           />
           <label htmlFor="apple-pay" className="font-medium">ApplePay</label>

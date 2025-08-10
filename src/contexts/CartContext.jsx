@@ -56,7 +56,7 @@ export const ProveedorCarrito = ({ children }) => {
 
   const actualizarCantidad = (idProducto, nuevaCantidad) => {
     if (nuevaCantidad < 1) {
-      removerDelCarrito(idProducto)
+      eliminarDelCarrito(idProducto)
       return
     }
     
@@ -74,11 +74,11 @@ export const ProveedorCarrito = ({ children }) => {
     return true
   }
 
-  const removerDelCarrito = (idProducto) => {
+  const eliminarDelCarrito = (idProducto) => {
     setArticulosCarrito((items) => items.filter((item) => item.productId !== idProducto))
   }
 
-  const limpiarCarrito = () => {
+  const vaciarCarrito = () => {
     setArticulosCarrito([])
   }
 
@@ -108,24 +108,12 @@ export const ProveedorCarrito = ({ children }) => {
     obtenerItemCarritoConDatos,
     agregarAlCarrito,
     actualizarCantidad,
-    removerDelCarrito,
-    limpiarCarrito,
+    eliminarDelCarrito,
+    vaciarCarrito,
     obtenerTotalItems,
     estaEnCarrito,
     obtenerCantidadItem,
-    obtenerPrecioTotal,
-    // Mantener compatibilidad con nombres en inglés
-    cartItems: obtenerItemsCarritoConDatos(),
-    rawCartItems: articulosCarrito,
-    getCartItemWithProductData: obtenerItemCarritoConDatos,
-    addToCart: agregarAlCarrito,
-    updateQuantity: actualizarCantidad,
-    removeFromCart: removerDelCarrito,
-    clearCart: limpiarCarrito,
-    getTotalItems: obtenerTotalItems,
-    isInCart: estaEnCarrito,
-    getItemQuantity: obtenerCantidadItem,
-    getTotalPrice: obtenerPrecioTotal
+    obtenerPrecioTotal
   }
 
   return <ContextoCarrito.Provider value={value}>{children}</ContextoCarrito.Provider>

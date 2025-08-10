@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Mail, Lock } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAutenticacion } from '../contexts/AuthContext'
 
 const IniciarSesion = () => {
@@ -11,6 +11,10 @@ const IniciarSesion = () => {
 
   const { iniciarSesion } = useAutenticacion()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // Obtener la ruta de donde vino el usuario (para redireccionar después del login)
+  const from = location.state?.from || '/'
 
   const manejarEnvio = (e) => {
     e.preventDefault()
@@ -25,7 +29,7 @@ const IniciarSesion = () => {
         role: 'admin'
       }
       iniciarSesion(tokenFalso, esAdmin, datosUsuario)
-      navigate('/')
+      navigate(from, { replace: true })
     } else if (correo === 'usuario@techzone.com' && contrasena === 'pass1234') {
       const tokenFalso = 'token_usuario_normal'
       const esAdmin = false
@@ -35,7 +39,7 @@ const IniciarSesion = () => {
         role: 'user'
       }
       iniciarSesion(tokenFalso, esAdmin, datosUsuario)
-      navigate('/')
+      navigate(from, { replace: true })
     } else {
       setError('Correo o contraseña incorrectos')
     }
@@ -49,10 +53,22 @@ const IniciarSesion = () => {
             Iniciar sesión
           </h1>
           <p className="text-gray-600">
-            Inicie sesión ingresando su dirección de correo electrónico y
-            contraseña.
+            {from === '/checkout' 
+              ? 'Inicia sesión para continuar con tu compra'
+              : 'Inicie sesión ingresando su dirección de correo electrónico y contraseña.'
+            }
           </p>
         </div>
+
+        {/* Mensaje especial para checkout */}
+        {from === '/checkout' && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+            <p className="text-sm text-yellow-800">
+              <span className="font-semibold">¿Por qué necesito una cuenta?</span><br />
+              Una cuenta te permite guardar tu información de envío, ver el historial de pedidos y tener una experiencia de compra más segura.
+            </p>
+          </div>
+        )}
 
         {/* Credenciales de demostración */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useCarrito } from '../hooks/useCart'
 import { useAutenticacion } from '../contexts/AuthContext'
+import { Navigate, Link } from 'react-router-dom'
 import CheckoutHeader from '../components/CheckoutHeader'
 import UserInfo from '../components/UserInfo'
 import CartItem from '../components/CartItem'
@@ -9,11 +10,11 @@ import PaymentMethods from '../components/PaymentMethods'
 import OrderSummary from '../components/OrderSummary'
 
 const Checkout = () => {
-  const { cartItems, getTotalPrice, updateQuantity, removeFromCart } = useCarrito()
-  const { usuario } = useAutenticacion()
+  const { articulosCarrito, obtenerPrecioTotal, actualizarCantidad, eliminarDelCarrito } = useCarrito()
+  const { usuario, estaAutenticado } = useAutenticacion()
   
-  const [shippingMethod, setShippingMethod] = useState('retiro')
-  const [paymentMethod, setPaymentMethod] = useState('credit-card')
+  const [metodoEnvio, setMetodoEnvio] = useState('retiro')
+  const [metodoPago, setMetodoPago] = useState('credit-card')
   
   const [formData, setFormData] = useState({
     cardNumber: '',
@@ -22,16 +23,26 @@ const Checkout = () => {
     cardName: ''
   })
 
-  const totalCarrito = getTotalPrice()
+  // Redirigir a login si no está autenticado
+  if (!estaAutenticado) {
+    return <Navigate to="/login" state={{ from: '/checkout' }} replace />
+  }
+  
+  // Si el carrito está vacío, redirigir al carrito
+  if (articulosCarrito.length === 0) {
+    return <Navigate to="/cart" replace />
+  }
+
+  const totalCarrito = obtenerPrecioTotal()
   const envioRetiro = 0
   const envioEntrega = 3690
-  const envio = shippingMethod === 'retiro' ? envioRetiro : envioEntrega
+  const envio = metodoEnvio === 'retiro' ? envioRetiro : envioEntrega
   const ahorrosAplicados = totalCarrito * 0.15 // 15% de descuento
   const promocionMODUPS = 3900
   const finalTotal = Math.max(0, totalCarrito + envio - ahorrosAplicados - promocionMODUPS)
 
   // Formatear precio en pesos chilenos
-  const formatChileanPrice = (price) => {
+  const formatearPrecioChileno = (price) => {
     if (!price && price !== 0) return '$0'
     return `$${Math.round(price).toLocaleString('es-CL')}`
   }
@@ -43,12 +54,12 @@ const Checkout = () => {
     })
   }
 
-  const handleQuantityChange = (productId, newQuantity) => {
+  const manejarCambioCantidad = (productId, newQuantity) => {
     // Validar que la cantidad sea válida
     const quantity = Math.max(1, Math.min(99, parseInt(newQuantity) || 1))
     
     // Actualizar la cantidad en el carrito
-    updateQuantity(productId, quantity)
+    actualizarCantidad(productId, quantity)
   }
 
   const handleChangeAddress = () => {
@@ -67,22 +78,22 @@ const Checkout = () => {
           <div className="lg:col-span-2 space-y-6">
             
             {/* User Information */}
-            <UserInfo user={usuario} onChangeAddress={handleChangeAddress} />
+            <UserInfo user={usuario} alCambiarDireccion={handleChangeAddress} />
 
             {/* Detalles de Envío */}
             <div>
               <h3 className="text-lg font-semibold mb-6 text-gray-700">Detalles de Envío</h3>
 
               {/* Products - Solo mostrar si hay productos */}
-              {cartItems.length > 0 && (
+              {articulosCarrito.length > 0 && (
                 <div className="space-y-4 mb-8">
-                  {cartItems.map((item, index) => (
+                  {articulosCarrito.map((item, index) => (
                     <CartItem
                       key={item.id || index}
                       item={item}
-                      onQuantityChange={handleQuantityChange}
-                      onRemove={removeFromCart}
-                      formatPrice={formatChileanPrice}
+                      alCambiarCantidad={manejarCambioCantidad}
+                      alEliminar={eliminarDelCarrito}
+                      formatearPrecio={formatearPrecioChileno}
                     />
                   ))}
                 </div>
@@ -90,9 +101,9 @@ const Checkout = () => {
 
               {/* Shipping Options */}
               <ShippingOptions
-                shippingMethod={shippingMethod}
-                onShippingChange={setShippingMethod}
-                formatPrice={formatChileanPrice}
+                metodoEnvio={metodoEnvio}
+                alCambiarEnvio={setMetodoEnvio}
+                formatearPrecio={formatearPrecioChileno}
                 envioRetiro={envioRetiro}
                 envioEntrega={envioEntrega}
               />
@@ -103,8 +114,8 @@ const Checkout = () => {
               <h3 className="text-lg font-semibold mb-6 text-gray-900">Método de pago</h3>
               
               <PaymentMethods
-                paymentMethod={paymentMethod}
-                onPaymentChange={setPaymentMethod}
+                metodoPago={metodoPago}
+                alCambiarPago={setMetodoPago}
                 formData={formData}
                 onInputChange={handleInputChange}
               />
@@ -119,7 +130,7 @@ const Checkout = () => {
               ahorrosAplicados={ahorrosAplicados}
               promocionMODUPS={promocionMODUPS}
               finalTotal={finalTotal}
-              formatPrice={formatChileanPrice}
+              formatearPrecio={formatearPrecioChileno}
             />
           </div>
         </div>

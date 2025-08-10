@@ -1,9 +1,9 @@
-import datosProductos from './products.json'
-import datosPedidos from './pedidos.json'
-import datosPedidoProductos from './pedido_productos.json'
-import datosPagos from './pagos.json'
-import datosEnvios from './envios.json'
-import datosUsuarios from './usuarios.json'
+import datosProductos from '../data/products.json'
+import datosPedidos from '../data/pedidos.json'
+import datosPedidoProductos from '../data/pedido_productos.json'
+import datosPagos from '../data/pagos.json'
+import datosEnvios from '../data/envios.json'
+import datosUsuarios from '../data/usuarios.json'
 
 // Helper functions para procesar datos de la "base de datos" simulada
 

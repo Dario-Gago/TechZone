@@ -3,26 +3,26 @@ import { Link } from 'react-router-dom'
 import { useCarrito } from '../hooks/useCart'
 import { useAutenticacion } from '../contexts/AuthContext'
 
-const PaymentSuccess = () => {
-  const { clearCart } = useCarrito()
+const PagoExitoso = () => {
+  const { vaciarCarrito } = useCarrito()
   const { usuario } = useAutenticacion()
 
   // Generar número de orden una sola vez
-  const [orderNumber] = React.useState(() => `TZ-${Math.random().toString(36).substr(2, 9).toUpperCase()}`)
+  const [numeroPedido] = React.useState(() => `TZ-${Math.random().toString(36).substr(2, 9).toUpperCase()}`)
   
   // Obtener fecha actual una sola vez
-  const [currentDate] = React.useState(() => new Date().toLocaleDateString('es-CL', {
+  const [fechaActual] = React.useState(() => new Date().toLocaleDateString('es-CL', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   }))
 
-  const userName = usuario?.nombre || usuario?.name || 'Cliente'
-  const userEmail = usuario?.email || 'cliente@example.com'
+  const nombreUsuario = usuario?.nombre || usuario?.name || 'Cliente'
+  const emailUsuario = usuario?.email || 'cliente@example.com'
 
   React.useEffect(() => {
     // Limpiar carrito al llegar a esta página
-    clearCart()
+    vaciarCarrito()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // Solo queremos ejecutar esto una vez al montar el componente
 
@@ -42,7 +42,7 @@ const PaymentSuccess = () => {
           </h1>
           
           <p className="text-lg text-gray-600">
-            Gracias por tu compra, {userName}
+            Gracias por tu compra, {nombreUsuario}
           </p>
         </div>
 
@@ -56,17 +56,17 @@ const PaymentSuccess = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <p className="text-sm text-gray-500 mb-1">Número de orden</p>
-                <p className="text-lg font-semibold text-gray-900">{orderNumber}</p>
+                <p className="text-lg font-semibold text-gray-900">{numeroPedido}</p>
               </div>
               
               <div>
                 <p className="text-sm text-gray-500 mb-1">Fecha de compra</p>
-                <p className="text-lg font-semibold text-gray-900">{currentDate}</p>
+                <p className="text-lg font-semibold text-gray-900">{fechaActual}</p>
               </div>
               
               <div>
                 <p className="text-sm text-gray-500 mb-1">Email de confirmación</p>
-                <p className="text-lg font-semibold text-gray-900">{userEmail}</p>
+                <p className="text-lg font-semibold text-gray-900">{emailUsuario}</p>
               </div>
               
               <div>
@@ -160,4 +160,4 @@ const PaymentSuccess = () => {
   )
 }
 
-export default PaymentSuccess
+export default PagoExitoso

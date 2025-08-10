@@ -1,9 +1,9 @@
 import React from 'react'
 
-const CartItem = ({ item, onQuantityChange, onRemove, formatPrice }) => {
+const CartItem = ({ item, alCambiarCantidad, alEliminar, formatearPrecio }) => {
   const handleQuantityChange = (e) => {
     const quantity = Math.max(1, Math.min(99, parseInt(e.target.value) || 1))
-    onQuantityChange(item.id, quantity)
+    alCambiarCantidad(item.id, quantity)
   }
 
   return (
@@ -25,7 +25,7 @@ const CartItem = ({ item, onQuantityChange, onRemove, formatPrice }) => {
         
         <div className="flex items-center space-x-6">
           <button 
-            onClick={() => onRemove(item.id)}
+            onClick={() => alEliminar(item.id)}
             className="text-gray-400 hover:text-red-500 transition-colors"
             title="Eliminar del carrito"
           >
@@ -52,12 +52,12 @@ const CartItem = ({ item, onQuantityChange, onRemove, formatPrice }) => {
         <div className="text-right">
           {item.originalPrice && item.discountPrice && item.discountPrice < item.originalPrice ? (
             <div className="flex items-center space-x-2">
-              <span className="line-through text-gray-400 text-sm">{formatPrice(item.originalPrice)}</span>
-              <span className="font-semibold text-gray-900">{formatPrice(item.discountPrice)}</span>
+              <span className="line-through text-gray-400 text-sm">{formatearPrecio(item.originalPrice)}</span>
+              <span className="font-semibold text-gray-900">{formatearPrecio(item.discountPrice)}</span>
             </div>
           ) : (
             <span className="font-semibold text-gray-900">
-              {formatPrice(item.discountPrice || item.originalPrice || item.precioFinal || 0)}
+              {formatearPrecio(item.discountPrice || item.originalPrice || item.precioFinal || 0)}
             </span>
           )}
           {item.originalPrice && item.discountPrice && item.discountPrice < item.originalPrice && (

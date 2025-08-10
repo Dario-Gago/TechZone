@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useCarrito } from '../hooks/useCart'
+import { useAutenticacion } from '../contexts/AuthContext'
 
 import {
   ArrowLeft,
@@ -17,11 +18,11 @@ const Carrito = () => {
   const {
     articulosCarrito,
     actualizarCantidad,
-    removerDelCarrito,
+    eliminarDelCarrito,
     obtenerPrecioTotal
   } = useCarrito()
 
-  const estaAutenticado = true // Simulamos que el usuario está autenticado
+  const { estaAutenticado } = useAutenticacion()
 
   // Usar el total calculado del contexto que ya tiene los precios actuales
   const total = obtenerPrecioTotal()
@@ -31,26 +32,41 @@ const Carrito = () => {
   // Si no hay sesión iniciada, mostrar mensaje
   if (!estaAutenticado) {
     return (
-      <div className="bg-gray-50 py-16 px-4">
-        <div className="text-center p-8 max-w-md mx-auto">
+      <div className="bg-gray-50 min-h-screen py-16 px-4">
+        <div className="text-center p-8 max-w-md mx-auto bg-white rounded-lg shadow-sm">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Inicia sesión para continuar
           </h2>
           <p className="text-gray-600 mb-6">
-            Accede a tu cuenta para ver los productos que agregaste a tu
-            carrito.
+            Necesitas una cuenta para acceder a tu carrito y proceder con la compra.
           </p>
 
           <div className="space-y-3">
-            <button className="w-full bg-gray-800 text-white px-6 py-3 rounded-md hover:bg-gray-900 transition duration-200 font-medium block text-center">
+            <Link 
+              to="/login"
+              className="w-full bg-gray-800 text-white px-6 py-3 rounded-md hover:bg-gray-900 transition duration-200 font-medium block text-center"
+            >
               Iniciar Sesión
-            </button>
+            </Link>
 
             <p className="text-gray-500 text-sm">¿No tienes cuenta?</p>
 
-            <button className="w-full border border-gray-300 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-50 transition duration-200 font-medium block text-center">
+            <Link 
+              to="/register"
+              className="w-full border border-gray-300 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-50 transition duration-200 font-medium block text-center"
+            >
               Crear Cuenta
-            </button>
+            </Link>
+          </div>
+
+          <div className="mt-6">
+            <Link
+              to="/"
+              className="text-gray-600 hover:text-gray-800 text-sm flex items-center justify-center"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Volver a la tienda
+            </Link>
           </div>
         </div>
       </div>
@@ -133,7 +149,7 @@ const Carrito = () => {
                           <p className="text-sm text-gray-500">{item.brand}</p>
                         </div>
                         <button
-                          onClick={() => removerDelCarrito(item.id)}
+                          onClick={() => eliminarDelCarrito(item.id)}
                           className="text-gray-400 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="h-5 w-5" />
