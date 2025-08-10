@@ -17,6 +17,7 @@ import CategoryPage from './pages/CategoryPage'
 import SearchPage from './pages/SearchPage'
 import RutaPrivada from './components/PrivateRoute'
 import RutaPublica from './components/PublicRoute'
+import Contact from './pages/Contact'
 
 //Importo el contexto
 import { ProveedorAutenticacion } from './contexts/AuthContext'
@@ -62,7 +63,10 @@ const App = () => {
 
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/checkout" element={<Checkout />} />
-                    <Route path="/payment-success" element={<PaymentSuccess />} />
+                    <Route
+                      path="/payment-success"
+                      element={<PaymentSuccess />}
+                    />
                     <Route
                       path="/dashboard"
                       element={
@@ -71,6 +75,7 @@ const App = () => {
                         </RutaPrivada>
                       }
                     />
+                    <Route path="/contact" element={<Contact />} />
                   </Routes>
                 </main>
                 <Footer />

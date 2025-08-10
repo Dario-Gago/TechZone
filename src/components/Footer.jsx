@@ -12,9 +12,12 @@ const PieDePagina = () => {
           {/* Ayuda Section */}
           <div>
             <h3 className="text-lg font-semibold text-gray-800 mb-6">Ayuda?</h3>
-            <button className="bg-gray-700 text-white px-6 py-3 rounded hover:bg-gray-800 transition-colors">
+            <Link
+              to="/contact"
+              className="bg-gray-700 text-white px-6 py-3 rounded hover:bg-gray-800 transition-colors"
+            >
               Contacto
-            </button>
+            </Link>
           </div>
 
           {/* Categorías Section - Primera columna */}
