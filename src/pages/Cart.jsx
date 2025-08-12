@@ -173,34 +173,31 @@ const Carrito = () => {
               </h3>
 
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                <div className="flex items-center p-4 bg-white rounded-lg shadow-sm">
                   <div className="flex items-center space-x-3">
                     <RotateCcw className="h-5 w-5 text-gray-600" />
                     <span className="text-gray-700">
                       Devoluciones gratuitas durante 30 días (*)
                     </span>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-gray-400" />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                <div className="flex items-center p-4 bg-white rounded-lg shadow-sm">
                   <div className="flex items-center space-x-3">
                     <CreditCard className="h-5 w-5 text-gray-600" />
                     <span className="text-gray-700">
                       Métodos de pago convenientes
                     </span>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-gray-400" />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+                <div className="flex items-center p-4 bg-white rounded-lg shadow-sm">
                   <div className="flex items-center space-x-3">
                     <Truck className="h-5 w-5 text-gray-600" />
                     <span className="text-gray-700">
                       Entregar a domicilio o retiro
                     </span>
                   </div>
-                  <ChevronRight className="h-5 w-5 text-gray-400" />
                 </div>
               </div>
             </div>
@@ -236,7 +233,7 @@ const Carrito = () => {
               </div>
 
               {estaAutenticado ? (
-                <Link 
+                <Link
                   to="/checkout"
                   className="w-full bg-gray-800 text-white py-3 px-4 rounded-md hover:bg-gray-900 transition duration-200 font-medium block text-center"
                 >
@@ -247,14 +244,14 @@ const Carrito = () => {
                   <p className="text-sm text-gray-600 text-center">
                     Inicia sesión para completar tu compra
                   </p>
-                  <Link 
+                  <Link
                     to="/login"
                     state={{ from: '/checkout' }}
                     className="w-full bg-gray-800 text-white py-3 px-4 rounded-md hover:bg-gray-900 transition duration-200 font-medium block text-center"
                   >
                     INICIAR SESIÓN
                   </Link>
-                  <Link 
+                  <Link
                     to="/register"
                     state={{ from: '/checkout' }}
                     className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-50 transition duration-200 font-medium block text-center"
