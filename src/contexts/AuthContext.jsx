@@ -1,6 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
-// AuthContext.jsx
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback
+} from 'react'
+import { jwtDecode } from 'jwt-decode'
+import Swal from 'sweetalert2'
 
 const ContextoAutenticacion = createContext()
 
@@ -11,6 +18,42 @@ export const ProveedorAutenticacion = ({ children }) => {
   const [esAdmin, setEsAdmin] = useState(false)
   const [usuario, setUsuario] = useState(null)
 
+  // Cerrar sesión
+  const cerrarSesion = useCallback(() => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('isAdmin')
+    localStorage.removeItem('user')
+    setToken(null)
+    setEsAdmin(false)
+    setUsuario(null)
+    console.log('Sesión cerrada automáticamente - token inválido')
+  }, [])
+
+  // Revisar expiración del token
+  const verificarExpiracionToken = useCallback(async () => {
+    if (!token) return
+    try {
+      const { exp } = jwtDecode(token)
+      const ahora = Date.now() / 1000
+      if (exp <= ahora) {
+        await Swal.fire({
+          icon: 'warning',
+          title: 'Sesión Expirada',
+          text: 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#3085d6',
+          allowOutsideClick: false,
+          allowEscapeKey: false
+        })
+        cerrarSesion()
+      }
+    } catch (error) {
+      console.error('Error verificando el token:', error)
+      cerrarSesion()
+    }
+  }, [token, cerrarSesion])
+
+  // Cargar datos iniciales
   useEffect(() => {
     const tokenAlmacenado = localStorage.getItem('token')
     const esAdminAlmacenado = localStorage.getItem('isAdmin') === 'true'
@@ -19,13 +62,21 @@ export const ProveedorAutenticacion = ({ children }) => {
     if (tokenAlmacenado) {
       setToken(tokenAlmacenado)
       setEsAdmin(esAdminAlmacenado)
-
       if (usuarioAlmacenado) {
         setUsuario(JSON.parse(usuarioAlmacenado))
       }
     }
   }, [])
 
+  // Vigilar expiración cada 5s
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      verificarExpiracionToken()
+    }, 5000)
+    return () => clearInterval(intervalo)
+  }, [verificarExpiracionToken])
+
+  // Iniciar sesión
   const iniciarSesion = (nuevoToken, admin = false, datosUsuario = null) => {
     localStorage.setItem('token', nuevoToken)
     localStorage.setItem('isAdmin', admin)
@@ -36,15 +87,6 @@ export const ProveedorAutenticacion = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(datosUsuario))
       setUsuario(datosUsuario)
     }
-  }
-
-  const cerrarSesion = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('isAdmin')
-    localStorage.removeItem('user')
-    setToken(null)
-    setEsAdmin(false)
-    setUsuario(null)
   }
 
   const estaAutenticado = !!token
@@ -65,7 +107,7 @@ export const ProveedorAutenticacion = ({ children }) => {
   )
 }
 
-// Exportaciones para compatibilidad
+// Exportaciones
 export const AuthContext = ContextoAutenticacion
 export const useAuth = useAutenticacion
 export const AuthProvider = ProveedorAutenticacion

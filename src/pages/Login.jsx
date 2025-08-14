@@ -2,46 +2,46 @@ import React, { useState } from 'react'
 import { Mail, Lock } from 'lucide-react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAutenticacion } from '../contexts/AuthContext'
+import axios from 'axios'
 
-const IniciarSesion = () => {
+const Login = () => {
   const [correo, setCorreo] = useState('')
   const [contrasena, setContrasena] = useState('')
   const [recordarme, setRecordarme] = useState(false)
   const [error, setError] = useState(null)
+  const [cargando, setCargando] = useState(false)
 
   const { iniciarSesion } = useAutenticacion()
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Obtener la ruta de donde vino el usuario (para redireccionar después del login)
   const from = location.state?.from || '/'
 
-  const manejarEnvio = (e) => {
+  const manejarEnvio = async (e) => {
     e.preventDefault()
+    setError(null)
+    setCargando(true)
 
-    // Simulación de credenciales y rol de administrador
-    if (correo === 'admin@techzone.com' && contrasena === 'pass1234') {
-      const tokenFalso = 'token_falso_123456789'
-      const esAdmin = true // este usuario es admin
-      const datosUsuario = {
-        name: 'Admin TechZone',
-        email: 'admin@techzone.com',
-        role: 'admin'
-      }
-      iniciarSesion(tokenFalso, esAdmin, datosUsuario)
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/login`,
+        {
+          email: correo,
+          password: contrasena
+        }
+      )
+
+      // El backend devuelve { token, user } donde user.is_admin es booleano
+      const { token, user } = res.data
+
+      // Ahora solo pasamos token y usuario completo
+      iniciarSesion(token, user)
       navigate(from, { replace: true })
-    } else if (correo === 'usuario@techzone.com' && contrasena === 'pass1234') {
-      const tokenFalso = 'token_usuario_normal'
-      const esAdmin = false
-      const datosUsuario = {
-        name: 'Usuario TechZone',
-        email: 'usuario@techzone.com',
-        role: 'user'
-      }
-      iniciarSesion(tokenFalso, esAdmin, datosUsuario)
-      navigate(from, { replace: true })
-    } else {
-      setError('Correo o contraseña incorrectos')
+    } catch (err) {
+      console.error(err)
+      setError(err.response?.data?.message || 'Error al iniciar sesión')
+    } finally {
+      setCargando(false)
     }
   }
 
@@ -53,10 +53,9 @@ const IniciarSesion = () => {
             Iniciar sesión
           </h1>
           <p className="text-gray-600">
-            {from === '/checkout' 
+            {from === '/checkout'
               ? 'Inicia sesión para continuar con tu compra'
-              : 'Inicie sesión ingresando su dirección de correo electrónico y contraseña.'
-            }
+              : 'Inicie sesión ingresando su dirección de correo electrónico y contraseña.'}
           </p>
         </div>
 
@@ -64,21 +63,29 @@ const IniciarSesion = () => {
         {from === '/checkout' && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
             <p className="text-sm text-yellow-800">
-              <span className="font-semibold">¿Por qué necesito una cuenta?</span><br />
-              Una cuenta te permite guardar tu información de envío, ver el historial de pedidos y tener una experiencia de compra más segura.
+              <span className="font-semibold">
+                ¿Por qué necesito una cuenta?
+              </span>
+              <br />
+              Una cuenta te permite guardar tu información de envío, ver el
+              historial de pedidos y tener una experiencia de compra más segura.
             </p>
           </div>
         )}
 
         {/* Credenciales de demostración */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-blue-900 mb-2">Credenciales de demostración:</h3>
+          <h3 className="text-sm font-semibold text-blue-900 mb-2">
+            Credenciales de demostración:
+          </h3>
           <div className="space-y-2 text-sm">
             <div>
-              <span className="font-medium text-blue-800">Admin:</span> admin@techzone.com / pass1234
+              <span className="font-medium text-blue-800">Admin:</span>{' '}
+              admin@techzone.com / pass1234
             </div>
             <div>
-              <span className="font-medium text-blue-800">Usuario:</span> usuario@techzone.com / pass1234
+              <span className="font-medium text-blue-800">Usuario:</span>{' '}
+              usuario@techzone.com / pass1234
             </div>
           </div>
         </div>
@@ -111,6 +118,7 @@ const IniciarSesion = () => {
                   placeholder="email@address.com"
                   value={correo}
                   onChange={(e) => setCorreo(e.target.value)}
+                  disabled={cargando}
                 />
               </div>
             </div>
@@ -135,6 +143,7 @@ const IniciarSesion = () => {
                   placeholder="••••••••••••"
                   value={contrasena}
                   onChange={(e) => setContrasena(e.target.value)}
+                  disabled={cargando}
                 />
               </div>
             </div>
@@ -151,9 +160,10 @@ const IniciarSesion = () => {
 
           <button
             type="submit"
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-200"
+            disabled={cargando}
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Iniciar sesión
+            {cargando ? 'Iniciando sesión...' : 'Iniciar sesión'}
           </button>
 
           <div className="flex items-center">
@@ -164,6 +174,7 @@ const IniciarSesion = () => {
               className="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded"
               checked={recordarme}
               onChange={(e) => setRecordarme(e.target.checked)}
+              disabled={cargando}
             />
             <label
               htmlFor="remember-me"
@@ -187,4 +198,4 @@ const IniciarSesion = () => {
   )
 }
 
-export default IniciarSesion
+export default Login
