@@ -1,8 +1,45 @@
 import React from 'react'
 import { User, Trash2 } from 'lucide-react'
+import Swal from 'sweetalert2'
 
 const UsersTab = ({ usuarios, onEliminarUsuario }) => {
   const usuariosNoAdmin = usuarios.filter((u) => !u.admin)
+
+  const handleEliminarUsuario = async (usuarioId, nombreUsuario) => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: `¿Deseas eliminar al usuario "${nombreUsuario || 'Sin nombre'}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    })
+
+    if (result.isConfirmed) {
+      try {
+        await onEliminarUsuario(usuarioId)
+
+        Swal.fire({
+          title: '¡Eliminado!',
+          text: 'El usuario ha sido eliminado correctamente.',
+          icon: 'success',
+          confirmButtonColor: '#10b981',
+          timer: 2000,
+          timerProgressBar: true
+        })
+      } catch (error) {
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo eliminar el usuario. Inténtalo de nuevo.',
+          icon: 'error',
+          confirmButtonColor: '#ef4444'
+        })
+      }
+    }
+  }
 
   if (usuarios.length === 0) {
     return (
@@ -63,7 +100,9 @@ const UsersTab = ({ usuarios, onEliminarUsuario }) => {
                 </div>
               </div>
               <button
-                onClick={() => onEliminarUsuario(usuario.usuario_id)}
+                onClick={() =>
+                  handleEliminarUsuario(usuario.usuario_id, usuario.nombre)
+                }
                 className="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors flex-shrink-0 ml-2"
                 title="Eliminar usuario"
               >
