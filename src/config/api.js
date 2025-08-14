@@ -1,11 +1,11 @@
 // api.js - Configuración de endpoints de la API
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
 export const API_ENDPOINTS = {
   // 🔐 Auth endpoints
-  REGISTER: `${API_BASE_URL}/auth/register`,
-  LOGIN: `${API_BASE_URL}/auth/login`,
+  REGISTER: `${API_BASE_URL}/api/register`,
+  LOGIN: `${API_BASE_URL}/api/login`,
 
   // 👥 Usuarios endpoints
   USUARIOS: `${API_BASE_URL}/usuarios`,

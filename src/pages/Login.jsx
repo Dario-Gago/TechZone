@@ -3,7 +3,7 @@ import { Mail, Lock } from 'lucide-react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAutenticacion } from '../contexts/AuthContext'
 import axios from 'axios'
-
+import { API_ENDPOINTS } from '../config/api'
 const Login = () => {
   const [correo, setCorreo] = useState('')
   const [contrasena, setContrasena] = useState('')
@@ -23,13 +23,10 @@ const Login = () => {
     setCargando(true)
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/login`,
-        {
-          email: correo,
-          password: contrasena
-        }
-      )
+      const res = await axios.post(`${API_ENDPOINTS.LOGIN}`, {
+        email: correo,
+        password: contrasena
+      })
 
       // El backend devuelve { token, user } donde user.is_admin es booleano
       const { token, user } = res.data
