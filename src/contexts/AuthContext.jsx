@@ -77,16 +77,16 @@ export const ProveedorAutenticacion = ({ children }) => {
   }, [verificarExpiracionToken])
 
   // Iniciar sesión
-  const iniciarSesion = (nuevoToken, admin = false, datosUsuario = null) => {
-    localStorage.setItem('token', nuevoToken)
-    localStorage.setItem('isAdmin', admin)
-    setToken(nuevoToken)
-    setEsAdmin(admin)
+  const iniciarSesion = (nuevoToken, datosUsuario) => {
+    const adminFlag = Boolean(datosUsuario?.admin) // ahora sí usa el valor real
 
-    if (datosUsuario) {
-      localStorage.setItem('user', JSON.stringify(datosUsuario))
-      setUsuario(datosUsuario)
-    }
+    localStorage.setItem('token', nuevoToken)
+    localStorage.setItem('isAdmin', adminFlag)
+    localStorage.setItem('user', JSON.stringify(datosUsuario))
+
+    setToken(nuevoToken)
+    setEsAdmin(adminFlag)
+    setUsuario(datosUsuario)
   }
 
   const estaAutenticado = !!token
