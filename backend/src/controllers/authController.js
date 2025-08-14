@@ -169,3 +169,17 @@ export const register = async (req, res) => {
     })
   }
 }
+export const getAllUsers = async (req, res) => {
+  try {
+    // Verificar si el usuario es admin (si usas middleware de auth)
+    if (!req.user?.admin) {
+      return res.status(403).json({ message: 'No autorizado' })
+    }
+
+    const users = await User.findAll()
+    res.status(200).json(users)
+  } catch (error) {
+    console.error('Error al obtener usuarios:', error)
+    res.status(500).json({ message: 'Error interno del servidor' })
+  }
+}

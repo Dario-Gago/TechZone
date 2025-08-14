@@ -8,7 +8,7 @@ export const API_ENDPOINTS = {
   LOGIN: `${API_BASE_URL}/api/login`,
 
   // 👥 Usuarios endpoints
-  USUARIOS: `${API_BASE_URL}/usuarios`,
+  USUARIOS: `${API_BASE_URL}/api/usuarios`,
   USUARIO_BY_ID: (id) => `${API_BASE_URL}/usuarios/${id}`,
 
   // 📂 Categorías endpoints

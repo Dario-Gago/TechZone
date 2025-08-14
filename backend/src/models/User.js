@@ -48,5 +48,14 @@ export const User = {
       [email]
     )
     return parseInt(result.rows[0].count) > 0
+  },
+  // Obtener todos los usuarios
+  async findAll() {
+    const result = await pool.query(`
+    SELECT usuario_id, nombre, email, telefono, direccion, admin, fecha_registro
+    FROM usuario
+    ORDER BY fecha_registro DESC
+  `)
+    return result.rows
   }
 }

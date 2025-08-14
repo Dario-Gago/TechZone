@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
 import authRoutes from './src/routes/auth.js'
-
+import usuarios from './src/routes/usuarios.js'
 dotenv.config()
 
 const app = express()
@@ -14,6 +14,7 @@ app.use(express.json())
 
 // Rutas
 app.use('/api', authRoutes)
+app.use('/api/usuarios', usuarios)
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`)
