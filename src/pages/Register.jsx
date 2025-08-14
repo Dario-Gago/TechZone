@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { Mail, Lock, User, Phone, MapPin, Eye, EyeOff } from 'lucide-react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAutenticacion } from '../contexts/AuthContext'
+import axios from 'axios'
+import { API_ENDPOINTS } from '../config/api'
 
 const Registro = () => {
   const [datosFormulario, setDatosFormulario] = useState({
@@ -13,9 +15,11 @@ const Registro = () => {
     direccion: ''
   })
   const [mostrarContrasena, setMostrarContrasena] = useState(false)
-  const [mostrarConfirmarContrasena, setMostrarConfirmarContrasena] = useState(false)
+  const [mostrarConfirmarContrasena, setMostrarConfirmarContrasena] =
+    useState(false)
   const [errores, setErrores] = useState({})
   const [estaCargando, setEstaCargando] = useState(false)
+  const [mensajeError, setMensajeError] = useState('')
 
   const { iniciarSesion } = useAutenticacion()
   const navigate = useNavigate()
@@ -79,40 +83,49 @@ const Registro = () => {
         [name]: ''
       }))
     }
+
+    // Limpiar mensaje de error general
+    if (mensajeError) {
+      setMensajeError('')
+    }
   }
 
-  const manejarEnvio = async () => {
+  const manejarEnvio = async (e) => {
+    e.preventDefault()
+
     if (!validarFormulario()) {
       return
     }
 
     setEstaCargando(true)
+    setMensajeError('')
 
     try {
-      // Simular llamada a API
-      console.log('Datos de registro:', {
-        nombre: datosFormulario.nombre,
-        email: datosFormulario.email,
-        password: datosFormulario.password, // En producción, esto se hashearía en el backend
-        telefono: datosFormulario.telefono || null,
-        direccion: datosFormulario.direccion || null
-      })
+      // URL base configurable
 
-      // Simular delay de API
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      const response = await axios.post(
+        `${API_ENDPOINTS.REGISTER}`,
+        {
+          nombre: datosFormulario.nombre.trim(),
+          email: datosFormulario.email.toLowerCase().trim(),
+          password: datosFormulario.password,
+          telefono: datosFormulario.telefono.trim() || null,
+          direccion: datosFormulario.direccion.trim() || null
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          timeout: 10000 // Timeout de 10 segundos
+        }
+      )
 
-      // Crear usuario y iniciar sesión automáticamente
-      const tokenFalso = 'token_nuevo_usuario_' + Date.now()
-      const datosUsuario = {
-        name: datosFormulario.nombre,
-        email: datosFormulario.email,
-        telefono: datosFormulario.telefono,
-        direccion: datosFormulario.direccion,
-        role: 'user'
-      }
-      
-      iniciarSesion(tokenFalso, false, datosUsuario)
-      
+      // Con axios, la respuesta exitosa está en response.data
+      const data = response.data
+
+      // Iniciar sesión automáticamente con los datos del servidor
+      iniciarSesion(data.token, data.user.admin, data.user)
+
       // Redirigir a donde el usuario venía (checkout u home)
       navigate(from, { replace: true })
 
@@ -127,7 +140,25 @@ const Registro = () => {
       })
     } catch (error) {
       console.error('Error en el registro:', error)
-      alert('Error al registrar usuario. Intenta nuevamente.')
+
+      // Manejo de errores con axios
+      if (error.code === 'ECONNABORTED') {
+        setMensajeError(
+          'La solicitud ha tardado demasiado. Intenta nuevamente.'
+        )
+      } else if (error.code === 'ERR_NETWORK' || !error.response) {
+        setMensajeError(
+          'No se puede conectar al servidor. Verifica que la API esté ejecutándose en el puerto correcto.'
+        )
+      } else if (error.response) {
+        // El servidor respondió con un código de error
+        const mensajeServidor =
+          error.response.data?.message || 'Error en el registro'
+        setMensajeError(mensajeServidor)
+      } else {
+        // Error desconocido
+        setMensajeError('Ocurrió un error inesperado. Intenta nuevamente.')
+      }
     } finally {
       setEstaCargando(false)
     }
@@ -141,10 +172,9 @@ const Registro = () => {
             Crear Cuenta
           </h1>
           <p className="text-gray-600">
-            {from === '/checkout' 
+            {from === '/checkout'
               ? 'Crea tu cuenta para completar tu compra de forma segura'
-              : 'Completa tus datos para registrarte en nuestra plataforma'
-            }
+              : 'Completa tus datos para registrarte en nuestra plataforma'}
           </p>
         </div>
 
@@ -152,13 +182,22 @@ const Registro = () => {
         {from === '/checkout' && (
           <div className="bg-green-50 border border-green-200 rounded-lg p-4">
             <p className="text-sm text-green-800">
-              <span className="font-semibold">¡Es rápido y fácil!</span><br />
-              Al crear una cuenta podrás guardar tu información, ver el historial de compras y realizar futuras compras más rápido.
+              <span className="font-semibold">¡Es rápido y fácil!</span>
+              <br />
+              Al crear una cuenta podrás guardar tu información, ver el
+              historial de compras y realizar futuras compras más rápido.
             </p>
           </div>
         )}
 
-        <div className="mt-8 space-y-6">
+        {/* Mensaje de error */}
+        {mensajeError && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            <p className="text-sm text-red-800">{mensajeError}</p>
+          </div>
+        )}
+
+        <form onSubmit={manejarEnvio} className="mt-8 space-y-6">
           <div className="space-y-4">
             {/* Nombre */}
             <div>
@@ -177,10 +216,11 @@ const Registro = () => {
                   name="nombre"
                   type="text"
                   required
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errores.nombre
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${
+                    errores.nombre
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
-                    }`}
+                  }`}
                   placeholder="Tu nombre completo"
                   value={datosFormulario.nombre}
                   onChange={manejarCambioInput}
@@ -208,10 +248,11 @@ const Registro = () => {
                   name="email"
                   type="email"
                   required
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errores.email
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${
+                    errores.email
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
-                    }`}
+                  }`}
                   placeholder="email@ejemplo.com"
                   value={datosFormulario.email}
                   onChange={manejarCambioInput}
@@ -239,10 +280,11 @@ const Registro = () => {
                   name="password"
                   type={mostrarContrasena ? 'text' : 'password'}
                   required
-                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errores.password
+                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${
+                    errores.password
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
-                    }`}
+                  }`}
                   placeholder="Mínimo 8 caracteres"
                   value={datosFormulario.password}
                   onChange={manejarCambioInput}
@@ -281,10 +323,11 @@ const Registro = () => {
                   name="confirmPassword"
                   type={mostrarConfirmarContrasena ? 'text' : 'password'}
                   required
-                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errores.confirmPassword
+                  className={`block w-full pl-10 pr-10 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${
+                    errores.confirmPassword
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
-                    }`}
+                  }`}
                   placeholder="Repite tu contraseña"
                   value={datosFormulario.confirmPassword}
                   onChange={manejarCambioInput}
@@ -292,7 +335,9 @@ const Registro = () => {
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setMostrarConfirmarContrasena(!mostrarConfirmarContrasena)}
+                  onClick={() =>
+                    setMostrarConfirmarContrasena(!mostrarConfirmarContrasena)
+                  }
                 >
                   {mostrarConfirmarContrasena ? (
                     <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
@@ -324,10 +369,11 @@ const Registro = () => {
                   id="telefono"
                   name="telefono"
                   type="tel"
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${errores.telefono
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition duration-200 ${
+                    errores.telefono
                       ? 'border-red-300 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'
-                    }`}
+                  }`}
                   placeholder="+56 9 1234 5678"
                   value={datosFormulario.telefono}
                   onChange={manejarCambioInput}
@@ -361,6 +407,7 @@ const Registro = () => {
                 />
               </div>
             </div>
+
             <p className="mt-4 text-xs text-gray-500 text-center">
               Los campos marcados con * son obligatorios
             </p>
@@ -369,11 +416,11 @@ const Registro = () => {
           <button
             type="submit"
             disabled={estaCargando}
-            onClick={manejarEnvio}
-            className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition duration-200 ${estaCargando
+            className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white transition duration-200 ${
+              estaCargando
                 ? 'bg-gray-400 cursor-not-allowed'
                 : 'bg-gray-700 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
-              }`}
+            }`}
           >
             {estaCargando ? (
               <div className="flex items-center">
@@ -388,15 +435,13 @@ const Registro = () => {
           <div className="mt-6">
             <Link
               to="/login"
-              type="button"
+              state={{ from }}
               className="w-full flex justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200"
             >
               ¿Ya tienes cuenta? Iniciar sesión
             </Link>
           </div>
-        </div>
-
-
+        </form>
       </div>
     </div>
   )
