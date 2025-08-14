@@ -57,5 +57,26 @@ export const User = {
     ORDER BY fecha_registro DESC
   `)
     return result.rows
+  },
+  // Agregar estos métodos al objeto User en user.model.js
+
+  // Buscar usuario por ID
+  async findById(userId) {
+    const result = await pool.query(
+      'SELECT usuario_id, nombre, email, telefono, direccion, admin, fecha_registro FROM usuario WHERE usuario_id = $1',
+      [userId]
+    )
+    return result.rows[0]
+  },
+
+  // Eliminar usuario por ID
+  async deleteById(userId) {
+    const result = await pool.query(
+      `DELETE FROM usuario
+       WHERE usuario_id = $1
+       RETURNING usuario_id, nombre, email, telefono, direccion, admin, fecha_registro`,
+      [userId]
+    )
+    return result.rows[0]
   }
 }

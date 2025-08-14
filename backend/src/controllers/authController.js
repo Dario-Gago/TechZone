@@ -183,3 +183,82 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ message: 'Error interno del servidor' })
   }
 }
+// Agregar esta función al authController.js
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    // Verificar si el usuario es admin
+    if (!req.user?.admin) {
+      return res.status(403).json({
+        message:
+          'No autorizado. Solo los administradores pueden eliminar usuarios.'
+      })
+    }
+
+    // Validar que el ID sea un número válido
+    if (!id || isNaN(parseInt(id))) {
+      return res.status(400).json({
+        message: 'ID de usuario inválido'
+      })
+    }
+
+    const userId = parseInt(id)
+
+    // Verificar que no se elimine a sí mismo
+    if (req.user.userId === userId) {
+      return res.status(400).json({
+        message: 'No puedes eliminar tu propia cuenta'
+      })
+    }
+
+    // Verificar si el usuario existe antes de intentar eliminarlo
+    const userExists = await User.findById(userId)
+    if (!userExists) {
+      return res.status(404).json({
+        message: 'Usuario no encontrado'
+      })
+    }
+
+    // Verificar que no se elimine otro admin (opcional, según tu lógica de negocio)
+    if (userExists.admin) {
+      return res.status(400).json({
+        message: 'No se puede eliminar a otro administrador'
+      })
+    }
+
+    // Eliminar el usuario
+    const deletedUser = await User.deleteById(userId)
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        message: 'Usuario no encontrado'
+      })
+    }
+
+    res.status(200).json({
+      message: 'Usuario eliminado exitosamente',
+      deletedUser: {
+        usuario_id: deletedUser.usuario_id,
+        nombre: deletedUser.nombre,
+        email: deletedUser.email
+      }
+    })
+  } catch (error) {
+    console.error('Error al eliminar usuario:', error)
+
+    // Manejar errores específicos de base de datos
+    if (error.code === '23503') {
+      // Foreign key violation
+      return res.status(400).json({
+        message:
+          'No se puede eliminar el usuario porque tiene registros relacionados'
+      })
+    }
+
+    res.status(500).json({
+      message: 'Error interno del servidor'
+    })
+  }
+}
