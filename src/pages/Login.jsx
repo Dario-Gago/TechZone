@@ -146,15 +146,6 @@ const Login = () => {
             </div>
           </div>
 
-          <div className="text-right">
-            <a
-              href="#"
-              className="text-sm text-gray-600 hover:text-gray-900 underline"
-            >
-              ¿Has olvidado tu contraseña?
-            </a>
-          </div>
-
           <button
             type="submit"
             disabled={cargando}
@@ -162,24 +153,6 @@ const Login = () => {
           >
             {cargando ? 'Iniciando sesión...' : 'Iniciar sesión'}
           </button>
-
-          <div className="flex items-center">
-            <input
-              id="remember-me"
-              name="remember-me"
-              type="checkbox"
-              className="h-4 w-4 text-gray-600 focus:ring-gray-500 border-gray-300 rounded"
-              checked={recordarme}
-              onChange={(e) => setRecordarme(e.target.checked)}
-              disabled={cargando}
-            />
-            <label
-              htmlFor="remember-me"
-              className="ml-2 block text-sm text-gray-700"
-            >
-              Recuérdame
-            </label>
-          </div>
 
           <div className="mt-6">
             <Link
