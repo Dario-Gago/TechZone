@@ -9,7 +9,6 @@ import {
   obtenerUsuario
 } from '../hooks/dataHelpers'
 import datosUsuarios from '../data/usuarios.json'
-import datosProductos from '../data/products.json'
 import datosPedidos from '../data/pedidos.json'
 
 import StatsCards from '../components/StatsCards'

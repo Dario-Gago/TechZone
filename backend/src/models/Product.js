@@ -59,57 +59,7 @@ export const getProductById = async (id) => {
   }
 }
 
-// Obtener productos destacados
-export const getFeaturedProducts = async (limit = 8) => {
-  try {
-    const result = await pool.query(
-      'SELECT * FROM productos WHERE destacado = true ORDER BY id LIMIT $1',
-      [limit]
-    )
-    return result.rows.map(formatProduct)
-  } catch (error) {
-    throw new Error('Error al obtener productos destacados: ' + error.message)
-  }
-}
-
-// Obtener productos por categoría
-export const getProductsByCategory = async (category, subcategory = null) => {
-  try {
-    let queryText = 'SELECT * FROM productos WHERE categoria = $1'
-    let params = [category]
-
-    if (subcategory) {
-      queryText += ' AND subcategoria = $2'
-      params.push(subcategory)
-    }
-
-    queryText += ' ORDER BY id'
-
-    const result = await pool.query(queryText, params)
-    return result.rows.map(formatProduct)
-  } catch (error) {
-    throw new Error(
-      'Error al obtener productos por categoría: ' + error.message
-    )
-  }
-}
-
-// Buscar productos
-export const searchProducts = async (searchTerm) => {
-  try {
-    const result = await pool.query(
-      `SELECT * FROM productos
-       WHERE nombre ILIKE $1 OR marca ILIKE $1 OR descripcion ILIKE $1
-       ORDER BY id`,
-      [`%${searchTerm}%`]
-    )
-    return result.rows.map(formatProduct)
-  } catch (error) {
-    throw new Error('Error al buscar productos: ' + error.message)
-  }
-}
-
-// ✅ CREAR PRODUCTO - VERSIÓN CORREGIDA
+// ✅ CREAR PRODUCTO
 export const createProduct = async (productData) => {
   try {
     console.log('🟣 === PRODUCT MODEL CREATE ===')
@@ -192,7 +142,7 @@ export const createProduct = async (productData) => {
   }
 }
 
-// ✅ ACTUALIZAR PRODUCTO - TAMBIÉN CORREGIDO
+// ✅ ACTUALIZAR PRODUCTO
 export const updateProduct = async (id, productData) => {
   try {
     console.log('🟡 === PRODUCT MODEL UPDATE ===')
@@ -272,36 +222,5 @@ export const deleteProduct = async (id) => {
     return formatProduct(result.rows[0])
   } catch (error) {
     throw new Error('Error al eliminar producto: ' + error.message)
-  }
-}
-
-// Obtener productos con paginación
-export const getProductsPaginated = async (page = 1, limit = 10) => {
-  try {
-    const offset = (page - 1) * limit
-
-    // Obtener total de productos
-    const countResult = await pool.query('SELECT COUNT(*) FROM productos')
-    const total = parseInt(countResult.rows[0].count)
-
-    // Obtener productos paginados
-    const result = await pool.query(
-      'SELECT * FROM productos ORDER BY id LIMIT $1 OFFSET $2',
-      [limit, offset]
-    )
-
-    return {
-      products: result.rows.map(formatProduct),
-      pagination: {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        total,
-        totalPages: Math.ceil(total / limit),
-        hasNext: page * limit < total,
-        hasPrev: page > 1
-      }
-    }
-  } catch (error) {
-    throw new Error('Error al obtener productos paginados: ' + error.message)
   }
 }

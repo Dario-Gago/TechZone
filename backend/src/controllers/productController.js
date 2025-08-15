@@ -33,55 +33,6 @@ export const getProductByIdController = async (req, res) => {
   }
 }
 
-export const getFeaturedProductsController = async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit) || 8
-    const products = await productModel.getFeaturedProducts(limit)
-    res.json(products)
-  } catch (error) {
-    res.status(500).json({
-      error: 'Error del servidor',
-      message: error.message
-    })
-  }
-}
-
-export const getProductsByCategoryController = async (req, res) => {
-  try {
-    const { category, subcategory } = req.params
-    const products = await productModel.getProductsByCategory(
-      category,
-      subcategory
-    )
-    res.json(products)
-  } catch (error) {
-    res.status(500).json({
-      error: 'Error del servidor',
-      message: error.message
-    })
-  }
-}
-
-export const searchProductsController = async (req, res) => {
-  try {
-    const { q } = req.query
-    if (!q) {
-      return res.status(400).json({
-        error: 'Parámetro de búsqueda requerido',
-        message: 'Debe proporcionar un término de búsqueda'
-      })
-    }
-
-    const products = await productModel.searchProducts(q)
-    res.json(products)
-  } catch (error) {
-    res.status(500).json({
-      error: 'Error del servidor',
-      message: error.message
-    })
-  }
-}
-
 export const createProductController = async (req, res) => {
   try {
     console.log('🟢 === CREATE PRODUCT CONTROLLER ===')
