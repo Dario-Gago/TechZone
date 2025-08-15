@@ -5,14 +5,21 @@ import { useProductos } from '../hooks/useProducts'
 
 const PaginaCategoria = () => {
   const { categorySlug } = useParams()
-  const { obtenerProductosPorCategoria, categorias, formatearPrecio, cargando } = useProductos()
-  
+  const {
+    obtenerProductosPorCategoria,
+    categorias,
+    formatearPrecio,
+    cargando
+  } = useProductos()
+
   // Obtener productos de la categoría
   const productos = obtenerProductosPorCategoria(categorySlug)
-  
+
   // Encontrar el nombre de la categoría
-  const categoriaActual = categorias.find(cat => cat.slug === categorySlug)
-  const nombreCategoria = categoriaActual ? categoriaActual.name : 'Todos los productos'
+  const categoriaActual = categorias.find((cat) => cat.slug === categorySlug)
+  const nombreCategoria = categoriaActual
+    ? categoriaActual.name
+    : 'Todos los productos'
 
   if (cargando) {
     return (
@@ -22,7 +29,10 @@ const PaginaCategoria = () => {
             <div className="h-8 bg-gray-300 rounded w-64 mb-8"></div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {[...Array(8)].map((_, index) => (
-                <div key={index} className="bg-white rounded-lg overflow-hidden">
+                <div
+                  key={index}
+                  className="bg-white rounded-lg overflow-hidden"
+                >
                   <div className="h-48 bg-gray-300"></div>
                   <div className="p-4 space-y-3">
                     <div className="h-4 bg-gray-300 rounded"></div>
@@ -47,66 +57,76 @@ const PaginaCategoria = () => {
             {nombreCategoria}
           </h1>
           <p className="text-gray-600">
-            {productos.length} producto{productos.length !== 1 ? 's' : ''} encontrado{productos.length !== 1 ? 's' : ''}
+            {productos.length} producto{productos.length !== 1 ? 's' : ''}{' '}
+            encontrado{productos.length !== 1 ? 's' : ''}
           </p>
         </div>
 
         {/* Grid de productos */}
         {productos.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {productos.map((product) => (
-              <Link
-                key={product.id}
-                to={`/product/${product.id}`}
-                className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-200"
-              >
-                {/* Imagen del producto */}
-                <div className="relative bg-white h-48 flex items-center justify-center">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-contain"
-                  />
-                  
-                  {/* Badge de descuento */}
-                  {product.discount > 0 && (
-                    <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
-                      -{product.discount}%
-                    </div>
-                  )}
-                </div>
+            {productos.map((product) => {
+              // ✅ Calcular precio con descuento en tiempo real
+              const precioConDescuento =
+                product.discount > 0
+                  ? product.originalPrice -
+                    (product.originalPrice * product.discount) / 100
+                  : product.originalPrice
 
-                {/* Información del producto */}
-                <div className="p-4 flex flex-col h-38">
-                  {/* Marca */}
-                  {product.brand && (
-                    <p className="text-sm text-gray-500 uppercase tracking-wide mb-1">
-                      {product.brand}
-                    </p>
-                  )}
+              return (
+                <Link
+                  key={product.id}
+                  to={`/product/${product.id}`}
+                  className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-200"
+                >
+                  {/* Imagen del producto */}
+                  <div className="relative bg-white h-48 flex items-center justify-center">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-contain"
+                    />
 
-                  {/* Nombre del producto */}
-                  <h3 className="text-sm font-medium text-gray-800 mb-3 line-clamp-2 leading-tight flex-grow">
-                    {product.name}
-                  </h3>
-
-                  {/* Precios */}
-                  <div className="space-y-1 mt-auto">
-                    {/* Precio original tachado */}
+                    {/* Badge de descuento */}
                     {product.discount > 0 && (
-                      <p className="text-sm text-gray-500 line-through">
-                        {formatearPrecio(product.originalPrice)}
+                      <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
+                        -{product.discount}%
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Información del producto */}
+                  <div className="p-4 flex flex-col h-38">
+                    {/* Marca */}
+                    {product.brand && (
+                      <p className="text-sm text-gray-500 uppercase tracking-wide mb-1">
+                        {product.brand}
                       </p>
                     )}
-                    
-                    {/* Precio con descuento */}
-                    <p className="text-xl font-bold text-gray-900">
-                      {formatearPrecio(product.discountPrice)}
-                    </p>
+
+                    {/* Nombre del producto */}
+                    <h3 className="text-sm font-medium text-gray-800 mb-3 line-clamp-2 leading-tight flex-grow">
+                      {product.name}
+                    </h3>
+
+                    {/* Precios */}
+                    <div className="space-y-1 mt-auto">
+                      {/* Precio original tachado */}
+                      {product.discount > 0 && (
+                        <p className="text-sm text-gray-500 line-through">
+                          {formatearPrecio(product.originalPrice)}
+                        </p>
+                      )}
+
+                      {/* Precio con descuento calculado */}
+                      <p className="text-xl font-bold text-gray-900">
+                        {formatearPrecio(precioConDescuento)}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
         ) : (
           <div className="text-center py-12">
