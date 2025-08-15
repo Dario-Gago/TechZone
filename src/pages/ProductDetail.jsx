@@ -3,15 +3,21 @@ import { useParams } from 'react-router-dom'
 import { ShoppingCart, Check } from 'lucide-react'
 import axios from 'axios'
 import { useProductos } from '../hooks/useProducts'
+import { useCarrito } from '../hooks/useCart'
 import ProductosDestacados from '../components/FeaturedProducts'
 import { API_ENDPOINTS } from '../config/api'
+
 const DetalleProducto = () => {
   const { id } = useParams()
   const { formatearPrecio } = useProductos()
+  const { agregarAlCarrito, estaEnCarrito, obtenerCantidadItem } = useCarrito()
   const [cantidad, setCantidad] = useState(1)
   const [producto, setProducto] = useState(null)
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
+  const [agregandoCarrito, setAgregandoCarrito] = useState(false)
+  const [mensajeExito, setMensajeExito] = useState('')
+
   const calcularDescuento = (precioOriginal, precioOferta) => {
     if (!precioOriginal || !precioOferta) return 0
     return Math.round(((precioOriginal - precioOferta) / precioOriginal) * 100)
@@ -65,15 +71,43 @@ const DetalleProducto = () => {
     }
   }
 
-  const manejarAgregarCarrito = () => {
-    // Aquí podrías hacer un POST al backend o al contexto del carrito
-    console.log(
-      `Añadiendo ${cantidad} unidades del producto ${producto.id} al carrito`
-    )
+  const manejarAgregarCarrito = async () => {
+    setAgregandoCarrito(true)
+    try {
+      const exito = agregarAlCarrito(producto.id, cantidad)
+      if (exito) {
+        setMensajeExito(
+          `¡${cantidad} ${
+            cantidad === 1 ? 'producto agregado' : 'productos agregados'
+          } al carrito!`
+        )
+        // Limpiar mensaje después de 3 segundos
+        setTimeout(() => {
+          setMensajeExito('')
+        }, 3000)
+      } else {
+        console.error('No se pudo agregar el producto al carrito')
+      }
+    } catch (error) {
+      console.error('Error al agregar al carrito:', error)
+    } finally {
+      setAgregandoCarrito(false)
+    }
   }
+
+  const yaEstaEnCarrito = estaEnCarrito(producto.id)
+  const cantidadEnCarrito = obtenerCantidadItem(producto.id)
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Mensaje de éxito */}
+      {mensajeExito && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2">
+          <Check className="h-5 w-5" />
+          <span>{mensajeExito}</span>
+        </div>
+      )}
+
       {/* Sección de detalle del producto */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -135,6 +169,20 @@ const DetalleProducto = () => {
               ))}
             </ul>
 
+            {/* Estado del carrito */}
+            {yaEstaEnCarrito && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-center space-x-2 text-blue-700">
+                  <ShoppingCart className="h-4 w-4" />
+                  <span className="text-sm font-medium">
+                    Ya tienes {cantidadEnCarrito}{' '}
+                    {cantidadEnCarrito === 1 ? 'unidad' : 'unidades'} en tu
+                    carrito
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* Selector cantidad */}
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
@@ -163,10 +211,24 @@ const DetalleProducto = () => {
 
               <button
                 onClick={manejarAgregarCarrito}
-                className="w-full bg-gray-700 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center space-x-2"
+                disabled={agregandoCarrito}
+                className={`w-full py-3 px-6 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center space-x-2 ${
+                  agregandoCarrito
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-gray-700 hover:bg-gray-800'
+                } text-white`}
               >
-                <ShoppingCart className="h-5 w-5" />
-                <span>AÑADIR AL CARRITO</span>
+                {agregandoCarrito ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>AGREGANDO...</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart className="h-5 w-5" />
+                    <span>AÑADIR AL CARRITO</span>
+                  </>
+                )}
               </button>
 
               <div className="text-center">

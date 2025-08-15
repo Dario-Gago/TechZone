@@ -1,11 +1,12 @@
 import { useContext } from 'react'
-import CartContext from '../contexts/CartContext'
+import ContextoCarrito from '../contexts/CartContext'
 
-// Hook personalizado para usar el contexto del carrito
 export const useCarrito = () => {
-  const context = useContext(CartContext)
+  const context = useContext(ContextoCarrito)
+
   if (!context) {
     throw new Error('useCarrito debe ser usado dentro de un ProveedorCarrito')
   }
+
   return context
 }

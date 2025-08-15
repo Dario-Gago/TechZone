@@ -1,18 +1,47 @@
-import React, { createContext, useState, useContext } from 'react'
+import React, { createContext, useState, useContext, useEffect } from 'react'
 import ContextoProducto from './ProductContext'
-import cartData from '../data/carrito.json' // Solo para datos iniciales del carrito
 
 const ContextoCarrito = createContext()
 
 export const ProveedorCarrito = ({ children }) => {
-  const { obtenerProductoPorId } = useContext(ContextoProducto)
-  const [articulosCarrito, setArticulosCarrito] = useState(cartData.cart.items || [])
+  const contextoProducto = useContext(ContextoProducto)
+  const [articulosCarrito, setArticulosCarrito] = useState([])
+  const [carritoInicializado, setCarritoInicializado] = useState(false)
+
+  // Cargar carrito desde localStorage al iniciar
+  useEffect(() => {
+    const carritoGuardado = localStorage.getItem('carrito')
+    if (carritoGuardado) {
+      try {
+        const carrito = JSON.parse(carritoGuardado)
+        setArticulosCarrito(carrito)
+      } catch (error) {
+        console.error('Error al cargar el carrito desde localStorage:', error)
+        setArticulosCarrito([])
+      }
+    }
+    setCarritoInicializado(true)
+  }, [])
+
+  // Guardar carrito en localStorage cada vez que cambie (solo después de inicializar)
+  useEffect(() => {
+    if (carritoInicializado) {
+      localStorage.setItem('carrito', JSON.stringify(articulosCarrito))
+    }
+  }, [articulosCarrito, carritoInicializado])
 
   // Función para obtener el producto completo con datos actuales
   const obtenerItemCarritoConDatos = (itemCarrito) => {
-    const producto = obtenerProductoPorId(itemCarrito.productId)
+    // Verificar que el contexto de productos esté disponible y tenga datos
+    if (!contextoProducto || !contextoProducto.obtenerProductoPorId) {
+      return null
+    }
+
+    const producto = contextoProducto.obtenerProductoPorId(
+      itemCarrito.productId
+    )
     if (!producto) return null
-    
+
     return {
       ...producto,
       cantidadCarrito: itemCarrito.quantity,
@@ -25,21 +54,31 @@ export const ProveedorCarrito = ({ children }) => {
   const obtenerItemsCarritoConDatos = () => {
     return articulosCarrito
       .map(obtenerItemCarritoConDatos)
-      .filter(item => item !== null) // Filtrar productos que ya no existen
+      .filter((item) => item !== null) // Filtrar productos que ya no existen
   }
 
   const agregarAlCarrito = (idProducto, cantidad = 1) => {
-    const producto = obtenerProductoPorId(idProducto)
-    if (!producto || producto.stock < cantidad) return false
+    // Verificar que el contexto de productos esté disponible
+    if (!contextoProducto || !contextoProducto.obtenerProductoPorId) {
+      console.error('Contexto de productos no disponible')
+      return false
+    }
+
+    const producto = contextoProducto.obtenerProductoPorId(idProducto)
+    if (!producto) {
+      console.error('Producto no encontrado')
+      return false
+    }
 
     setArticulosCarrito((items) => {
-      const indiceItemExistente = items.findIndex((item) => item.productId === idProducto)
-      
+      const indiceItemExistente = items.findIndex(
+        (item) => item.productId === idProducto
+      )
+
       if (indiceItemExistente >= 0) {
         // Si el producto ya está en el carrito, actualizar cantidad
         const nuevaCantidad = items[indiceItemExistente].quantity + cantidad
-        if (nuevaCantidad > producto.stock) return items // No exceder stock
-        
+
         return items.map((item, index) =>
           index === indiceItemExistente
             ? { ...item, quantity: nuevaCantidad }
@@ -50,7 +89,7 @@ export const ProveedorCarrito = ({ children }) => {
         return [...items, { productId: idProducto, quantity: cantidad }]
       }
     })
-    
+
     return true
   }
 
@@ -59,23 +98,22 @@ export const ProveedorCarrito = ({ children }) => {
       eliminarDelCarrito(idProducto)
       return
     }
-    
-    const producto = obtenerProductoPorId(idProducto)
-    if (!producto || nuevaCantidad > producto.stock) return false
-    
+
     setArticulosCarrito((items) =>
       items.map((item) =>
-        item.productId === idProducto 
-          ? { ...item, quantity: nuevaCantidad } 
+        item.productId === idProducto
+          ? { ...item, quantity: nuevaCantidad }
           : item
       )
     )
-    
+
     return true
   }
 
   const eliminarDelCarrito = (idProducto) => {
-    setArticulosCarrito((items) => items.filter((item) => item.productId !== idProducto))
+    setArticulosCarrito((items) =>
+      items.filter((item) => item.productId !== idProducto)
+    )
   }
 
   const vaciarCarrito = () => {
@@ -116,7 +154,11 @@ export const ProveedorCarrito = ({ children }) => {
     obtenerPrecioTotal
   }
 
-  return <ContextoCarrito.Provider value={value}>{children}</ContextoCarrito.Provider>
+  return (
+    <ContextoCarrito.Provider value={value}>
+      {children}
+    </ContextoCarrito.Provider>
+  )
 }
 
 // Exportaciones para compatibilidad
