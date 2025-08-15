@@ -69,22 +69,27 @@ export const ProveedorProducto = ({ children }) => {
 
   const agregarProducto = async (nuevoProducto) => {
     try {
+      console.log('🟢 Datos recibidos en agregarProducto:', nuevoProducto)
+
+      // ✅ CORRECCIÓN: El formulario ahora envía datos en español, usar esos directamente
       const payload = {
-        nombre: nuevoProducto.name.trim(),
-        marca: (nuevoProducto.brand || '').trim(),
-        descripcion: '',
-        precio_original: Number(nuevoProducto.originalPrice),
-        precio_descuento: Number(nuevoProducto.discountPrice) || 0,
-        descuento: 0,
-        imagen: (nuevoProducto.image || '').trim(),
-        categoria: (nuevoProducto.category || '').trim(),
-        subcategoria: '',
-        stock: 0,
-        en_stock: 1,
-        destacado: false,
-        envio: 'Envío estándar',
-        caracteristicas: null
+        nombre: (nuevoProducto.nombre || '').trim(),
+        marca: (nuevoProducto.marca || '').trim(),
+        descripcion: nuevoProducto.descripcion || '',
+        precio_original: Number(nuevoProducto.precio_original) || 0,
+        precio_descuento: Number(nuevoProducto.precio_descuento) || 0,
+        descuento: Number(nuevoProducto.descuento) || 0,
+        imagen: (nuevoProducto.imagen || '').trim(),
+        categoria: (nuevoProducto.categoria || '').trim(),
+        subcategoria: nuevoProducto.subcategoria || '',
+        stock: Number(nuevoProducto.stock) || 0,
+        en_stock: Number(nuevoProducto.en_stock) || 1,
+        destacado: Boolean(nuevoProducto.destacado),
+        envio: nuevoProducto.envio || 'Envío estándar',
+        caracteristicas: nuevoProducto.caracteristicas || null // ✅ Características incluidas
       }
+
+      console.log('🟢 Payload enviado al backend:', payload)
 
       const response = await api.post('/', payload)
 
@@ -101,7 +106,8 @@ export const ProveedorProducto = ({ children }) => {
         category: response.data.categoria || response.data.category,
         subcategory:
           response.data.subcategoria || response.data.subcategory || '',
-        image: response.data.imagen || response.data.image
+        image: response.data.imagen || response.data.image,
+        features: response.data.features || [] // ✅ Asegurar que features esté presente
       }
 
       setProductos((prev) => {
@@ -123,54 +129,62 @@ export const ProveedorProducto = ({ children }) => {
 
   const editarProducto = async (id, productoActualizado) => {
     try {
+      console.log('🟡 Datos recibidos en editarProducto:', productoActualizado)
+
+      // ✅ CORRECCIÓN: Manejar tanto formato español como inglés para compatibilidad
       const payload = {
         nombre: (
-          productoActualizado.name ||
           productoActualizado.nombre ||
+          productoActualizado.name ||
           ''
         ).trim(),
         marca: (
-          productoActualizado.brand ||
           productoActualizado.marca ||
+          productoActualizado.brand ||
           ''
         ).trim(),
         descripcion: (
-          productoActualizado.description ||
           productoActualizado.descripcion ||
+          productoActualizado.description ||
           ''
         ).trim(),
         precio_original:
           Number(
-            productoActualizado.originalPrice ||
-              productoActualizado.precio_original
+            productoActualizado.precio_original ||
+              productoActualizado.originalPrice
           ) || 0,
         precio_descuento:
           Number(
-            productoActualizado.discountPrice ||
-              productoActualizado.precio_descuento
+            productoActualizado.precio_descuento ||
+              productoActualizado.discountPrice
           ) || 0,
-        descuento: Number(productoActualizado.descuento || 0),
+        descuento: Number(productoActualizado.descuento) || 0,
         imagen: (
-          productoActualizado.image ||
           productoActualizado.imagen ||
+          productoActualizado.image ||
           ''
         ).trim(),
         categoria: (
-          productoActualizado.category ||
           productoActualizado.categoria ||
+          productoActualizado.category ||
           ''
         ).trim(),
         subcategoria: (
-          productoActualizado.subcategory ||
           productoActualizado.subcategoria ||
+          productoActualizado.subcategory ||
           ''
         ).trim(),
         stock: Number(productoActualizado.stock) || 0,
-        en_stock: Number(productoActualizado.stock) > 0 ? 1 : 0,
+        en_stock: Number(productoActualizado.en_stock) || 1,
         destacado: Boolean(productoActualizado.destacado),
         envio: productoActualizado.envio || 'Envío estándar',
-        caracteristicas: productoActualizado.caracteristicas || null
+        caracteristicas:
+          productoActualizado.caracteristicas ||
+          productoActualizado.features ||
+          null // ✅ Manejar ambos nombres
       }
+
+      console.log('🟡 Payload enviado al backend:', payload)
 
       const response = await api.put(`/${id}`, payload)
 
@@ -185,7 +199,8 @@ export const ProveedorProducto = ({ children }) => {
           response.data.precio_descuento || response.data.discountPrice,
         category: response.data.categoria || response.data.category,
         subcategory: response.data.subcategoria || response.data.subcategory,
-        image: response.data.imagen || response.data.image
+        image: response.data.imagen || response.data.image,
+        features: response.data.features || [] // ✅ Asegurar que features esté presente
       }
 
       setProductos((prev) =>
