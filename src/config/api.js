@@ -16,7 +16,7 @@ export const API_ENDPOINTS = {
   CATEGORIA_BY_ID: (id) => `${API_BASE_URL}/categorias/${id}`,
 
   // 📦 Productos endpoints
-  PRODUCTOS: `${API_BASE_URL}(api/productos`,
+  PRODUCTOS: `${API_BASE_URL}/api/productos`,
   PRODUCTO_BY_ID: (id) => `${API_BASE_URL}/api/productos/${id}`,
 
   // 🛒 Carrito endpoints

@@ -32,7 +32,14 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    onGuardar(formProducto)
+
+    if (productoEditando) {
+      // ✅ Cuando edita: pasa el ID y los datos
+      onGuardar(productoEditando.id, formProducto)
+    } else {
+      // Para crear nuevo producto (si es necesario)
+      onGuardar(formProducto)
+    }
   }
 
   const handleInputChange = (field, value) => {

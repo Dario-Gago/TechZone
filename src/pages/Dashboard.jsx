@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { User } from 'lucide-react'
 import { useAutenticacion } from '../contexts/AuthContext'
 import { API_ENDPOINTS } from '../config/api'
@@ -16,6 +16,7 @@ import StatsCards from '../components/StatsCards'
 import UserPurchases from '../components/UserPurchases'
 import AdminTabs from '../components/AdminTabs'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { ProductContext } from '../contexts/ProductContext'
 
 const Dashboard = () => {
   const { esAdmin, usuario } = useAutenticacion()
@@ -23,9 +24,8 @@ const Dashboard = () => {
   const [estadisticas, setEstadisticas] = useState({})
   const [loading, setLoading] = useState(true)
   const [usuarios, setUsuarios] = useState([])
-  const [productos, setProductos] = useState(
-    datosProductos.products.slice(0, 6)
-  )
+  const { productos, cargarProductos, categorias } = useContext(ProductContext)
+
   const [pedidos, setPedidos] = useState([])
 
   // Función para obtener usuarios de la base de datos
@@ -210,8 +210,8 @@ const Dashboard = () => {
             {esAdmin ? (
               <AdminTabs
                 pedidos={pedidos}
-                productos={productos}
-                usuarios={usuarios}
+                productos={productos} // productos del contexto
+                usuarios={usuarios} // usuarios traídos de API o contexto similar
                 onEliminarUsuario={eliminarUsuario}
                 onEliminarProducto={eliminarProducto}
                 onGuardarProducto={guardarProducto}

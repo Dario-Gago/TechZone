@@ -1,17 +1,34 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { ShoppingCart, Check } from 'lucide-react'
+import axios from 'axios'
 import { useProductos } from '../hooks/useProducts'
 import ProductosDestacados from '../components/FeaturedProducts'
-
+import { API_ENDPOINTS } from '../config/api'
 const DetalleProducto = () => {
   const { id } = useParams()
-  const { obtenerProductoPorId, formatearPrecio, cargando } = useProductos()
+  const { formatearPrecio } = useProductos()
   const [cantidad, setCantidad] = useState(1)
+  const [producto, setProducto] = useState(null)
+  const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState(null)
 
-  const producto = obtenerProductoPorId(id)
+  useEffect(() => {
+    const fetchProducto = async () => {
+      try {
+        setCargando(true)
+        const { data } = await axios.get(`${API_ENDPOINTS.PRODUCTO_BY_ID(id)}`)
+        setProducto(data)
+      } catch (err) {
+        console.error(err)
+        setError('No se pudo obtener el producto.')
+      } finally {
+        setCargando(false)
+      }
+    }
+    fetchProducto()
+  }, [id])
 
-  // Manejar estados de carga y producto no encontrado
   if (cargando) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -23,7 +40,7 @@ const DetalleProducto = () => {
     )
   }
 
-  if (!producto) {
+  if (error || !producto) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
@@ -31,7 +48,7 @@ const DetalleProducto = () => {
             Producto no encontrado
           </h1>
           <p className="text-gray-600">
-            El producto que buscas no existe o ha sido removido.
+            {error || 'Este producto no existe o ha sido removido.'}
           </p>
         </div>
       </div>
@@ -45,7 +62,7 @@ const DetalleProducto = () => {
   }
 
   const manejarAgregarCarrito = () => {
-    // Lógica para añadir al carrito
+    // Aquí podrías hacer un POST al backend o al contexto del carrito
     console.log(
       `Añadiendo ${cantidad} unidades del producto ${producto.id} al carrito`
     )
@@ -69,7 +86,6 @@ const DetalleProducto = () => {
 
           {/* Información del producto */}
           <div className="space-y-6">
-            {/* Título y marca */}
             <div>
               <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
                 {producto.name}
@@ -95,27 +111,22 @@ const DetalleProducto = () => {
             </div>
 
             {/* Descripción */}
-            <div>
-              <p className="text-gray-600 leading-relaxed">
-                {producto.description}
-              </p>
-            </div>
+            <p className="text-gray-600 leading-relaxed">
+              {producto.description}
+            </p>
 
             {/* Características */}
-            <div>
-              <ul className="space-y-3">
-                {producto.features.map((feature, index) => (
-                  <li key={index} className="flex items-start space-x-3">
-                    <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ul className="space-y-3">
+              {producto.features?.map((feature, index) => (
+                <li key={index} className="flex items-start space-x-3">
+                  <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">{feature}</span>
+                </li>
+              ))}
+            </ul>
 
-            {/* Selector de cantidad y botón de compra */}
+            {/* Selector cantidad */}
             <div className="space-y-4">
-              {/* Selector de cantidad */}
               <div className="flex items-center space-x-4">
                 <span className="text-sm font-medium text-gray-700">
                   Cantidad:
@@ -140,7 +151,6 @@ const DetalleProducto = () => {
                 </div>
               </div>
 
-              {/* Botón añadir al carrito */}
               <button
                 onClick={manejarAgregarCarrito}
                 className="w-full bg-gray-700 text-white py-3 px-6 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center space-x-2"
@@ -149,7 +159,6 @@ const DetalleProducto = () => {
                 <span>AÑADIR AL CARRITO</span>
               </button>
 
-              {/* Información de envío */}
               <div className="text-center">
                 <p className="text-sm text-gray-600">{producto.shipping}</p>
               </div>
@@ -166,7 +175,7 @@ const DetalleProducto = () => {
         </div>
       </div>
 
-      {/* Sección de productos destacados */}
+      {/* Productos destacados */}
       <div className="bg-gray-50">
         <ProductosDestacados />
       </div>

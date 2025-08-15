@@ -1,30 +1,31 @@
 import React, { createContext, useState, useEffect } from 'react'
-import productsData from '../data/products.json'
+import axios from 'axios'
 
-// Crear el contexto
 const ContextoProducto = createContext()
 
-// Proveedor del contexto
 export const ProveedorProducto = ({ children }) => {
   const [productos, setProductos] = useState([])
   const [categorias, setCategorias] = useState([])
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
 
-  // Simular carga de datos (preparación para futura API)
   useEffect(() => {
     const cargarProductos = async () => {
       try {
         setCargando(true)
-        // Simular delay de API
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
-        setProductos(productsData.products)
-        setCategorias(productsData.categories)
+        const response = await axios.get('http://localhost:3000/api/productos')
+        setProductos(response.data)
+
+        // Extraer categorías únicas
+        const categoriasUnicas = [
+          ...new Set(response.data.map((producto) => producto.category))
+        ]
+        setCategorias(categoriasUnicas)
+
         setError(null)
       } catch (err) {
+        console.error(err)
         setError('Error al cargar los productos')
-        console.error('Error loading products:', err)
       } finally {
         setCargando(false)
       }
@@ -33,65 +34,28 @@ export const ProveedorProducto = ({ children }) => {
     cargarProductos()
   }, [])
 
-  // Función para obtener producto por ID
-  const obtenerProductoPorId = (id) => {
-    return productos.find(producto => producto.id === parseInt(id))
-  }
-
-  // Función para obtener productos por categoría
-  const obtenerProductosPorCategoria = (categorySlug) => {
-    if (categorySlug === 'todo' || !categorySlug) {
-      return productos
-    }
-    
-    // Convertir slug de categoría a format interno del producto
-    let categoryKey = categorySlug
-    if (categorySlug === 'gaming-y-streaming') {
-      categoryKey = 'gaming-streaming'
-    } else if (categorySlug === 'conectividad-y-redes') {
-      categoryKey = 'conectividad-redes'
-    } else if (categorySlug === 'hogar-y-oficina') {
-      categoryKey = 'hogar-oficina'
-    } else if (categorySlug === 'audio-y-video') {
-      categoryKey = 'audio-video'
-    }
-    
-    return productos.filter(producto => producto.category === categoryKey)
-  }
-
-  // Función para obtener productos destacados (primeros 6)
-  const obtenerProductosDestacados = () => {
-    return productos.slice(0, 6)
-  }
-
-  // Función para buscar productos
+  // Funciones auxiliares (igual que antes)
+  const obtenerProductoPorId = (id) =>
+    productos.find((p) => p.id === parseInt(id))
+  const obtenerProductosPorCategoria = (category) =>
+    category === 'todo'
+      ? productos
+      : productos.filter((p) => p.category === category)
+  const obtenerProductosDestacados = () => productos.slice(0, 6)
   const buscarProductos = (query) => {
     if (!query.trim()) return productos
-    
-    const terminoBusqueda = query.toLowerCase()
-    return productos.filter(producto => 
-      producto.name.toLowerCase().includes(terminoBusqueda) ||
-      producto.brand.toLowerCase().includes(terminoBusqueda) ||
-      producto.description.toLowerCase().includes(terminoBusqueda)
+    const q = query.toLowerCase()
+    return productos.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.brand.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q)
     )
   }
-
-  // Función para actualizar stock (preparación para carrito)
-  const actualizarStockProducto = (idProducto, nuevoStock) => {
-    setProductos(productosAnteriores => 
-      productosAnteriores.map(producto => 
-        producto.id === idProducto 
-          ? { ...producto, stock: nuevoStock }
-          : producto
-      )
-    )
-  }
-
-  // Función para formatear precios
   const formatearPrecio = (precio) => {
-    return `$${precio.toLocaleString('es-CL')}`
+    if (typeof precio !== 'number') return precio
+    return `$${precio.toLocaleString('es-CL')}` // Formato chileno, por ejemplo
   }
-
   const value = {
     productos,
     categorias,
@@ -101,18 +65,14 @@ export const ProveedorProducto = ({ children }) => {
     obtenerProductosPorCategoria,
     obtenerProductosDestacados,
     buscarProductos,
-    actualizarStockProducto,
     formatearPrecio,
-    // Mantener compatibilidad con nombres en inglés
     products: productos,
     categories: categorias,
     loading: cargando,
     getProductById: obtenerProductoPorId,
     getProductsByCategory: obtenerProductosPorCategoria,
     getFeaturedProducts: obtenerProductosDestacados,
-    searchProducts: buscarProductos,
-    updateProductStock: actualizarStockProducto,
-    formatPrice: formatearPrecio
+    searchProducts: buscarProductos
   }
 
   return (
@@ -122,7 +82,6 @@ export const ProveedorProducto = ({ children }) => {
   )
 }
 
-// Exportaciones para compatibilidad
 export default ContextoProducto
 export const ProductContext = ContextoProducto
 export const ProductProvider = ProveedorProducto

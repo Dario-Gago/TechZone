@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { useProductos } from '../hooks/useProducts'
 
 const ProductosDestacados = () => {
-  const { obtenerProductosDestacados, formatearPrecio, cargando } = useProductos()
+  const { obtenerProductosDestacados, formatearPrecio, cargando } =
+    useProductos()
   const referenciaScroll = useRef(null)
   const [puedeDesplazarIzquierda, setPuedeDesplazarIzquierda] = useState(false)
   const [puedeDesplazarDerecha, setPuedeDesplazarDerecha] = useState(true)
@@ -23,7 +24,8 @@ const ProductosDestacados = () => {
     const elementoScroll = referenciaScroll.current
     if (elementoScroll) {
       elementoScroll.addEventListener('scroll', verificarDesplazamiento)
-      return () => elementoScroll.removeEventListener('scroll', verificarDesplazamiento)
+      return () =>
+        elementoScroll.removeEventListener('scroll', verificarDesplazamiento)
     }
   }, [])
 
@@ -73,8 +75,18 @@ const ProductosDestacados = () => {
             className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-50 transition-colors"
             aria-label="Anterior"
           >
-            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg
+              className="w-6 h-6 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
         )}
@@ -86,14 +98,27 @@ const ProductosDestacados = () => {
             className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white shadow-lg rounded-full p-2 hover:bg-gray-50 transition-colors"
             aria-label="Siguiente"
           >
-            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg
+              className="w-6 h-6 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
             </svg>
           </button>
         )}
 
         {/* Contenedor del Slider */}
-        <div ref={referenciaScroll} className="overflow-x-auto scrollbar-hide px-12">
+        <div
+          ref={referenciaScroll}
+          className="overflow-x-auto scrollbar-hide px-12"
+        >
           <div className="flex gap-2 min-w-max">
             {productos.map((producto) => (
               <Link
@@ -108,7 +133,7 @@ const ProductosDestacados = () => {
                     alt={producto.name}
                     className="w-full h-full object-contain"
                   />
-                  
+
                   {/* Badge de descuento */}
                   <div className="absolute top-2 right-2 bg-red-500 text-white px-1.5 py-0.5 rounded text-xs font-bold">
                     -{producto.discount}%
@@ -137,7 +162,7 @@ const ProductosDestacados = () => {
                     <p className="text-sm text-gray-500 line-through">
                       {formatearPrecio(producto.originalPrice)}
                     </p>
-                    
+
                     {/* Precio con descuento */}
                     <p className="text-xl font-bold text-gray-900">
                       {formatearPrecio(producto.discountPrice)}
