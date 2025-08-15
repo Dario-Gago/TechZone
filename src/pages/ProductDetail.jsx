@@ -102,7 +102,7 @@ const DetalleProducto = () => {
     <div className="min-h-screen bg-white">
       {/* Mensaje de éxito */}
       {mensajeExito && (
-        <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2">
+        <div className="fixed top-4 left-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center space-x-2">
           <Check className="h-5 w-5" />
           <span>{mensajeExito}</span>
         </div>
