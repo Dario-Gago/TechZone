@@ -10,6 +10,10 @@ const ProductosDestacados = () => {
   const [puedeDesplazarDerecha, setPuedeDesplazarDerecha] = useState(true)
 
   const productos = obtenerProductosDestacados()
+  const calcularDescuento = (precioOriginal, precioOferta) => {
+    if (!precioOriginal || !precioOferta) return 0
+    return Math.round(((precioOriginal - precioOferta) / precioOriginal) * 100)
+  }
 
   const verificarDesplazamiento = () => {
     if (referenciaScroll.current) {
@@ -120,57 +124,64 @@ const ProductosDestacados = () => {
           className="overflow-x-auto scrollbar-hide px-12"
         >
           <div className="flex gap-2 min-w-max">
-            {productos.map((producto) => (
-              <Link
-                key={producto.id}
-                to={`/product/${producto.id}`}
-                className="bg-white rounded-lg overflow-hidden flex-shrink-0 w-48 sm:w-52 md:w-56 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
-              >
-                {/* Imagen del producto */}
-                <div className="relative bg-white h-70 flex items-center justify-center">
-                  <img
-                    src={producto.image}
-                    alt={producto.name}
-                    className="w-full h-full object-contain"
-                  />
+            {productos.slice(0, 6).map((producto) => {
+              const descuento = Math.round(
+                ((producto.originalPrice - producto.discountPrice) /
+                  producto.originalPrice) *
+                  100
+              )
 
-                  {/* Badge de descuento */}
-                  <div className="absolute top-2 right-2 bg-red-500 text-white px-1.5 py-0.5 rounded text-xs font-bold">
-                    -{producto.discount}%
-                  </div>
-                </div>
+              return (
+                <Link
+                  key={producto.id}
+                  to={`/product/${producto.id}`}
+                  className="bg-white rounded-lg overflow-hidden flex-shrink-0 w-48 sm:w-52 md:w-56 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+                >
+                  {/* Imagen del producto */}
+                  <div className="relative bg-white h-70 flex items-center justify-center">
+                    <img
+                      src={producto.image}
+                      alt={producto.name}
+                      className="w-full h-full object-contain"
+                    />
 
-                {/* Información del producto */}
-                <div className="p-3">
-                  {/* Marca */}
-                  {producto.brand && (
-                    <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                      {producto.brand}
-                    </p>
-                  )}
-
-                  {/* Nombre del producto - altura fija para consistencia */}
-                  <div className="h-10 mb-2">
-                    <h3 className="text-xs font-medium text-gray-800 line-clamp-2 leading-tight">
-                      {producto.name}
-                    </h3>
+                    {/* Badge de descuento */}
+                    {descuento > 0 && (
+                      <div className="absolute top-2 right-2 bg-red-500 text-white px-1.5 py-0.5 rounded text-xs font-bold">
+                        -{descuento}%
+                      </div>
+                    )}
                   </div>
 
-                  {/* Precios */}
-                  <div className="space-y-1">
-                    {/* Precio original tachado */}
-                    <p className="text-sm text-gray-500 line-through">
-                      {formatearPrecio(producto.originalPrice)}
-                    </p>
+                  {/* Información del producto */}
+                  <div className="p-3">
+                    {/* Marca */}
+                    {producto.brand && (
+                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                        {producto.brand}
+                      </p>
+                    )}
 
-                    {/* Precio con descuento */}
-                    <p className="text-xl font-bold text-gray-900">
-                      {formatearPrecio(producto.discountPrice)}
-                    </p>
+                    {/* Nombre del producto */}
+                    <div className="h-10 mb-2">
+                      <h3 className="text-xs font-medium text-gray-800 line-clamp-2 leading-tight">
+                        {producto.name}
+                      </h3>
+                    </div>
+
+                    {/* Precios */}
+                    <div className="space-y-1">
+                      <p className="text-sm text-gray-500 line-through">
+                        {formatearPrecio(producto.originalPrice)}
+                      </p>
+                      <p className="text-xl font-bold text-gray-900">
+                        {formatearPrecio(producto.discountPrice)}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
         </div>
       </div>

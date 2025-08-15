@@ -18,7 +18,7 @@ import Logo from '../assets/Logo.png'
 const BarraNavegacion = () => {
   const [estaMenuAbierto, setEstaMenuAbierto] = useState(false)
   const [estaBusquedaAbierta, setEstaBusquedaAbierta] = useState(false)
-  const { estaAutenticado, cerrarSesion } = useAutenticacion()
+  const { estaAutenticado, cerrarSesion, esAdmin } = useAutenticacion()
   const { categorias } = useProductos()
   const { obtenerTotalItems } = useCarrito()
   const location = useLocation()
@@ -137,17 +137,20 @@ const BarraNavegacion = () => {
             )}
 
             {/* Carrito con contador */}
-            <Link
-              to="/cart"
-              className="p-2 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 relative transition-colors duration-200"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              {totalArticulos > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] text-[10px]">
-                  {totalArticulos > 99 ? '99+' : totalArticulos}
-                </span>
-              )}
-            </Link>
+            {/* Carrito con contador */}
+            {!esAdmin && (
+              <Link
+                to="/cart"
+                className="p-2 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 relative transition-colors duration-200"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                {totalArticulos > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] text-[10px]">
+                    {totalArticulos > 99 ? '99+' : totalArticulos}
+                  </span>
+                )}
+              </Link>
+            )}
 
             {/* Botón de Menú Móvil */}
             <button

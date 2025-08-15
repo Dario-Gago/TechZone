@@ -42,16 +42,15 @@ const BannerOferta = () => {
       <div className="py-12 px-4 max-w-7xl mx-auto">
         {/* Grid responsivo con diferentes layouts según el dispositivo */}
         <div className="grid gap-4">
-          
           {/* Desktop: Grid complejo 3x2 */}
           <div className="hidden lg:grid grid-cols-[1fr_1.2fr_1fr] grid-rows-[280px_260px] gap-6 w-full px-4">
-            
             {/* Tarjetas Gráficas - Columna 1, ocupa 2 filas */}
             <Link
               to={`/category/${categorias[0].slug}`}
               className="bg-gray-200 rounded-lg p-6 flex flex-col justify-center items-start row-span-2 hover:shadow-lg transition-all duration-300 bg-cover bg-center relative"
               style={{
-                backgroundImage: 'url(https://i.blogs.es/3c6697/nvidia/1200_800.jpeg)'
+                backgroundImage:
+                  'url(https://i.blogs.es/3c6697/nvidia/1200_800.jpeg)'
               }}
             >
               {/* Contenido con texto en blanco y sombras fuertes */}
@@ -63,7 +62,9 @@ const BannerOferta = () => {
                   <h3 className="text-2xl font-bold text-white leading-tight mb-3 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
                     {categorias[0].name2}
                   </h3>
-                  <p className="text-white text-sm mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">desde</p>
+                  <p className="text-white text-sm mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">
+                    desde
+                  </p>
                   <p className="text-2xl font-bold text-white drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
                     {categorias[0].price}
                   </p>
@@ -76,7 +77,8 @@ const BannerOferta = () => {
               to={`/category/${categorias[1].slug}`}
               className="bg-gray-200 rounded-lg p-6 flex flex-col justify-center items-start hover:shadow-lg transition-all duration-300 bg-cover bg-center relative"
               style={{
-                backgroundImage: 'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)'
+                backgroundImage:
+                  'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)'
               }}
             >
               {/* Contenido con texto en blanco y sombras fuertes */}
@@ -85,7 +87,9 @@ const BannerOferta = () => {
                   <h3 className="text-2xl font-bold text-white leading-tight mb-3 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
                     {categorias[1].name}
                   </h3>
-                  <p className="text-white text-sm mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">desde</p>
+                  <p className="text-white text-sm mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">
+                    desde
+                  </p>
                   <p className="text-2xl font-bold text-white drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
                     {categorias[1].price}
                   </p>
@@ -98,7 +102,8 @@ const BannerOferta = () => {
               to={`/category/${categorias[2].slug}`}
               className="bg-gray-200 rounded-lg p-6 flex flex-col justify-center items-start row-span-2 hover:shadow-lg transition-all duration-300 bg-cover bg-center relative"
               style={{
-                backgroundImage: 'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)'
+                backgroundImage:
+                  'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)'
               }}
             >
               {/* Contenido con texto en blanco y sombras fuertes */}
@@ -110,7 +115,9 @@ const BannerOferta = () => {
                   <h3 className="text-2xl font-bold text-white leading-tight mb-3 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
                     {categorias[2].name2}
                   </h3>
-                  <p className="text-white text-sm mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">desde</p>
+                  <p className="text-white text-sm mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">
+                    desde
+                  </p>
                   <p className="text-2xl font-bold text-white drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
                     {categorias[2].price}
                   </p>
@@ -123,7 +130,8 @@ const BannerOferta = () => {
               to={`/category/${categorias[3].slug}`}
               className="bg-gray-200 rounded-lg p-6 flex flex-col justify-center items-start hover:shadow-lg transition-all duration-300 bg-cover bg-center relative"
               style={{
-                backgroundImage: 'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
+                backgroundImage:
+                  'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
               }}
             >
               {/* Contenido con texto en blanco y sombras fuertes */}
@@ -135,7 +143,9 @@ const BannerOferta = () => {
                   <h3 className="text-2xl font-bold text-white leading-tight mb-3 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
                     {categorias[3].name2}
                   </h3>
-                  <p className="text-white text-sm mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">desde</p>
+                  <p className="text-white text-sm mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">
+                    desde
+                  </p>
                   <p className="text-2xl font-bold text-white drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
                     {categorias[3].price}
                   </p>
@@ -148,12 +158,16 @@ const BannerOferta = () => {
           <div className="hidden md:grid lg:hidden grid-cols-2 gap-4">
             {categorias.map((categoria) => {
               const backgroundImages = {
-                'tarjetas-graficas': 'url(https://i.blogs.es/3c6697/nvidia/1200_800.jpeg)',
-                'monitores': 'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)',
-                'placa-madre': 'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)',
-                'almacenamiento': 'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
-              };
-              
+                'tarjetas-graficas':
+                  'url(https://i.blogs.es/3c6697/nvidia/1200_800.jpeg)',
+                monitores:
+                  'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)',
+                'placa-madre':
+                  'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)',
+                almacenamiento:
+                  'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
+              }
+
               return (
                 <Link
                   key={categoria.id}
@@ -174,14 +188,16 @@ const BannerOferta = () => {
                           {categoria.name2}
                         </h3>
                       )}
-                      <p className="text-white text-sm mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">desde</p>
+                      <p className="text-white text-sm mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">
+                        desde
+                      </p>
                       <p className="text-xl font-bold text-white drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
                         {categoria.price}
                       </p>
                     </div>
                   </div>
                 </Link>
-              );
+              )
             })}
           </div>
 
@@ -189,12 +205,16 @@ const BannerOferta = () => {
           <div className="grid md:hidden grid-cols-1 gap-4">
             {categorias.map((categoria) => {
               const backgroundImages = {
-                'tarjetas-graficas': 'url(https://i.blogs.es/3c6697/nvidia/1200_800.jpeg)',
-                'monitores': 'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)',
-                'placa-madre': 'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)',
-                'almacenamiento': 'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
-              };
-              
+                'tarjetas-graficas':
+                  'url(https://i.blogs.es/3c6697/nvidia/1200_800.jpeg)',
+                monitores:
+                  'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)',
+                'placa-madre':
+                  'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)',
+                almacenamiento:
+                  'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
+              }
+
               return (
                 <Link
                   key={categoria.id}
@@ -215,17 +235,18 @@ const BannerOferta = () => {
                           {categoria.name2}
                         </h3>
                       )}
-                      <p className="text-white text-xs mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">desde</p>
+                      <p className="text-white text-xs mb-1 drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">
+                        desde
+                      </p>
                       <p className="text-lg font-bold text-white drop-shadow-[2px_2px_4px_rgba(0,0,0,0.8)]">
                         {categoria.price}
                       </p>
                     </div>
                   </div>
                 </Link>
-              );
+              )
             })}
           </div>
-
         </div>
       </div>
     </section>

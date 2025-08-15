@@ -12,6 +12,10 @@ const DetalleProducto = () => {
   const [producto, setProducto] = useState(null)
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
+  const calcularDescuento = (precioOriginal, precioOferta) => {
+    if (!precioOriginal || !precioOferta) return 0
+    return Math.round(((precioOriginal - precioOferta) / precioOriginal) * 100)
+  }
 
   useEffect(() => {
     const fetchProducto = async () => {
@@ -102,9 +106,15 @@ const DetalleProducto = () => {
                   {formatearPrecio(producto.originalPrice)}
                 </span>
                 <span className="bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
-                  -{producto.discount}%
+                  -
+                  {calcularDescuento(
+                    producto.originalPrice,
+                    producto.discountPrice
+                  )}
+                  %
                 </span>
               </div>
+
               <div className="text-4xl font-bold text-gray-900">
                 {formatearPrecio(producto.discountPrice)}
               </div>
