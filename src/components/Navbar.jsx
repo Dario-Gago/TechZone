@@ -31,14 +31,13 @@ const BarraNavegacion = () => {
     return texto.charAt(0).toUpperCase() + texto.slice(1)
   }
 
-  // ✅ CORRECCIÓN: Filtrar y validar categorías y capitalizar nombres
   const categoriasValidas = React.useMemo(() => {
     if (!Array.isArray(categorias)) {
       console.log('Categorias no es un array:', categorias)
       return []
     }
 
-    return categorias
+    const lista = categorias
       .filter(
         (category) =>
           category &&
@@ -47,10 +46,13 @@ const BarraNavegacion = () => {
           category.name
       )
       .map((category, index) => ({
-        id: category.id || index,
+        id: category.id || index + 1,
         slug: category.slug || category,
-        name: capitalizar(category.name) // ← aquí capitalizamos
+        name: capitalizar(category.name)
       }))
+
+    // Agregar la categoría "Todo" al inicio
+    return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...lista]
   }, [categorias])
 
   console.log('Categorias originales:', categorias)
@@ -58,6 +60,9 @@ const BarraNavegacion = () => {
 
   // Función para determinar si una categoría está activa
   const esCategoriaActiva = (categorySlug) => {
+    if (categorySlug === 'todo') {
+      return location.pathname === '/' || location.pathname === '/category/todo'
+    }
     return location.pathname === `/category/${categorySlug}`
   }
 
