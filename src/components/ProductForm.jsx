@@ -36,7 +36,6 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    // Validación básica
     if (
       !formProducto.name.trim() ||
       !formProducto.brand.trim() ||
@@ -46,9 +45,13 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       return
     }
 
-    // ✅ CORRECCIÓN: Siempre pasa solo el objeto formProducto
-    // El componente padre (ProductsTab) ya sabe si está editando o creando
-    onGuardar(formProducto)
+    // Normalizar categoría a minúscula antes de enviar
+    const productoNormalizado = {
+      ...formProducto,
+      category: formProducto.category.toLowerCase()
+    }
+
+    onGuardar(productoNormalizado)
   }
 
   const handleInputChange = (field, value) => {

@@ -101,8 +101,6 @@ const Registro = () => {
     setMensajeError('')
 
     try {
-      // URL base configurable
-
       const response = await axios.post(
         `${API_ENDPOINTS.REGISTER}`,
         {
@@ -116,18 +114,12 @@ const Registro = () => {
           headers: {
             'Content-Type': 'application/json'
           },
-          timeout: 10000 // Timeout de 10 segundos
+          timeout: 10000
         }
       )
 
-      // Con axios, la respuesta exitosa está en response.data
-      const data = response.data
-
-      // Iniciar sesión automáticamente con los datos del servidor
-      iniciarSesion(data.token, data.user.admin, data.user)
-
-      // Redirigir a donde el usuario venía (checkout u home)
-      navigate(from, { replace: true })
+      // Registro exitoso, redirigir al login
+      navigate('/login', { state: { from } })
 
       // Resetear formulario
       setDatosFormulario({
@@ -141,7 +133,6 @@ const Registro = () => {
     } catch (error) {
       console.error('Error en el registro:', error)
 
-      // Manejo de errores con axios
       if (error.code === 'ECONNABORTED') {
         setMensajeError(
           'La solicitud ha tardado demasiado. Intenta nuevamente.'
@@ -151,12 +142,10 @@ const Registro = () => {
           'No se puede conectar al servidor. Verifica que la API esté ejecutándose en el puerto correcto.'
         )
       } else if (error.response) {
-        // El servidor respondió con un código de error
         const mensajeServidor =
           error.response.data?.message || 'Error en el registro'
         setMensajeError(mensajeServidor)
       } else {
-        // Error desconocido
         setMensajeError('Ocurrió un error inesperado. Intenta nuevamente.')
       }
     } finally {
