@@ -68,7 +68,6 @@ export const createProduct = async (productData) => {
       JSON.stringify(productData, null, 2)
     )
 
-    // ✅ CORRECCIÓN: Destructuring con nombres en español (que es lo que envía el frontend)
     const {
       nombre, // ✅ En español
       marca, // ✅ En español
