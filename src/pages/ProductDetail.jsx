@@ -135,22 +135,31 @@ const DetalleProducto = () => {
 
             {/* Precios */}
             <div className="space-y-2">
-              <div className="flex items-center space-x-3">
-                <span className="text-2xl text-gray-500 line-through">
-                  {formatearPrecio(producto.originalPrice)}
-                </span>
-                <span className="bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
-                  -
-                  {calcularDescuento(
-                    producto.originalPrice,
-                    producto.discountPrice
-                  )}
-                  %
-                </span>
-              </div>
+              {/* Solo mostrar precio original tachado si hay descuento real */}
+              {producto.discountPrice > 0 &&
+                producto.discountPrice < producto.originalPrice && (
+                  <div className="flex items-center space-x-3">
+                    <span className="text-2xl text-gray-500 line-through">
+                      {formatearPrecio(producto.originalPrice)}
+                    </span>
+                    <span className="bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
+                      -
+                      {calcularDescuento(
+                        producto.originalPrice,
+                        producto.discountPrice
+                      )}
+                      %
+                    </span>
+                  </div>
+                )}
 
               <div className="text-4xl font-bold text-gray-900">
-                {formatearPrecio(producto.discountPrice)}
+                {formatearPrecio(
+                  producto.discountPrice > 0 &&
+                    producto.discountPrice < producto.originalPrice
+                    ? producto.discountPrice
+                    : producto.originalPrice
+                )}
               </div>
             </div>
 
