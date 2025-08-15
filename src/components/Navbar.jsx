@@ -25,6 +25,31 @@ const BarraNavegacion = () => {
 
   const totalArticulos = obtenerTotalItems()
 
+  // ✅ CORRECCIÓN: Filtrar y validar categorías
+  const categoriasValidas = React.useMemo(() => {
+    if (!Array.isArray(categorias)) {
+      console.log('Categorias no es un array:', categorias)
+      return []
+    }
+
+    return categorias
+      .filter(
+        (category) =>
+          category &&
+          typeof category === 'object' &&
+          category.slug &&
+          category.name
+      )
+      .map((category, index) => ({
+        id: category.id || index,
+        slug: category.slug || category,
+        name: category.name || category
+      }))
+  }, [categorias])
+
+  console.log('Categorias originales:', categorias)
+  console.log('Categorias válidas:', categoriasValidas)
+
   // Función para determinar si una categoría está activa
   const esCategoriaActiva = (categorySlug) => {
     return location.pathname === `/category/${categorySlug}`
@@ -44,11 +69,7 @@ const BarraNavegacion = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <Link to="/" className="flex items-center">
-                <img 
-                  src={Logo} 
-                  alt="TechZone" 
-                  className="h-8 w-auto"
-                />
+                <img src={Logo} alt="TechZone" className="h-8 w-auto" />
               </Link>
             </div>
           </div>
@@ -148,19 +169,25 @@ const BarraNavegacion = () => {
       <div className="hidden lg:block bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center space-x-8 py-3 overflow-x-auto">
-            {categorias.map((category) => (
-              <Link
-                key={category.id}
-                to={`/category/${category.slug}`}
-                className={`whitespace-nowrap text-sm font-medium transition-colors duration-200 hover:text-gray-900 ${
-                  esCategoriaActiva(category.slug)
-                    ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
-                    : 'text-gray-600'
-                }`}
-              >
-                {category.name}
-              </Link>
-            ))}
+            {categoriasValidas.length > 0 ? (
+              categoriasValidas.map((category) => (
+                <Link
+                  key={category.id}
+                  to={`/category/${category.slug}`}
+                  className={`whitespace-nowrap text-sm font-medium transition-colors duration-200 hover:text-gray-900 ${
+                    esCategoriaActiva(category.slug)
+                      ? 'text-gray-900 border-b-2 border-gray-900 pb-1'
+                      : 'text-gray-600'
+                  }`}
+                >
+                  {category.name}
+                </Link>
+              ))
+            ) : (
+              <div className="text-sm text-gray-500">
+                Cargando categorías...
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -218,20 +245,26 @@ const BarraNavegacion = () => {
             {/* Categorías Móvil */}
             <div className="border-t border-gray-200 pt-3">
               <div className="space-y-2">
-                {categorias.map((category) => (
-                  <Link
-                    key={category.id}
-                    to={`/category/${category.slug}`}
-                    onClick={manejarClicCategoria}
-                    className={`block w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                      esCategoriaActiva(category.slug)
-                        ? 'bg-gray-900 text-white'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                    }`}
-                  >
-                    {category.name}
-                  </Link>
-                ))}
+                {categoriasValidas.length > 0 ? (
+                  categoriasValidas.map((category) => (
+                    <Link
+                      key={category.id}
+                      to={`/category/${category.slug}`}
+                      onClick={manejarClicCategoria}
+                      className={`block w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                        esCategoriaActiva(category.slug)
+                          ? 'bg-gray-900 text-white'
+                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }`}
+                    >
+                      {category.name}
+                    </Link>
+                  ))
+                ) : (
+                  <div className="text-sm text-gray-500 px-3 py-2">
+                    Cargando categorías...
+                  </div>
+                )}
               </div>
             </div>
           </div>

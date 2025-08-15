@@ -24,7 +24,7 @@ const Dashboard = () => {
   const [estadisticas, setEstadisticas] = useState({})
   const [loading, setLoading] = useState(true)
   const [usuarios, setUsuarios] = useState([])
-  const { productos, cargarProductos, categorias } = useContext(ProductContext)
+  const { productos } = useContext(ProductContext)
 
   const [pedidos, setPedidos] = useState([])
 
@@ -85,39 +85,6 @@ const Dashboard = () => {
           alert('Error al eliminar el usuario')
         }
       }
-    }
-  }
-
-  const eliminarProducto = (productoId) => {
-    if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
-      setProductos(productos.filter((p) => p.id !== productoId))
-    }
-  }
-
-  const guardarProducto = (formProducto, productoEditando) => {
-    if (productoEditando) {
-      setProductos(
-        productos.map((p) =>
-          p.id === productoEditando.id
-            ? {
-                ...p,
-                ...formProducto,
-                category: formProducto.category.toLowerCase()
-              }
-            : p
-        )
-      )
-    } else {
-      const nuevoProducto = {
-        ...formProducto,
-        id: Math.max(...productos.map((p) => p.id)) + 1,
-        rating: 4.5,
-        reviews: 0,
-        inStock: 1,
-        stock: 10,
-        category: formProducto.category.toLowerCase()
-      }
-      setProductos([...productos, nuevoProducto])
     }
   }
 
@@ -213,8 +180,6 @@ const Dashboard = () => {
                 productos={productos} // productos del contexto
                 usuarios={usuarios} // usuarios traídos de API o contexto similar
                 onEliminarUsuario={eliminarUsuario}
-                onEliminarProducto={eliminarProducto}
-                onGuardarProducto={guardarProducto}
               />
             ) : (
               <UserPurchases comprasUsuario={comprasUsuario} />

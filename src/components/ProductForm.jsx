@@ -7,17 +7,19 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     brand: '',
     category: '',
     originalPrice: 0,
+    discountPrice: 0, // ✅ Campo agregado
     image: ''
   })
 
   useEffect(() => {
     if (productoEditando) {
       setFormProducto({
-        name: productoEditando.name,
-        brand: productoEditando.brand,
-        category: productoEditando.category,
-        originalPrice: productoEditando.originalPrice,
-        image: productoEditando.image
+        name: productoEditando.name || '',
+        brand: productoEditando.brand || '',
+        category: productoEditando.category || '',
+        originalPrice: productoEditando.originalPrice || 0,
+        discountPrice: productoEditando.discountPrice || 0, // ✅ Campo agregado
+        image: productoEditando.image || ''
       })
     } else {
       setFormProducto({
@@ -25,6 +27,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         brand: '',
         category: '',
         originalPrice: 0,
+        discountPrice: 0, // ✅ Campo agregado
         image: ''
       })
     }
@@ -33,13 +36,19 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    if (productoEditando) {
-      // ✅ Cuando edita: pasa el ID y los datos
-      onGuardar(productoEditando.id, formProducto)
-    } else {
-      // Para crear nuevo producto (si es necesario)
-      onGuardar(formProducto)
+    // Validación básica
+    if (
+      !formProducto.name.trim() ||
+      !formProducto.brand.trim() ||
+      !formProducto.category.trim()
+    ) {
+      alert('Por favor completa todos los campos requeridos')
+      return
     }
+
+    // ✅ CORRECCIÓN: Siempre pasa solo el objeto formProducto
+    // El componente padre (ProductsTab) ya sabe si está editando o creando
+    onGuardar(formProducto)
   }
 
   const handleInputChange = (field, value) => {
@@ -67,7 +76,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nombre del Producto
+              Nombre del Producto *
             </label>
             <input
               type="text"
@@ -80,7 +89,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Marca
+              Marca *
             </label>
             <input
               type="text"
@@ -93,7 +102,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Categoría
+              Categoría *
             </label>
             <input
               type="text"
@@ -106,15 +115,17 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Precio
+              Precio Original *
             </label>
             <input
               type="number"
+              step="0.01"
+              min="0"
               value={formProducto.originalPrice}
               onChange={(e) =>
                 handleInputChange(
                   'originalPrice',
-                  parseInt(e.target.value) || 0
+                  parseFloat(e.target.value) || 0
                 )
               }
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -124,13 +135,34 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              URL de imagen
+              Precio con Descuento
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              value={formProducto.discountPrice}
+              onChange={(e) =>
+                handleInputChange(
+                  'discountPrice',
+                  parseFloat(e.target.value) || 0
+                )
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Opcional - dejar en 0 si no hay descuento"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              URL de imagen *
             </label>
             <input
               type="url"
               value={formProducto.image}
               onChange={(e) => handleInputChange('image', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="https://ejemplo.com/imagen.jpg"
               required
             />
           </div>
