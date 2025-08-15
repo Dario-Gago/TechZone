@@ -109,25 +109,56 @@ export const searchProducts = async (searchTerm) => {
   }
 }
 
-// Crear un nuevo producto
+// ✅ CREAR PRODUCTO - VERSIÓN CORREGIDA
 export const createProduct = async (productData) => {
   try {
+    console.log('🟣 === PRODUCT MODEL CREATE ===')
+    console.log(
+      '🟣 productData recibido:',
+      JSON.stringify(productData, null, 2)
+    )
+
+    // ✅ CORRECCIÓN: Destructuring con nombres en español (que es lo que envía el frontend)
     const {
-      name,
-      brand,
-      description,
-      originalPrice,
-      discountPrice,
-      discount,
-      image,
-      features,
-      category,
-      subcategory,
-      shipping,
-      inStock,
-      stock,
-      featured
+      nombre, // ✅ En español
+      marca, // ✅ En español
+      descripcion, // ✅ En español
+      precio_original, // ✅ En español
+      precio_descuento, // ✅ En español
+      descuento, // ✅ En español
+      imagen, // ✅ En español
+      categoria, // ✅ En español
+      subcategoria, // ✅ En español
+      stock, // ✅ Ya está bien
+      en_stock, // ✅ En español
+      destacado, // ✅ En español
+      envio, // ✅ En español
+      caracteristicas // ✅ En español
     } = productData
+
+    console.log('🟣 Campos extraídos:')
+    console.log('  - nombre:', nombre, '(tipo:', typeof nombre, ')')
+    console.log('  - marca:', marca, '(tipo:', typeof marca, ')')
+    console.log(
+      '  - precio_original:',
+      precio_original,
+      '(tipo:',
+      typeof precio_original,
+      ')'
+    )
+
+    // ✅ VALIDACIÓN
+    if (!nombre || typeof nombre !== 'string' || nombre.trim() === '') {
+      throw new Error(
+        `Nombre inválido: recibido ${nombre} (tipo: ${typeof nombre})`
+      )
+    }
+
+    if (!precio_original || Number(precio_original) <= 0) {
+      throw new Error(`Precio original inválido: recibido ${precio_original}`)
+    }
+
+    console.log('✅ Validaciones pasadas en modelo')
 
     const result = await pool.query(
       `INSERT INTO productos
@@ -136,47 +167,55 @@ export const createProduct = async (productData) => {
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
        RETURNING *`,
       [
-        name,
-        brand,
-        description,
-        originalPrice,
-        discountPrice,
-        discount,
-        image,
-        JSON.stringify(features),
-        category,
-        subcategory,
-        shipping,
-        inStock,
-        stock,
-        featured
+        nombre, // $1
+        marca || '', // $2
+        descripcion || '', // $3
+        Number(precio_original), // $4
+        Number(precio_descuento) || 0, // $5
+        Number(descuento) || 0, // $6
+        imagen || '', // $7
+        caracteristicas ? JSON.stringify(caracteristicas) : null, // $8
+        categoria || '', // $9
+        subcategoria || '', // $10
+        envio || 'Envío estándar', // $11
+        Number(en_stock) || 1, // $12
+        Number(stock) || 0, // $13
+        Boolean(destacado) // $14
       ]
     )
 
+    console.log('✅ Producto creado exitosamente:', result.rows[0])
     return formatProduct(result.rows[0])
   } catch (error) {
+    console.error('❌ Error en createProduct:', error)
     throw new Error('Error al crear producto: ' + error.message)
   }
 }
 
-// Actualizar un producto
+// ✅ ACTUALIZAR PRODUCTO - TAMBIÉN CORREGIDO
 export const updateProduct = async (id, productData) => {
   try {
+    console.log('🟡 === PRODUCT MODEL UPDATE ===')
+    console.log('🟡 ID:', id)
+    console.log('🟡 productData:', JSON.stringify(productData, null, 2))
+
+    // ✅ CORRECCIÓN: Usar nombres en español O inglés (compatible con ambos)
     const {
-      name,
-      brand,
-      description,
-      originalPrice,
-      discountPrice,
-      discount,
-      image,
-      features,
-      category,
-      subcategory,
-      shipping,
-      inStock,
-      stock,
-      featured
+      // Intentar español primero, luego inglés como fallback
+      nombre = productData.name,
+      marca = productData.brand,
+      descripcion = productData.description,
+      precio_original = productData.originalPrice,
+      precio_descuento = productData.discountPrice,
+      descuento = productData.discount,
+      imagen = productData.image,
+      categoria = productData.category,
+      subcategoria = productData.subcategory,
+      stock = productData.stock,
+      en_stock = productData.inStock,
+      destacado = productData.featured,
+      envio = productData.shipping,
+      caracteristicas = productData.features
     } = productData
 
     const result = await pool.query(
@@ -188,20 +227,20 @@ export const updateProduct = async (id, productData) => {
        WHERE id = $15
        RETURNING *`,
       [
-        name,
-        brand,
-        description,
-        originalPrice,
-        discountPrice,
-        discount,
-        image,
-        JSON.stringify(features),
-        category,
-        subcategory,
-        shipping,
-        inStock,
-        stock,
-        featured,
+        nombre,
+        marca || '',
+        descripcion || '',
+        Number(precio_original) || 0,
+        Number(precio_descuento) || 0,
+        Number(descuento) || 0,
+        imagen || '',
+        caracteristicas ? JSON.stringify(caracteristicas) : null,
+        categoria || '',
+        subcategoria || '',
+        envio || 'Envío estándar',
+        Number(en_stock) || 1,
+        Number(stock) || 0,
+        Boolean(destacado),
         id
       ]
     )
@@ -210,8 +249,10 @@ export const updateProduct = async (id, productData) => {
       return null
     }
 
+    console.log('✅ Producto actualizado:', result.rows[0])
     return formatProduct(result.rows[0])
   } catch (error) {
+    console.error('❌ Error en updateProduct:', error)
     throw new Error('Error al actualizar producto: ' + error.message)
   }
 }

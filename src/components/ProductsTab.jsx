@@ -52,6 +52,9 @@ const ProductsTab = () => {
         setMostrarFormProducto(false)
         setProductoEditando(null)
         console.log('✅ Producto guardado exitosamente')
+
+        // Recargar la página después de guardar exitosamente
+        window.location.reload()
       } else {
         console.error('❌ Error al guardar producto:', resultado?.error)
       }
@@ -71,6 +74,8 @@ const ProductsTab = () => {
         const resultado = await eliminarProducto(id)
         if (resultado && resultado.success) {
           console.log('Producto eliminado exitosamente')
+          // También recargar después de eliminar si lo deseas
+          window.location.reload()
         } else {
           console.error('Error al eliminar producto:', resultado?.error)
         }

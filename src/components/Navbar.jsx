@@ -25,7 +25,13 @@ const BarraNavegacion = () => {
 
   const totalArticulos = obtenerTotalItems()
 
-  // ✅ CORRECCIÓN: Filtrar y validar categorías
+  // Función para capitalizar la primera letra
+  const capitalizar = (texto) => {
+    if (!texto) return ''
+    return texto.charAt(0).toUpperCase() + texto.slice(1)
+  }
+
+  // ✅ CORRECCIÓN: Filtrar y validar categorías y capitalizar nombres
   const categoriasValidas = React.useMemo(() => {
     if (!Array.isArray(categorias)) {
       console.log('Categorias no es un array:', categorias)
@@ -43,7 +49,7 @@ const BarraNavegacion = () => {
       .map((category, index) => ({
         id: category.id || index,
         slug: category.slug || category,
-        name: category.name || category
+        name: capitalizar(category.name) // ← aquí capitalizamos
       }))
   }, [categorias])
 

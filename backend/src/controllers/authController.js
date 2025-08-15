@@ -10,7 +10,7 @@ const generateToken = (user) => {
       admin: user.admin
     },
     process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_EXPIRE || '5m' }
+    { expiresIn: process.env.JWT_EXPIRE || '1d' }
   )
 }
 

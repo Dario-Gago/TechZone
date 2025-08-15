@@ -12,11 +12,11 @@ const AdminTabs = ({
   onEliminarProducto,
   onGuardarProducto
 }) => {
-  const [tabActiva, setTabActiva] = useState('ventas')
+  const [tabActiva, setTabActiva] = useState('productos')
 
   const tabs = [
-    { id: 'ventas', label: 'Últimas Ventas', icon: Package },
     { id: 'productos', label: 'Productos', icon: Edit },
+    { id: 'ventas', label: 'Últimas Ventas', icon: Package },
     { id: 'usuarios', label: 'Usuarios', icon: User }
   ]
 

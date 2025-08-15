@@ -32,12 +32,12 @@ router.get('/categoria/:category/:subcategory', getProductsByCategoryController)
 router.get('/:id', getProductByIdController)
 
 // POST /api/productos - Crear un nuevo producto
-router.post('/', createProductController)
+router.post('/', verifyToken, createProductController)
 
 // DELETE /api/productos/:id - Eliminar un producto
-router.delete('/:id', deleteProductController)
+router.delete('/:id', verifyToken, deleteProductController)
 
 // PUT /api/productos/:id - Actualizar un producto
-router.put('/:id', updateProductController)
+router.put('/:id', verifyToken, updateProductController)
 
 export default router
