@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useProductos } from '../hooks/useProducts'
 
@@ -9,12 +9,19 @@ const PaginaBusqueda = () => {
 
   const consulta = parametrosBusqueda.get('q') || ''
 
-  useEffect(() => {
-    if (consulta && !cargando) {
+  // ✅ Memoizar la función de búsqueda para evitar dependencias que cambien
+  const realizarBusqueda = useCallback(() => {
+    if (consulta && !cargando && buscarProductos) {
       const resultados = buscarProductos(consulta)
       setResultadosBusqueda(resultados)
+    } else if (!consulta) {
+      setResultadosBusqueda([])
     }
   }, [consulta, cargando, buscarProductos])
+
+  useEffect(() => {
+    realizarBusqueda()
+  }, [realizarBusqueda]) // Solo depende de la función memoizada
 
   if (cargando) {
     return (

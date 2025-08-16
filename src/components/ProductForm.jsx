@@ -10,7 +10,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     discountPrice: 0,
     image: '',
     features: [],
-    destacado: false // ✅ Campo agregado para destacado
+    destacado: false, // ✅ Campo agregado para destacado
+    stock: 0 // ✅ Campo agregado para stock
   })
 
   const [nuevaCaracteristica, setNuevaCaracteristica] = useState('')
@@ -26,7 +27,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         discountPrice: productoEditando.discountPrice || 0,
         image: productoEditando.image || '',
         features: productoEditando.features || [],
-        destacado: productoEditando.destacado || false // ✅ Mapear destacado del backend
+        destacado: productoEditando.destacado || false, // ✅ Mapear destacado del backend
+        stock: productoEditando.stock || 0 // ✅ Mapear stock del backend
       })
     } else {
       setFormProducto({
@@ -37,7 +39,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         discountPrice: 0,
         image: '',
         features: [],
-        destacado: false
+        destacado: false,
+        stock: 0
       })
     }
   }, [productoEditando])
@@ -72,6 +75,14 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       return
     }
 
+    // Validar stock
+    const stock = Number(formProducto.stock) || 0
+
+    if (stock < 0) {
+      alert('El stock no puede ser negativo')
+      return
+    }
+
     // ✅ Mapear campos del frontend al formato que espera el backend
     const productoParaBackend = {
       // Campos en español para el backend
@@ -93,8 +104,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
           : 0,
       subcategoria: '',
       envio: 'Envío estándar',
-      stock: 0,
-      en_stock: 1,
+      stock: stock, // ✅ Usar el valor ingresado
+      en_stock: stock > 0 ? 1 : 0, // ✅ Automático basado en stock
       destacado: formProducto.destacado // ✅ Usar el valor seleccionado
     }
 
@@ -237,6 +248,28 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Opcional - dejar en 0 si no hay descuento"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Stock Disponible *
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={formProducto.stock}
+              onChange={(e) =>
+                handleInputChange('stock', parseInt(e.target.value) || 0)
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Cantidad disponible"
+              required
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              {formProducto.stock > 0
+                ? `✅ En stock (${formProducto.stock} unidades)`
+                : '❌ Sin stock'}
+            </p>
           </div>
 
           <div>

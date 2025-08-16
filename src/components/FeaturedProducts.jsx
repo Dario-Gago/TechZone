@@ -8,9 +8,9 @@ const ProductosDestacados = () => {
   const [puedeDesplazarIzquierda, setPuedeDesplazarIzquierda] = useState(false)
   const [puedeDesplazarDerecha, setPuedeDesplazarDerecha] = useState(true)
 
-  // ✅ Filtrar productos destacados directamente en el componente
+  // ✅ Filtrar productos destacados con stock > 0
   const productosDestacados = productos.filter(
-    (producto) => producto.destacado === true
+    (producto) => producto.destacado === true && producto.stock > 0
   )
 
   const calcularDescuento = (precioOriginal, precioOferta) => {

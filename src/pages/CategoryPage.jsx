@@ -1,25 +1,69 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { useProductos } from '../hooks/useProducts'
+import { useAuth } from '../contexts/AuthContext'
+import { ShoppingCart, Package, AlertTriangle } from 'lucide-react'
 
 const PaginaCategoria = () => {
   const { categorySlug } = useParams()
-  const {
-    obtenerProductosPorCategoria,
-    categorias,
-    formatearPrecio,
-    cargando
-  } = useProductos()
+  const { productos, todosLosProductos, formatearPrecio, cargando } =
+    useProductos()
+  const { esAdmin } = useAuth()
 
-  // Obtener productos de la categoría
-  const productos = obtenerProductosPorCategoria(categorySlug)
+  // ✅ Usar productos apropiados según el tipo de usuario
+  const productosDisponibles = esAdmin ? todosLosProductos : productos
 
-  // Encontrar el nombre de la categoría
+  // ✅ Extraer categorías únicas de los productos
+  const categorias = useMemo(() => {
+    if (
+      !Array.isArray(productosDisponibles) ||
+      productosDisponibles.length === 0
+    ) {
+      return []
+    }
+
+    const categoriasUnicas = [
+      ...new Set(productosDisponibles.map((producto) => producto.category))
+    ]
+      .filter((categoria) => categoria && categoria.trim() !== '')
+      .map((categoria, index) => ({
+        id: index + 1,
+        slug: categoria
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^a-z0-9-]/g, ''),
+        name: categoria.charAt(0).toUpperCase() + categoria.slice(1).trim()
+      }))
+
+    return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...categoriasUnicas]
+  }, [productosDisponibles])
+
+  // ✅ Filtrar productos por categoría
+  const productosFiltrados = useMemo(() => {
+    if (!Array.isArray(productosDisponibles)) return []
+
+    if (categorySlug === 'todo') {
+      return productosDisponibles
+    }
+
+    return productosDisponibles.filter((producto) => {
+      const slugProducto = producto.category
+        ?.toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '')
+      return slugProducto === categorySlug
+    })
+  }, [productosDisponibles, categorySlug])
+
+  // ✅ Encontrar el nombre de la categoría
   const categoriaActual = categorias.find((cat) => cat.slug === categorySlug)
-  const nombreCategoria = categoriaActual
-    ? categoriaActual.name
-    : 'Todos los productos'
+  const nombreCategoria = categoriaActual ? categoriaActual.name : 'Categoría'
+
+  const calcularDescuento = (precioOriginal, precioOferta) => {
+    if (!precioOriginal || !precioOferta) return 0
+    return Math.round(((precioOriginal - precioOferta) / precioOriginal) * 100)
+  }
 
   if (cargando) {
     return (
@@ -57,74 +101,178 @@ const PaginaCategoria = () => {
             {nombreCategoria}
           </h1>
           <p className="text-gray-600">
-            {productos.length} producto{productos.length !== 1 ? 's' : ''}{' '}
-            encontrado{productos.length !== 1 ? 's' : ''}
+            {productosFiltrados.length} producto
+            {productosFiltrados.length !== 1 ? 's' : ''} encontrado
+            {productosFiltrados.length !== 1 ? 's' : ''}
           </p>
         </div>
 
         {/* Grid de productos */}
-        {productos.length > 0 ? (
+        {productosFiltrados.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {productos.map((product) => {
-              // ✅ Calcular precio con descuento en tiempo real
-              const precioConDescuento =
-                product.discount > 0
-                  ? product.originalPrice -
-                    (product.originalPrice * product.discount) / 100
-                  : product.originalPrice
+            {productosFiltrados.map((product) => {
+              const descuento =
+                product.discountPrice > 0
+                  ? calcularDescuento(
+                      product.originalPrice,
+                      product.discountPrice
+                    )
+                  : 0
+
+              const sinStock = product.stock <= 0
 
               return (
-                <Link
+                <div
                   key={product.id}
-                  to={`/product/${product.id}`}
-                  className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-200"
+                  className={`bg-white rounded-lg shadow-md overflow-hidden transition-shadow duration-200 ${
+                    sinStock ? 'opacity-60' : 'hover:shadow-lg'
+                  }`}
                 >
-                  {/* Imagen del producto */}
-                  <div className="relative bg-white h-48 flex items-center justify-center">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-contain"
-                    />
+                  <Link
+                    to={`/product/${product.id}`}
+                    className={
+                      sinStock && !esAdmin ? 'pointer-events-none' : ''
+                    }
+                  >
+                    {/* Imagen del producto */}
+                    <div className="relative bg-gray-50 h-48 flex items-center justify-center p-4">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className={`w-full h-full object-contain ${
+                          sinStock ? 'grayscale' : ''
+                        }`}
+                        onError={(e) => {
+                          e.target.src =
+                            'https://via.placeholder.com/200x200?text=Sin+Imagen'
+                        }}
+                      />
 
-                    {/* Badge de descuento */}
-                    {product.discount > 0 && (
-                      <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
-                        -{product.discount}%
+                      {/* Badges */}
+                      <div className="absolute top-2 left-2 flex flex-col gap-1">
+                        {product.destacado && (
+                          <div className="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
+                            ⭐ Destacado
+                          </div>
+                        )}
+
+                        {descuento > 0 && !sinStock && (
+                          <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                            -{descuento}%
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
 
-                  {/* Información del producto */}
-                  <div className="p-4 flex flex-col h-38">
-                    {/* Marca */}
-                    {product.brand && (
-                      <p className="text-sm text-gray-500 uppercase tracking-wide mb-1">
-                        {product.brand}
-                      </p>
-                    )}
+                      {/* Badge de stock */}
+                      <div className="absolute top-2 right-2">
+                        {sinStock ? (
+                          <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
+                            <AlertTriangle className="w-3 h-3 mr-1" />
+                            Sin Stock
+                          </div>
+                        ) : (
+                          <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
+                            <Package className="w-3 h-3 mr-1" />
+                            {product.stock}
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Nombre del producto */}
-                    <h3 className="text-sm font-medium text-gray-800 mb-3 line-clamp-2 leading-tight flex-grow">
-                      {product.name}
-                    </h3>
+                      {/* Overlay para productos sin stock (solo para admin) */}
+                      {sinStock && esAdmin && (
+                        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                          <div className="bg-red-500 text-white px-3 py-2 rounded-lg text-sm font-bold">
+                            AGOTADO
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
-                    {/* Precios */}
-                    <div className="space-y-1 mt-auto">
-                      {/* Precio original tachado */}
-                      {product.discount > 0 && (
-                        <p className="text-sm text-gray-500 line-through">
-                          {formatearPrecio(product.originalPrice)}
+                    {/* Información del producto */}
+                    <div className="p-4">
+                      {/* Marca */}
+                      {product.brand && (
+                        <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                          {product.brand}
                         </p>
                       )}
 
-                      {/* Precio con descuento calculado */}
-                      <p className="text-xl font-bold text-gray-900">
-                        {formatearPrecio(precioConDescuento)}
-                      </p>
+                      {/* Nombre del producto */}
+                      <div className="h-12 mb-3">
+                        <h3 className="text-sm font-medium text-gray-800 line-clamp-2 leading-tight">
+                          {product.name}
+                        </h3>
+                      </div>
+
+                      {/* Stock info para admin */}
+                      {esAdmin && (
+                        <div className="mb-2">
+                          <p
+                            className={`text-xs font-medium ${
+                              sinStock ? 'text-red-600' : 'text-green-600'
+                            }`}
+                          >
+                            Stock: {product.stock} unidades
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Precios */}
+                      <div className="space-y-1">
+                        {product.discountPrice > 0 &&
+                        product.discountPrice < product.originalPrice ? (
+                          <>
+                            <p className="text-sm text-gray-500 line-through">
+                              {formatearPrecio(product.originalPrice)}
+                            </p>
+                            <p
+                              className={`text-lg font-bold ${
+                                sinStock ? 'text-gray-500' : 'text-green-600'
+                              }`}
+                            >
+                              {formatearPrecio(product.discountPrice)}
+                            </p>
+                          </>
+                        ) : (
+                          <p
+                            className={`text-lg font-bold ${
+                              sinStock ? 'text-gray-500' : 'text-gray-900'
+                            }`}
+                          >
+                            {formatearPrecio(product.originalPrice)}
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Características destacadas */}
+                      {product.features && product.features.length > 0 && (
+                        <div className="mt-3">
+                          <p className="text-xs text-gray-600 line-clamp-1">
+                            {product.features[0]}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Botón de acción (solo si hay stock o es admin) */}
+                      {(!sinStock || esAdmin) && (
+                        <div className="mt-4">
+                          {sinStock ? (
+                            esAdmin && (
+                              <button className="w-full py-2 px-4 bg-gray-400 text-white rounded-lg text-sm font-medium cursor-not-allowed">
+                                Producto Agotado
+                              </button>
+                            )
+                          ) : (
+                            <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center">
+                              <ShoppingCart className="w-4 h-4 mr-2" />
+                              Ver Producto
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                </div>
               )
             })}
           </div>

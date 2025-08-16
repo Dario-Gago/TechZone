@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import {
   Search,
@@ -19,7 +19,9 @@ const BarraNavegacion = () => {
   const [estaMenuAbierto, setEstaMenuAbierto] = useState(false)
   const [estaBusquedaAbierta, setEstaBusquedaAbierta] = useState(false)
   const { estaAutenticado, cerrarSesion, esAdmin } = useAutenticacion()
-  const { categorias } = useProductos()
+
+  // ✅ Obtener productos y extraer categorías de ellos
+  const { productos, cargando } = useProductos()
   const { obtenerTotalItems } = useCarrito()
   const location = useLocation()
 
@@ -31,32 +33,41 @@ const BarraNavegacion = () => {
     return texto.charAt(0).toUpperCase() + texto.slice(1)
   }
 
-  const categoriasValidas = React.useMemo(() => {
-    if (!Array.isArray(categorias)) {
-      console.log('Categorias no es un array:', categorias)
+  // ✅ Extraer categorías únicas de los productos
+  const categoriasValidas = useMemo(() => {
+    if (cargando || !Array.isArray(productos) || productos.length === 0) {
+      console.log('Productos aún cargando o vacío:', {
+        cargando,
+        productos: productos?.length
+      })
       return []
     }
 
-    const lista = categorias
-      .filter(
-        (category) =>
-          category &&
-          typeof category === 'object' &&
-          category.slug &&
-          category.name
-      )
-      .map((category, index) => ({
-        id: category.id || index + 1,
-        slug: category.slug || category,
-        name: capitalizar(category.name)
+    // Extraer categorías únicas de los productos
+    const categoriasUnicas = [
+      ...new Set(productos.map((producto) => producto.category))
+    ]
+      .filter((categoria) => categoria && categoria.trim() !== '') // Filtrar categorías vacías
+      .map((categoria, index) => ({
+        id: index + 1,
+        slug: categoria
+          .toLowerCase()
+          .replace(/\s+/g, '-')
+          .replace(/[^a-z0-9-]/g, ''),
+        name: capitalizar(categoria.trim())
       }))
 
-    // Agregar la categoría "Todo" al inicio
-    return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...lista]
-  }, [categorias])
+    console.log('Categorías extraídas de productos:', categoriasUnicas)
 
-  console.log('Categorias originales:', categorias)
-  console.log('Categorias válidas:', categoriasValidas)
+    // Agregar la categoría "Todo" al inicio
+    return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...categoriasUnicas]
+  }, [productos, cargando])
+
+  console.log('Estado del hook useProductos:', {
+    productos: productos?.length,
+    cargando,
+    categoriasValidas: categoriasValidas.length
+  })
 
   // Función para determinar si una categoría está activa
   const esCategoriaActiva = (categorySlug) => {
@@ -142,7 +153,6 @@ const BarraNavegacion = () => {
             )}
 
             {/* Carrito con contador */}
-            {/* Carrito con contador */}
             {!esAdmin && (
               <Link
                 to="/cart"
@@ -183,7 +193,17 @@ const BarraNavegacion = () => {
       <div className="hidden lg:block bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center space-x-8 py-3 overflow-x-auto">
-            {categoriasValidas.length > 0 ? (
+            {cargando ? (
+              // ✅ Skeleton loader para categorías
+              <div className="flex space-x-8">
+                {[...Array(6)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="h-4 w-16 bg-gray-300 rounded animate-pulse"
+                  ></div>
+                ))}
+              </div>
+            ) : categoriasValidas.length > 0 ? (
               categoriasValidas.map((category) => (
                 <Link
                   key={category.id}
@@ -199,7 +219,7 @@ const BarraNavegacion = () => {
               ))
             ) : (
               <div className="text-sm text-gray-500">
-                Cargando categorías...
+                No hay categorías disponibles
               </div>
             )}
           </div>
@@ -259,7 +279,17 @@ const BarraNavegacion = () => {
             {/* Categorías Móvil */}
             <div className="border-t border-gray-200 pt-3">
               <div className="space-y-2">
-                {categoriasValidas.length > 0 ? (
+                {cargando ? (
+                  // ✅ Skeleton loader para móvil
+                  <div className="space-y-2">
+                    {[...Array(6)].map((_, index) => (
+                      <div
+                        key={index}
+                        className="h-10 bg-gray-300 rounded animate-pulse"
+                      ></div>
+                    ))}
+                  </div>
+                ) : categoriasValidas.length > 0 ? (
                   categoriasValidas.map((category) => (
                     <Link
                       key={category.id}
@@ -276,7 +306,7 @@ const BarraNavegacion = () => {
                   ))
                 ) : (
                   <div className="text-sm text-gray-500 px-3 py-2">
-                    Cargando categorías...
+                    No hay categorías disponibles
                   </div>
                 )}
               </div>
