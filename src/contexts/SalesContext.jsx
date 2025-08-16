@@ -1,21 +1,20 @@
 // src/contexts/SalesContext.jsx
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useMemo } from 'react'
 import axios from 'axios'
 import { API_ENDPOINTS } from '../config/api'
+import { useAuth } from './AuthContext'
 
-import { useAuth } from './AuthContext' // importa tu contexto de autenticación
 const SalesContext = createContext()
 
 export const SalesProvider = ({ children }) => {
   const [sales, setSales] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const { usuario } = useAuth() // obtenemos usuario actual
+  const { usuario } = useAuth()
 
   // Función segura para obtener datos de autenticación
   const getAuthData = () => {
     try {
-      // Primero intentar desde localStorage directamente
       const token = localStorage.getItem('token')
       const userStr = localStorage.getItem('user')
 
@@ -142,6 +141,7 @@ export const SalesProvider = ({ children }) => {
       throw new Error(errorMessage)
     }
   }
+
   // ✅ Update sale status
   const updateSaleStatus = async (ventaId, nuevoEstado) => {
     const { token } = getAuthData()
@@ -161,6 +161,138 @@ export const SalesProvider = ({ children }) => {
     }
   }
 
+  // 🆕 Estadísticas calculadas con useMemo para optimizar rendimiento
+  const userStats = useMemo(() => {
+    console.log('📊 Calculando estadísticas del usuario')
+
+    if (!sales || sales.length === 0) {
+      return {
+        totalGastado: 0,
+        comprasRealizadas: 0,
+        comprasEntregadas: 0,
+        comprasEntregadasData: []
+      }
+    }
+
+    const { usuario: currentUser } = getAuthData()
+
+    // Para usuarios normales, filtrar solo sus compras
+    // Para admins, mostrar todas las ventas
+    const ventasUsuario = currentUser?.admin
+      ? sales
+      : sales.filter(
+          (venta) =>
+            venta.usuario_id === currentUser?.id ||
+            venta.user_id === currentUser?.id
+        )
+
+    let totalGastado = 0
+    const comprasEntregadas = []
+
+    ventasUsuario.forEach((venta, index) => {
+      // Calcular total gastado
+      let montoVenta = 0
+      if (venta.total !== undefined && venta.total !== null) {
+        montoVenta = parseFloat(venta.total)
+        if (isNaN(montoVenta)) {
+          console.warn(
+            `⚠️ Venta ${index + 1}: total no es un número válido:`,
+            venta.total
+          )
+          montoVenta = 0
+        }
+      }
+      totalGastado += montoVenta
+
+      // Filtrar compras entregadas
+      if (
+        venta.estado === 'entregado' ||
+        venta.estado === 'entregada' ||
+        venta.estado === 'delivered'
+      ) {
+        comprasEntregadas.push(venta)
+      }
+    })
+
+    const stats = {
+      totalGastado,
+      comprasRealizadas: ventasUsuario.length,
+      comprasEntregadas: comprasEntregadas.length,
+      comprasEntregadasData: comprasEntregadas
+    }
+
+    console.log('📊 Estadísticas del usuario calculadas:', stats)
+    return stats
+  }, [sales])
+
+  // 🆕 Estadísticas de administrador calculadas con useMemo
+  const adminStats = useMemo(() => {
+    console.log('📊 Calculando estadísticas de administrador')
+
+    if (!sales || sales.length === 0) {
+      return {
+        totalVentas: 0,
+        ventasHoy: 0,
+        cantidadVentas: 0,
+        ventasHoyCount: 0
+      }
+    }
+
+    const ahora = new Date()
+    const hoyInicio = new Date(
+      ahora.getFullYear(),
+      ahora.getMonth(),
+      ahora.getDate()
+    )
+
+    let totalVentas = 0
+    let ventasHoy = 0
+    let cantidadVentas = sales.length
+    let ventasHoyCount = 0
+
+    sales.forEach((venta, index) => {
+      console.log(`📊 Procesando venta ${index + 1}:`, venta)
+
+      // Convertir el total a número
+      let montoVenta = 0
+      if (venta.total !== undefined && venta.total !== null) {
+        montoVenta = parseFloat(venta.total)
+        if (isNaN(montoVenta)) {
+          console.warn(
+            `⚠️ Venta ${index + 1}: total no es un número válido:`,
+            venta.total
+          )
+          montoVenta = 0
+        }
+      }
+
+      totalVentas += montoVenta
+
+      // Verificar si la venta es de hoy
+      const fechaVenta = new Date(
+        venta.fecha_venta ||
+          venta.created_at ||
+          venta.fecha_pedido ||
+          venta.fecha
+      )
+
+      if (fechaVenta >= hoyInicio) {
+        ventasHoy += montoVenta
+        ventasHoyCount++
+      }
+    })
+
+    const stats = {
+      totalVentas,
+      ventasHoy,
+      cantidadVentas,
+      ventasHoyCount
+    }
+
+    console.log('📊 Estadísticas de admin calculadas:', stats)
+    return stats
+  }, [sales])
+
   // Cargar ventas cuando el componente se monte
   useEffect(() => {
     console.log('🔄 SalesProvider montado, verificando autenticación...')
@@ -175,9 +307,9 @@ export const SalesProvider = ({ children }) => {
       setSales([])
       setError(null)
     }
-  }, []) // Solo se ejecuta una vez al montar
+  }, [])
 
-  // Escuchar cambios en localStorage (cuando el usuario haga login/logout)
+  // Escuchar cambios en localStorage
   useEffect(() => {
     const handleStorageChange = () => {
       console.log('📱 Cambio detectado en localStorage')
@@ -193,41 +325,42 @@ export const SalesProvider = ({ children }) => {
       }
     }
 
-    // Escuchar cambios en localStorage
     window.addEventListener('storage', handleStorageChange)
-
-    // Limpiar el listener al desmontar
     return () => {
       window.removeEventListener('storage', handleStorageChange)
     }
   }, [])
 
-  // Debug del estado cada vez que cambie
+  // Recargar ventas cuando cambie el usuario
+  useEffect(() => {
+    if (usuario) {
+      fetchSales()
+    } else {
+      setSales([])
+      setError(null)
+    }
+  }, [usuario])
+
+  // Debug del estado
   useEffect(() => {
     console.log('🎯 ESTADO DEL CONTEXTO SALES:')
     console.log('🎯 Sales count:', sales?.length || 0)
     console.log('🎯 Loading:', loading)
     console.log('🎯 Error:', error)
+    console.log('🎯 User Stats:', userStats)
+    console.log('🎯 Admin Stats:', adminStats)
+  }, [sales, loading, error, userStats, adminStats])
 
-    const { token, usuario } = getAuthData()
-    console.log('🎯 Token actual:', token ? 'Disponible' : 'No disponible')
-    console.log('🎯 Usuario actual:', usuario?.email || 'No disponible')
-  }, [sales, loading, error])
-  useEffect(() => {
-    if (usuario) {
-      fetchSales() // si hay usuario, cargamos sus ventas
-    } else {
-      setSales([]) // si no hay usuario, limpiamos ventas
-      setError(null)
-    }
-  }, [usuario])
   const contextValue = {
     sales: sales || [],
     loading: loading || false,
     error,
     fetchSales,
     createSale,
-    updateSaleStatus
+    updateSaleStatus,
+    // 🆕 Nuevas estadísticas calculadas
+    userStats,
+    adminStats
   }
 
   return (
