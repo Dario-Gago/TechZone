@@ -37,7 +37,9 @@ export const formatProduct = (product) => {
 // Obtener todos los productos
 export const getAllProducts = async () => {
   try {
-    const result = await pool.query('SELECT * FROM productos ORDER BY id')
+    const result = await pool.query(
+      'SELECT * FROM productos ORDER BY precio_descuento ASC'
+    )
     return result.rows.map(formatProduct)
   } catch (error) {
     throw new Error('Error al obtener productos: ' + error.message)
