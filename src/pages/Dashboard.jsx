@@ -160,6 +160,7 @@ const Dashboard = () => {
           esAdmin={esAdmin}
           estadisticas={estadisticas}
           usuarios={usuarios}
+          productos={productos} // ← Agregar esta línea
           totalGastado={totalGastado}
           comprasUsuario={comprasUsuario}
           comprasEntregadas={comprasEntregadas}

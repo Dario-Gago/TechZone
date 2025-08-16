@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS productos (
     precio_original DECIMAL(10,2) NOT NULL,
     precio_descuento DECIMAL(10,2) NOT NULL,
     descuento INTEGER DEFAULT 0,
-    imagen VARCHAR(500),
+    imagen TEXT,
     caracteristicas JSONB,
     categoria VARCHAR(100),
     subcategoria VARCHAR(100),

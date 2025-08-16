@@ -5,6 +5,7 @@ const StatsCards = ({
   esAdmin,
   estadisticas,
   usuarios,
+  productos, // ← Agregar productos como prop
   totalGastado,
   comprasUsuario,
   comprasEntregadas
@@ -62,7 +63,7 @@ const StatsCards = ({
                   Total Productos
                 </p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {estadisticas.totalProductos || 0}
+                  {productos?.length || 0} {/* ← Modificar esta línea */}
                 </p>
               </div>
             </div>
