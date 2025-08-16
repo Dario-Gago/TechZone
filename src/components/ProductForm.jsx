@@ -9,7 +9,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     originalPrice: 0,
     discountPrice: 0,
     image: '',
-    features: [] // ✅ Campo agregado para características
+    features: [],
+    destacado: false // ✅ Campo agregado para destacado
   })
 
   const [nuevaCaracteristica, setNuevaCaracteristica] = useState('')
@@ -24,7 +25,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         originalPrice: productoEditando.originalPrice || 0,
         discountPrice: productoEditando.discountPrice || 0,
         image: productoEditando.image || '',
-        features: productoEditando.features || [] // ✅ El backend ya devuelve 'features'
+        features: productoEditando.features || [],
+        destacado: productoEditando.destacado || false // ✅ Mapear destacado del backend
       })
     } else {
       setFormProducto({
@@ -34,7 +36,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         originalPrice: 0,
         discountPrice: 0,
         image: '',
-        features: []
+        features: [],
+        destacado: false
       })
     }
   }, [productoEditando])
@@ -92,7 +95,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       envio: 'Envío estándar',
       stock: 0,
       en_stock: 1,
-      destacado: false
+      destacado: formProducto.destacado // ✅ Usar el valor seleccionado
     }
 
     console.log('🟢 Enviando al backend:', productoParaBackend)
@@ -103,6 +106,14 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     setFormProducto((prev) => ({
       ...prev,
       [field]: value || '' // ✅ Asegurar que siempre sea una cadena o número válido
+    }))
+  }
+
+  // ✅ Función específica para manejar el checkbox de destacado
+  const handleDestacadoChange = (e) => {
+    setFormProducto((prev) => ({
+      ...prev,
+      destacado: e.target.checked
     }))
   }
 
@@ -242,7 +253,24 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
             />
           </div>
 
-          {/* ✅ Nueva sección de características */}
+          {/* ✅ Nueva sección para producto destacado */}
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="destacado"
+              checked={formProducto.destacado}
+              onChange={handleDestacadoChange}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+            />
+            <label
+              htmlFor="destacado"
+              className="text-sm font-medium text-gray-700"
+            >
+              Producto Destacado
+            </label>
+          </div>
+
+          {/* ✅ Sección de características */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Características

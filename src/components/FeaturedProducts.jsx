@@ -3,13 +3,16 @@ import { Link } from 'react-router-dom'
 import { useProductos } from '../hooks/useProducts'
 
 const ProductosDestacados = () => {
-  const { obtenerProductosDestacados, formatearPrecio, cargando } =
-    useProductos()
+  const { productos, formatearPrecio, cargando } = useProductos()
   const referenciaScroll = useRef(null)
   const [puedeDesplazarIzquierda, setPuedeDesplazarIzquierda] = useState(false)
   const [puedeDesplazarDerecha, setPuedeDesplazarDerecha] = useState(true)
 
-  const productos = obtenerProductosDestacados()
+  // ✅ Filtrar productos destacados directamente en el componente
+  const productosDestacados = productos.filter(
+    (producto) => producto.destacado === true
+  )
+
   const calcularDescuento = (precioOriginal, precioOferta) => {
     if (!precioOriginal || !precioOferta) return 0
     return Math.round(((precioOriginal - precioOferta) / precioOriginal) * 100)
@@ -31,7 +34,7 @@ const ProductosDestacados = () => {
       return () =>
         elementoScroll.removeEventListener('scroll', verificarDesplazamiento)
     }
-  }, [])
+  }, [productosDestacados])
 
   const desplazarIzquierda = () => {
     if (referenciaScroll.current) {
@@ -59,6 +62,11 @@ const ProductosDestacados = () => {
     )
   }
 
+  // ✅ Si no hay productos destacados, no mostrar la sección
+  if (productosDestacados.length === 0) {
+    return null
+  }
+
   return (
     <section className="py-12 px-4 max-w-7xl mx-auto">
       <div className="text-center mb-8">
@@ -67,6 +75,12 @@ const ProductosDestacados = () => {
         </h2>
         <p className="text-gray-600">
           Los mejores productos con ofertas especiales
+        </p>
+        {/* ✅ Mostrar cantidad de productos destacados */}
+        <p className="text-sm text-blue-600 mt-2">
+          {productosDestacados.length} producto
+          {productosDestacados.length !== 1 ? 's' : ''} destacado
+          {productosDestacados.length !== 1 ? 's' : ''}
         </p>
       </div>
 
@@ -123,38 +137,50 @@ const ProductosDestacados = () => {
           ref={referenciaScroll}
           className="overflow-x-auto scrollbar-hide px-12"
         >
-          <div className="flex gap-2 min-w-max">
-            {productos.slice(0, 6).map((producto) => {
-              const descuento = Math.round(
-                ((producto.originalPrice - producto.discountPrice) /
-                  producto.originalPrice) *
-                  100
-              )
+          <div className="flex gap-4 min-w-max">
+            {productosDestacados.map((producto) => {
+              // ✅ Calcular descuento usando los campos correctos
+              const descuento =
+                producto.discountPrice > 0
+                  ? calcularDescuento(
+                      producto.originalPrice,
+                      producto.discountPrice
+                    )
+                  : 0
 
               return (
                 <Link
                   key={producto.id}
                   to={`/product/${producto.id}`}
-                  className="bg-white rounded-lg overflow-hidden flex-shrink-0 w-48 sm:w-52 md:w-56 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+                  className="bg-white rounded-lg shadow-md overflow-hidden flex-shrink-0 w-48 sm:w-52 md:w-56 hover:shadow-lg transition-shadow duration-200 cursor-pointer border border-gray-200"
                 >
                   {/* Imagen del producto */}
-                  <div className="relative bg-white h-70 flex items-center justify-center">
+                  <div className="relative bg-gray-50 h-48 flex items-center justify-center p-4">
                     <img
                       src={producto.image}
                       alt={producto.name}
                       className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.src =
+                          'https://via.placeholder.com/200x200?text=Sin+Imagen'
+                      }}
                     />
+
+                    {/* ✅ Badge de destacado */}
+                    <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
+                      ⭐ Destacado
+                    </div>
 
                     {/* Badge de descuento */}
                     {descuento > 0 && (
-                      <div className="absolute top-2 right-2 bg-red-500 text-white px-1.5 py-0.5 rounded text-xs font-bold">
+                      <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                         -{descuento}%
                       </div>
                     )}
                   </div>
 
                   {/* Información del producto */}
-                  <div className="p-3">
+                  <div className="p-4">
                     {/* Marca */}
                     {producto.brand && (
                       <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
@@ -163,21 +189,39 @@ const ProductosDestacados = () => {
                     )}
 
                     {/* Nombre del producto */}
-                    <div className="h-10 mb-2">
-                      <h3 className="text-xs font-medium text-gray-800 line-clamp-2 leading-tight">
+                    <div className="h-12 mb-3">
+                      <h3 className="text-sm font-medium text-gray-800 line-clamp-2 leading-tight">
                         {producto.name}
                       </h3>
                     </div>
 
                     {/* Precios */}
                     <div className="space-y-1">
-                      <p className="text-sm text-gray-500 line-through">
-                        {formatearPrecio(producto.originalPrice)}
-                      </p>
-                      <p className="text-xl font-bold text-gray-900">
-                        {formatearPrecio(producto.discountPrice)}
-                      </p>
+                      {producto.discountPrice > 0 &&
+                      producto.discountPrice < producto.originalPrice ? (
+                        <>
+                          <p className="text-sm text-gray-500 line-through">
+                            {formatearPrecio(producto.originalPrice)}
+                          </p>
+                          <p className="text-lg font-bold text-green-600">
+                            {formatearPrecio(producto.discountPrice)}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-lg font-bold text-gray-900">
+                          {formatearPrecio(producto.originalPrice)}
+                        </p>
+                      )}
                     </div>
+
+                    {/* ✅ Características destacadas */}
+                    {producto.features && producto.features.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-xs text-gray-600 line-clamp-1">
+                          {producto.features[0]}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </Link>
               )
@@ -185,9 +229,33 @@ const ProductosDestacados = () => {
           </div>
         </div>
       </div>
+
+      {/* ✅ Botón para ver todos los productos destacados */}
+      {productosDestacados.length > 6 && (
+        <div className="text-center mt-8">
+          <Link
+            to="/productos?destacados=true"
+            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Ver todos los productos destacados
+            <svg
+              className="w-4 h-4 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </Link>
+        </div>
+      )}
     </section>
   )
 }
 
-// Exportación con compatibilidad
 export default ProductosDestacados

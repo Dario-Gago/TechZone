@@ -30,7 +30,7 @@ export const formatProduct = (product) => {
     shipping: product.envio || 'Envío estándar',
     inStock: product.en_stock || 0,
     stock: product.stock || 0,
-    featured: product.destacado || false
+    destacado: product.destacado || false // ✅ CORREGIDO: usar 'destacado' en lugar de 'featured'
   }
 }
 
@@ -88,6 +88,7 @@ export const createProduct = async (productData) => {
     console.log('🟣 Campos extraídos:')
     console.log('  - nombre:', nombre, '(tipo:', typeof nombre, ')')
     console.log('  - marca:', marca, '(tipo:', typeof marca, ')')
+    console.log('  - destacado:', destacado, '(tipo:', typeof destacado, ')') // ✅ Log del campo destacado
     console.log(
       '  - precio_original:',
       precio_original,
@@ -108,6 +109,10 @@ export const createProduct = async (productData) => {
     }
 
     console.log('✅ Validaciones pasadas en modelo')
+    console.log(
+      '🟣 Valor final de destacado antes de insertar:',
+      Boolean(destacado)
+    )
 
     const result = await pool.query(
       `INSERT INTO productos
@@ -129,11 +134,12 @@ export const createProduct = async (productData) => {
         envio || 'Envío estándar', // $11
         Number(en_stock) || 1, // $12
         Number(stock) || 0, // $13
-        Boolean(destacado) // $14
+        Boolean(destacado) // $14 ✅ CORREGIDO: Asegurar conversión a boolean
       ]
     )
 
     console.log('✅ Producto creado exitosamente:', result.rows[0])
+    console.log('✅ Campo destacado en BD:', result.rows[0].destacado)
     return formatProduct(result.rows[0])
   } catch (error) {
     console.error('❌ Error en createProduct:', error)
@@ -148,24 +154,32 @@ export const updateProduct = async (id, productData) => {
     console.log('🟡 ID:', id)
     console.log('🟡 productData:', JSON.stringify(productData, null, 2))
 
-    // ✅ CORRECCIÓN: Usar nombres en español O inglés (compatible con ambos)
+    // ✅ CORRECCIÓN: Mapear correctamente el campo destacado
     const {
-      // Intentar español primero, luego inglés como fallback
-      nombre = productData.name,
-      marca = productData.brand,
-      descripcion = productData.description,
-      precio_original = productData.originalPrice,
-      precio_descuento = productData.discountPrice,
-      descuento = productData.discount,
-      imagen = productData.image,
-      categoria = productData.category,
-      subcategoria = productData.subcategory,
-      stock = productData.stock,
-      en_stock = productData.inStock,
-      destacado = productData.featured,
-      envio = productData.shipping,
-      caracteristicas = productData.features
+      // Usar nombres en español (que es lo que envía el frontend)
+      nombre,
+      marca,
+      descripcion,
+      precio_original,
+      precio_descuento,
+      descuento,
+      imagen,
+      categoria,
+      subcategoria,
+      stock,
+      en_stock,
+      destacado, // ✅ CORREGIDO: usar 'destacado' directamente
+      envio,
+      caracteristicas
     } = productData
+
+    console.log(
+      '🟡 Campo destacado recibido:',
+      destacado,
+      '(tipo:',
+      typeof destacado,
+      ')'
+    )
 
     const result = await pool.query(
       `UPDATE productos
@@ -189,7 +203,7 @@ export const updateProduct = async (id, productData) => {
         envio || 'Envío estándar',
         Number(en_stock) || 1,
         Number(stock) || 0,
-        Boolean(destacado),
+        Boolean(destacado), // ✅ CORREGIDO: Asegurar conversión a boolean
         id
       ]
     )
@@ -199,6 +213,10 @@ export const updateProduct = async (id, productData) => {
     }
 
     console.log('✅ Producto actualizado:', result.rows[0])
+    console.log(
+      '✅ Campo destacado actualizado en BD:',
+      result.rows[0].destacado
+    )
     return formatProduct(result.rows[0])
   } catch (error) {
     console.error('❌ Error en updateProduct:', error)
