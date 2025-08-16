@@ -49,3 +49,11 @@ INSERT INTO productos (
  '["16 núcleos (8P + 8E)", "Boost hasta 5.4GHz", "Socket LGA1700"]',
  'componentes', 'procesadores', 'Envío en 2 - 3 días', 1, 10, true);
 
+SELECT MAX(id) FROM productos;
+SELECT setval('productos_id_seq', (SELECT MAX(id) FROM productos));
+INSERT INTO ventas (usuario_id, total, estado)
+VALUES
+  (1, 50000, 'pendiente'),
+  (1, 120000, 'entregado'),
+  (1, 75000, 'pendiente');
+SELECT * FROM ventas

@@ -27,3 +27,16 @@ CREATE TABLE IF NOT EXISTS productos (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Recrear detalle_ventas referenciando el campo correcto 'id' de productos
+CREATE TABLE detalle_ventas (
+    detalle_id SERIAL PRIMARY KEY,
+    venta_id INTEGER NOT NULL,
+    producto_id INTEGER NOT NULL,
+    cantidad INTEGER NOT NULL,
+    precio_unitario DECIMAL(10,2) NOT NULL,
+    subtotal DECIMAL(10,2) GENERATED ALWAYS AS (cantidad * precio_unitario) STORED,
+    FOREIGN KEY (venta_id) REFERENCES ventas(venta_id) ON DELETE CASCADE,
+    -- Cambio aquí: referenciar 'id' en lugar de 'producto_id'
+    FOREIGN KEY (producto_id) REFERENCES productos(id) ON DELETE RESTRICT
+);
