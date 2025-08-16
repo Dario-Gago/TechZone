@@ -229,31 +229,6 @@ const ProductosDestacados = () => {
           </div>
         </div>
       </div>
-
-      {/* ✅ Botón para ver todos los productos destacados */}
-      {productosDestacados.length > 6 && (
-        <div className="text-center mt-8">
-          <Link
-            to="/productos?destacados=true"
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Ver todos los productos destacados
-            <svg
-              className="w-4 h-4 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </Link>
-        </div>
-      )}
     </section>
   )
 }
