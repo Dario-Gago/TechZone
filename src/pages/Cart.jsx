@@ -11,7 +11,9 @@ import {
   RotateCcw,
   CreditCard,
   Truck,
-  ChevronRight
+  ChevronRight,
+  AlertTriangle,
+  Package
 } from 'lucide-react'
 
 const Carrito = () => {
@@ -28,6 +30,29 @@ const Carrito = () => {
   const total = obtenerPrecioTotal()
   const descuento = 25000 // Descuento fijo por simplicidad
   const subtotal = total + descuento
+
+  // ✅ Función para manejar cambio de cantidad con validación de stock
+  const manejarCambioCantidad = (item, nuevaCantidad) => {
+    // No permitir cantidad menor a 1
+    if (nuevaCantidad < 1) return
+
+    // ✅ Verificar si hay stock suficiente
+    if (nuevaCantidad > item.stock) {
+      // Opcionalmente mostrar una alerta
+      alert(`Solo hay ${item.stock} unidades disponibles de ${item.name}`)
+      return
+    }
+
+    actualizarCantidad(item.id, nuevaCantidad)
+  }
+
+  // ✅ Verificar si un item tiene problemas de stock
+  const tieneProblemasStock = (item) => {
+    return item.cantidadCarrito > item.stock
+  }
+
+  // ✅ Verificar si el carrito tiene productos con problemas de stock
+  const carritoTieneProblemasStock = articulosCarrito.some(tieneProblemasStock)
 
   // Si el carrito está vacío
   if (articulosCarrito.length === 0) {
@@ -74,96 +99,201 @@ const Carrito = () => {
           </p>
         </div>
 
+        {/* ✅ Alerta de problemas de stock */}
+        {carritoTieneProblemasStock && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center space-x-2 text-red-700 mb-2">
+              <AlertTriangle className="h-5 w-5" />
+              <span className="font-medium">Atención: Problema de stock</span>
+            </div>
+            <p className="text-sm text-red-600">
+              Algunos productos en tu carrito superan el stock disponible. Por
+              favor, ajusta las cantidades antes de proceder al pago.
+            </p>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
           <div className="lg:col-span-2">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Pedido</h2>
 
             <div className="space-y-4">
-              {articulosCarrito.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-lg p-6 shadow-sm"
-                >
-                  <div className="flex items-start space-x-4">
-                    {/* Product Image */}
-                    <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0 overflow-hidden">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
+              {articulosCarrito.map((item) => {
+                const sinStock = item.stock <= 0
+                const excedeCantidad = item.cantidadCarrito > item.stock
+                const tieneProblemas = sinStock || excedeCantidad
 
-                    {/* Product Details */}
-                    <div className="flex-1">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold text-gray-900">
-                            {item.name}
-                          </h3>
-                          <p className="text-sm text-gray-500">{item.brand}</p>
-                        </div>
-                        <button
-                          onClick={() => eliminarDelCarrito(item.id)}
-                          className="text-gray-400 hover:text-red-500 transition-colors"
-                        >
-                          <Trash2 className="h-5 w-5" />
-                        </button>
+                return (
+                  <div
+                    key={item.id}
+                    className={`bg-white rounded-lg p-6 shadow-sm ${
+                      tieneProblemas ? 'border-l-4 border-red-500' : ''
+                    }`}
+                  >
+                    <div className="flex items-start space-x-4">
+                      {/* Product Image */}
+                      <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0 overflow-hidden">
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className={`w-full h-full object-cover ${
+                            tieneProblemas ? 'opacity-60 grayscale' : ''
+                          }`}
+                        />
                       </div>
 
-                      {/* Quantity and Price */}
-                      <div className="flex items-center justify-between mt-4">
-                        <div className="flex items-center border rounded-md">
+                      {/* Product Details */}
+                      <div className="flex-1">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-semibold text-gray-900">
+                              {item.name}
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                              {item.brand}
+                            </p>
+
+                            {/* ✅ Información de stock */}
+                            <div className="mt-1 flex items-center space-x-2">
+                              <Package className="h-4 w-4 text-gray-400" />
+                              <span
+                                className={`text-xs ${
+                                  sinStock
+                                    ? 'text-red-600 font-medium'
+                                    : excedeCantidad
+                                    ? 'text-orange-600 font-medium'
+                                    : 'text-gray-500'
+                                }`}
+                              >
+                                {sinStock
+                                  ? 'Sin stock'
+                                  : `${item.stock} disponibles`}
+                              </span>
+                            </div>
+
+                            {/* ✅ Alertas específicas */}
+                            {excedeCantidad && !sinStock && (
+                              <div className="mt-2 flex items-center space-x-1 text-orange-600">
+                                <AlertTriangle className="h-4 w-4" />
+                                <span className="text-xs font-medium">
+                                  Cantidad excede stock disponible
+                                </span>
+                              </div>
+                            )}
+
+                            {sinStock && (
+                              <div className="mt-2 flex items-center space-x-1 text-red-600">
+                                <AlertTriangle className="h-4 w-4" />
+                                <span className="text-xs font-medium">
+                                  Producto no disponible
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
                           <button
-                            onClick={() =>
-                              actualizarCantidad(
-                                item.id,
-                                item.cantidadCarrito - 1
-                              )
-                            }
-                            className="p-1 hover:bg-gray-100 transition-colors"
+                            onClick={() => eliminarDelCarrito(item.id)}
+                            className="text-gray-400 hover:text-red-500 transition-colors"
                           >
-                            <Minus className="h-4 w-4" />
-                          </button>
-                          <span className="px-3 py-1 text-sm">
-                            {item.cantidadCarrito}
-                          </span>
-                          <button
-                            onClick={() =>
-                              actualizarCantidad(
-                                item.id,
-                                item.cantidadCarrito + 1
-                              )
-                            }
-                            className="p-1 hover:bg-gray-100 transition-colors"
-                          >
-                            <Plus className="h-4 w-4" />
+                            <Trash2 className="h-5 w-5" />
                           </button>
                         </div>
 
-                        <div className="text-right">
-                          {item.discountPrice &&
-                          item.discountPrice < item.originalPrice ? (
-                            <div>
-                              <span className="text-sm text-gray-500 line-through">
-                                ${item.originalPrice.toLocaleString('es-CL')}
-                              </span>
-                              <span className="text-lg font-semibold text-gray-900 ml-2">
-                                ${item.discountPrice.toLocaleString('es-CL')}
-                              </span>
-                            </div>
-                          ) : (
-                            <span className="text-lg font-semibold text-gray-900">
-                              ${item.precioFinal.toLocaleString('es-CL')}
+                        {/* Quantity and Price */}
+                        <div className="flex items-center justify-between mt-4">
+                          <div className="flex items-center border rounded-md">
+                            <button
+                              onClick={() =>
+                                manejarCambioCantidad(
+                                  item,
+                                  item.cantidadCarrito - 1
+                                )
+                              }
+                              disabled={item.cantidadCarrito <= 1}
+                              className="p-1 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <Minus className="h-4 w-4" />
+                            </button>
+                            <span
+                              className={`px-3 py-1 text-sm min-w-[3rem] text-center ${
+                                excedeCantidad ? 'text-red-600 font-medium' : ''
+                              }`}
+                            >
+                              {item.cantidadCarrito}
+                            </span>
+                            <button
+                              onClick={() =>
+                                manejarCambioCantidad(
+                                  item,
+                                  item.cantidadCarrito + 1
+                                )
+                              }
+                              disabled={
+                                item.cantidadCarrito >= item.stock || sinStock
+                              }
+                              className="p-1 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <Plus className="h-4 w-4" />
+                            </button>
+                          </div>
+
+                          {/* ✅ Indicador de máximo disponible */}
+                          {item.stock > 0 && (
+                            <span className="text-xs text-gray-500">
+                              Máx. {item.stock}
                             </span>
                           )}
+
+                          <div className="text-right">
+                            {item.discountPrice &&
+                            item.discountPrice < item.originalPrice ? (
+                              <div>
+                                <span className="text-sm text-gray-500 line-through">
+                                  ${item.originalPrice.toLocaleString('es-CL')}
+                                </span>
+                                <span
+                                  className={`text-lg font-semibold ml-2 ${
+                                    tieneProblemas
+                                      ? 'text-gray-500'
+                                      : 'text-gray-900'
+                                  }`}
+                                >
+                                  ${item.discountPrice.toLocaleString('es-CL')}
+                                </span>
+                              </div>
+                            ) : (
+                              <span
+                                className={`text-lg font-semibold ${
+                                  tieneProblemas
+                                    ? 'text-gray-500'
+                                    : 'text-gray-900'
+                                }`}
+                              >
+                                ${item.precioFinal.toLocaleString('es-CL')}
+                              </span>
+                            )}
+                          </div>
                         </div>
+
+                        {/* ✅ Botón de ajuste rápido para exceso de cantidad */}
+                        {excedeCantidad && !sinStock && (
+                          <div className="mt-3">
+                            <button
+                              onClick={() =>
+                                manejarCambioCantidad(item, item.stock)
+                              }
+                              className="text-sm bg-orange-100 text-orange-700 px-3 py-1 rounded-md hover:bg-orange-200 transition-colors"
+                            >
+                              Ajustar a máximo disponible ({item.stock})
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
 
             {/* Security Features */}
@@ -232,7 +362,25 @@ const Carrito = () => {
                 <span>${total.toLocaleString('es-CL')}</span>
               </div>
 
-              {estaAutenticado ? (
+              {/* ✅ Validación antes del checkout */}
+              {carritoTieneProblemasStock ? (
+                <div className="space-y-3">
+                  <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                    <div className="flex items-center space-x-2 text-red-700">
+                      <AlertTriangle className="h-4 w-4" />
+                      <span className="text-sm font-medium">
+                        Ajusta las cantidades antes de continuar
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    disabled
+                    className="w-full bg-gray-400 text-white py-3 px-4 rounded-md cursor-not-allowed font-medium"
+                  >
+                    RESOLVER PROBLEMAS DE STOCK
+                  </button>
+                </div>
+              ) : estaAutenticado ? (
                 <Link
                   to="/checkout"
                   className="w-full bg-gray-800 text-white py-3 px-4 rounded-md hover:bg-gray-900 transition duration-200 font-medium block text-center"
