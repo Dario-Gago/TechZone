@@ -23,6 +23,7 @@ import Contact from './pages/Contact'
 import { ProveedorAutenticacion } from './contexts/AuthContext'
 import { ProveedorProducto } from './contexts/ProductContext'
 import { ProveedorCarrito } from './contexts/CartContext'
+import { SalesProvider } from './contexts/SalesContext'
 
 const App = () => {
   return (
@@ -31,55 +32,57 @@ const App = () => {
         <ProveedorAutenticacion>
           <ProveedorProducto>
             <ProveedorCarrito>
-              <ScrollToTop>
-                <Navbar />
+              <SalesProvider>
+                <ScrollToTop>
+                  <Navbar />
 
-                <main className="flex-1">
-                  <Routes>
-                    <Route path="/" element={<Inicio />} />
-                    <Route path="/product/:id" element={<ProductDetail />} />
-                    <Route
-                      path="/category/:categorySlug"
-                      element={<CategoryPage />}
-                    />
-                    <Route path="/search" element={<SearchPage />} />
-                    <Route
-                      path="/login"
-                      element={
-                        <RutaPublica>
-                          <Login />
-                        </RutaPublica>
-                      }
-                    />
+                  <main className="flex-1">
+                    <Routes>
+                      <Route path="/" element={<Inicio />} />
+                      <Route path="/product/:id" element={<ProductDetail />} />
+                      <Route
+                        path="/category/:categorySlug"
+                        element={<CategoryPage />}
+                      />
+                      <Route path="/search" element={<SearchPage />} />
+                      <Route
+                        path="/login"
+                        element={
+                          <RutaPublica>
+                            <Login />
+                          </RutaPublica>
+                        }
+                      />
 
-                    <Route
-                      path="/register"
-                      element={
-                        <RutaPublica>
-                          <Register />
-                        </RutaPublica>
-                      }
-                    />
+                      <Route
+                        path="/register"
+                        element={
+                          <RutaPublica>
+                            <Register />
+                          </RutaPublica>
+                        }
+                      />
 
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/checkout" element={<Checkout />} />
-                    <Route
-                      path="/payment-success"
-                      element={<PagoExitoso />}
-                    />
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <RutaPrivada>
-                          <Dashboard />
-                        </RutaPrivada>
-                      }
-                    />
-                    <Route path="/contact" element={<Contact />} />
-                  </Routes>
-                </main>
-                <Footer />
-              </ScrollToTop>
+                      <Route path="/cart" element={<Cart />} />
+                      <Route path="/checkout" element={<Checkout />} />
+                      <Route
+                        path="/payment-success"
+                        element={<PagoExitoso />}
+                      />
+                      <Route
+                        path="/dashboard"
+                        element={
+                          <RutaPrivada>
+                            <Dashboard />
+                          </RutaPrivada>
+                        }
+                      />
+                      <Route path="/contact" element={<Contact />} />
+                    </Routes>
+                  </main>
+                  <Footer />
+                </ScrollToTop>
+              </SalesProvider>
             </ProveedorCarrito>
           </ProveedorProducto>
         </ProveedorAutenticacion>

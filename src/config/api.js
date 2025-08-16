@@ -25,7 +25,10 @@ export const API_ENDPOINTS = {
 
   // 💳 Compras endpoints
   COMPRAS: `${API_BASE_URL}/compras`,
-  COMPRAS_ADMIN: `${API_BASE_URL}/compras/admin`
+  COMPRAS_ADMIN: `${API_BASE_URL}/compras/admin`,
+
+  // 📊 Ventas endpoints
+  VENTAS: `${API_BASE_URL}/api/ventas`
 }
 
 // Ejemplos de uso con query parameters:
