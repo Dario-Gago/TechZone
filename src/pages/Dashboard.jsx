@@ -3,13 +3,6 @@ import { User } from 'lucide-react'
 import { useAutenticacion } from '../contexts/AuthContext'
 import { API_ENDPOINTS } from '../config/api'
 import axios from 'axios'
-import {
-  obtenerComprasUsuario,
-  obtenerEstadisticasAdmin,
-  obtenerUsuario
-} from '../hooks/dataHelpers'
-import datosUsuarios from '../data/usuarios.json'
-import datosPedidos from '../data/pedidos.json'
 
 import StatsCards from '../components/StatsCards'
 import UserPurchases from '../components/UserPurchases'
@@ -24,7 +17,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [usuarios, setUsuarios] = useState([])
   const { productos } = useContext(ProductContext)
-
   const [pedidos, setPedidos] = useState([])
 
   // Función para obtener usuarios de la base de datos
@@ -44,11 +36,84 @@ const Dashboard = () => {
       })
 
       console.log('Usuarios cargados desde la base de datos:', data)
-      console.log('Estructura del primer usuario:', data[0])
       setUsuarios(data)
     } catch (error) {
       console.error('Error al obtener usuarios:', error)
       setUsuarios([])
+    }
+  }
+
+  // Función para cargar pedidos desde la base de datos
+  const cargarPedidos = async () => {
+    try {
+      const token = localStorage.getItem('token')
+
+      if (!token) {
+        console.error('No hay token de autenticación')
+        return
+      }
+
+      const { data } = await axios.get(API_ENDPOINTS.PEDIDOS, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      setPedidos(data)
+    } catch (error) {
+      console.error('Error al obtener pedidos:', error)
+      setPedidos([])
+    }
+  }
+
+  // Función para cargar compras del usuario actual
+  const cargarComprasUsuario = async () => {
+    if (!usuario?.usuario_id) return
+
+    try {
+      const token = localStorage.getItem('token')
+
+      if (!token) {
+        console.error('No hay token de autenticación')
+        return
+      }
+
+      const { data } = await axios.get(
+        `${API_ENDPOINTS.USUARIOS}/${usuario.usuario_id}/compras`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+
+      setComprasUsuario(data)
+    } catch (error) {
+      console.error('Error al obtener compras del usuario:', error)
+      setComprasUsuario([])
+    }
+  }
+
+  // Función para cargar estadísticas desde la base de datos
+  const cargarEstadisticas = async () => {
+    try {
+      const token = localStorage.getItem('token')
+
+      if (!token) {
+        console.error('No hay token de autenticación')
+        return
+      }
+
+      const { data } = await axios.get(API_ENDPOINTS.ESTADISTICAS, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      setEstadisticas(data)
+    } catch (error) {
+      console.error('Error al obtener estadísticas:', error)
+      setEstadisticas({})
     }
   }
 
@@ -89,32 +154,18 @@ const Dashboard = () => {
 
   useEffect(() => {
     const cargarDatos = async () => {
-      const stats = obtenerEstadisticasAdmin()
-      setEstadisticas(stats)
+      setLoading(true)
+
+      // Cargar estadísticas para todos los usuarios
+      await cargarEstadisticas()
 
       if (esAdmin) {
+        // Si es admin, cargar usuarios y pedidos
         await cargarUsuarios()
-
-        const pedidosConUsuarios = datosPedidos.pedidos.map((pedido) => {
-          const usuarioEncontrado = datosUsuarios.usuarios.find(
-            (u) => u.usuario_id === pedido.usuario_id
-          )
-          return {
-            ...pedido,
-            nombreUsuario: usuarioEncontrado
-              ? usuarioEncontrado.nombre
-              : 'Desconocido'
-          }
-        })
-        setPedidos(pedidosConUsuarios)
-      }
-
-      if (usuario?.email) {
-        const usuarioData = obtenerUsuario(usuario.email)
-        if (usuarioData) {
-          const compras = obtenerComprasUsuario(usuarioData.usuario_id)
-          setComprasUsuario(compras)
-        }
+        await cargarPedidos()
+      } else {
+        // Si es usuario normal, cargar solo sus compras
+        await cargarComprasUsuario()
       }
 
       setLoading(false)
@@ -160,7 +211,7 @@ const Dashboard = () => {
           esAdmin={esAdmin}
           estadisticas={estadisticas}
           usuarios={usuarios}
-          productos={productos} // ← Agregar esta línea
+          productos={productos}
           totalGastado={totalGastado}
           comprasUsuario={comprasUsuario}
           comprasEntregadas={comprasEntregadas}
@@ -177,8 +228,8 @@ const Dashboard = () => {
             {esAdmin ? (
               <AdminTabs
                 pedidos={pedidos}
-                productos={productos} // productos del contexto
-                usuarios={usuarios} // usuarios traídos de API o contexto similar
+                productos={productos}
+                usuarios={usuarios}
                 onEliminarUsuario={eliminarUsuario}
               />
             ) : (
