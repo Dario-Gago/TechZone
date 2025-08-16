@@ -44,3 +44,13 @@ export const updateSale = async (req, res) => {
     res.status(500).json({ error: err.message })
   }
 }
+// salesController.js
+export const getUserSales = async (req, res) => {
+  try {
+    const userId = req.user.userId // viene del middleware verifyToken
+    const sales = await findSales(req.user) // tu función findSales ya filtra por user si no es admin
+    res.json(sales)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+}

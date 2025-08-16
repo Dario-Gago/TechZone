@@ -26,6 +26,7 @@ export const ProveedorAutenticacion = ({ children }) => {
     setToken(null)
     setEsAdmin(false)
     setUsuario(null)
+
     console.log('Sesión cerrada automáticamente - token inválido')
   }, [])
 

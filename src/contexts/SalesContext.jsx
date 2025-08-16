@@ -3,12 +3,14 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
 import { API_ENDPOINTS } from '../config/api'
 
+import { useAuth } from './AuthContext' // importa tu contexto de autenticación
 const SalesContext = createContext()
 
 export const SalesProvider = ({ children }) => {
   const [sales, setSales] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const { usuario } = useAuth() // obtenemos usuario actual
 
   // Función segura para obtener datos de autenticación
   const getAuthData = () => {
@@ -44,10 +46,6 @@ export const SalesProvider = ({ children }) => {
 
     const { token, usuario } = getAuthData()
 
-    console.log('🔍 Token disponible:', !!token)
-    console.log('🔍 Usuario:', usuario)
-    console.log('🔍 API Endpoint:', API_ENDPOINTS?.VENTAS)
-
     if (!token) {
       console.warn('⚠️ No hay token disponible')
       setError('No hay sesión activa')
@@ -66,61 +64,34 @@ export const SalesProvider = ({ children }) => {
       setLoading(true)
       setError(null)
 
-      console.log('🌐 Haciendo petición GET a:', `${API_ENDPOINTS.VENTAS}`)
+      // Usamos el endpoint /me para traer solo las ventas del usuario actual
+      const url = usuario?.admin
+        ? API_ENDPOINTS.VENTAS
+        : `${API_ENDPOINTS.VENTAS}/me`
 
-      const res = await axios.get(`${API_ENDPOINTS.VENTAS}`, {
+      console.log('🌐 Haciendo petición GET a:', url)
+
+      const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
       })
 
-      console.log('✅ Respuesta exitosa:')
-      console.log('📊 Status:', res.status)
-      console.log('📊 Data:', res.data)
-      console.log('📊 Tipo de data:', typeof res.data)
-      console.log('📊 Es array:', Array.isArray(res.data))
-      console.log('📊 Longitud:', res.data?.length)
-
       if (res.data && Array.isArray(res.data)) {
-        console.log('📊 Primera venta:', res.data[0])
         setSales(res.data)
-        console.log('✅ Sales actualizadas en el contexto')
       } else if (res.data && typeof res.data === 'object' && res.data.ventas) {
-        console.log('📊 Datos en estructura anidada')
         setSales(res.data.ventas)
       } else if (res.data && typeof res.data === 'object' && res.data.data) {
-        console.log('📊 Datos en estructura data')
         setSales(res.data.data)
       } else {
-        console.warn('⚠️ Los datos no son un array válido:', res.data)
         setSales([])
       }
     } catch (err) {
-      console.error('❌ Error en fetchSales:')
-      console.error('❌ Error completo:', err)
-      console.error('❌ Response:', err.response)
-      console.error('❌ Response data:', err.response?.data)
-      console.error('❌ Response status:', err.response?.status)
-
-      let errorMessage = 'Error loading sales'
-
-      if (err.response?.status === 401) {
-        errorMessage = 'No autorizado para ver las ventas'
-      } else if (err.response?.status === 403) {
-        errorMessage = 'No tienes permisos para ver las ventas'
-      } else if (err.response?.status === 404) {
-        errorMessage = 'Endpoint de ventas no encontrado'
-      } else if (err.response?.status === 500) {
-        errorMessage = 'Error interno del servidor'
-      } else if (err.response?.data?.error) {
-        errorMessage = err.response.data.error
-      } else if (err.message) {
-        errorMessage = err.message
-      }
-
-      setError(errorMessage)
+      console.error('❌ Error en fetchSales:', err)
+      setError(
+        err.response?.data?.error || err.message || 'Error cargando ventas'
+      )
       setSales([])
     } finally {
       setLoading(false)
-      console.log('🏁 fetchSales finalizado')
     }
   }
 
@@ -242,7 +213,14 @@ export const SalesProvider = ({ children }) => {
     console.log('🎯 Token actual:', token ? 'Disponible' : 'No disponible')
     console.log('🎯 Usuario actual:', usuario?.email || 'No disponible')
   }, [sales, loading, error])
-
+  useEffect(() => {
+    if (usuario) {
+      fetchSales() // si hay usuario, cargamos sus ventas
+    } else {
+      setSales([]) // si no hay usuario, limpiamos ventas
+      setError(null)
+    }
+  }, [usuario])
   const contextValue = {
     sales: sales || [],
     loading: loading || false,
