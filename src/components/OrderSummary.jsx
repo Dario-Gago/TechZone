@@ -200,21 +200,6 @@ const OrderSummary = ({
         </div>
       </div>
 
-      {/* Debug info (solo en desarrollo) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mt-4 p-2 bg-gray-50 border rounded text-xs">
-          <p>
-            <strong>Items en carrito:</strong> {articulosCarrito?.length || 0}
-          </p>
-          <p>
-            <strong>Usuario:</strong> {usuario?.email || 'No logueado'}
-          </p>
-          <p>
-            <strong>Total:</strong> {finalTotal}
-          </p>
-        </div>
-      )}
-
       {/* Complete Purchase Button */}
       <button
         onClick={handleSubmit}
