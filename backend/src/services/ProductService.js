@@ -91,17 +91,13 @@ export class ProductService {
 
   // Lógica de negocio: Actualizar stock
   static async updateStock(id, quantity) {
-    try {
-      const product = await this.getProductById(id)
-      const newStock = product.stock - quantity
-      
-      if (newStock < 0) {
-        throw new Error('Stock insuficiente')
-      }
-      
-      return await ProductModel.updateProduct(id, { stock: newStock })
-    } catch (error) {
-      throw error
+    const product = await this.getProductById(id)
+    const newStock = product.stock - quantity
+    
+    if (newStock < 0) {
+      throw new Error('Stock insuficiente')
     }
+    
+    return await ProductModel.updateProduct(id, { stock: newStock })
   }
 }
