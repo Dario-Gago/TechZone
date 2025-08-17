@@ -80,7 +80,11 @@ export const getProductById = async (id) => {
 
 // ✅ CREAR PRODUCTO
 export const createProduct = async (productData) => {
+  const client = await pool.connect()
+  
   try {
+    await client.query('BEGIN')
+    
     console.log('🟣 === PRODUCT MODEL CREATE ===')
     console.log('🟣 productData recibido:', JSON.stringify(productData, null, 2))
 
@@ -98,7 +102,8 @@ export const createProduct = async (productData) => {
       en_stock,
       destacado,
       envio,
-      caracteristicas
+      caracteristicas,
+      categoria // ✅ Nuevo: categoria como string
     } = productData
 
     console.log('🟣 Campos extraídos:')
@@ -107,6 +112,7 @@ export const createProduct = async (productData) => {
     console.log('  - marca_id:', marca_id, '(tipo:', typeof marca_id, ')')
     console.log('  - destacado:', destacado, '(tipo:', typeof destacado, ')')
     console.log('  - precio_normal:', precio_normal, '(tipo:', typeof precio_normal, ')')
+    console.log('  - categoria:', categoria, '(tipo:', typeof categoria, ')')
 
     // ✅ VALIDACIÓN
     if (!nombre || typeof nombre !== 'string' || nombre.trim() === '') {
@@ -122,7 +128,7 @@ export const createProduct = async (productData) => {
     if (!marcaIdFinal && marca) {
       console.log('🔍 Buscando marca_id para marca:', marca)
       try {
-        const marcaResult = await pool.query(
+        const marcaResult = await client.query(
           'SELECT marca_id FROM marca WHERE LOWER(nombre) = LOWER($1)',
           [marca]
         )
@@ -132,7 +138,7 @@ export const createProduct = async (productData) => {
         } else {
           console.log('⚠️ Marca no encontrada, creando nueva marca:', marca)
           // Crear nueva marca si no existe
-          const nuevaMarcaResult = await pool.query(
+          const nuevaMarcaResult = await client.query(
             'INSERT INTO marca (nombre) VALUES ($1) RETURNING marca_id',
             [marca]
           )
@@ -147,7 +153,8 @@ export const createProduct = async (productData) => {
 
     console.log('✅ Validaciones pasadas en modelo')
 
-    const result = await pool.query(
+    // Crear el producto
+    const result = await client.query(
       `INSERT INTO producto
        (nombre, descripcion, precio_normal, precio_oferta, descuento, marca_id, 
         stock, disponibilidad, imagen_url, caracteristicas, envio, en_stock, destacado)
@@ -170,11 +177,51 @@ export const createProduct = async (productData) => {
       ]
     )
 
-    console.log('✅ Producto creado exitosamente:', result.rows[0])
-    return formatProduct(result.rows[0])
+    const nuevoProducto = result.rows[0]
+    console.log('✅ Producto creado exitosamente:', nuevoProducto)
+
+    // ✅ Manejar categoría si se proporcionó
+    if (categoria && typeof categoria === 'string' && categoria.trim()) {
+      console.log('🔍 Buscando/creando categoría:', categoria)
+      
+      // Buscar categoría existente
+      let categoriaResult = await client.query(
+        'SELECT categoria_id FROM categoria WHERE LOWER(nombre) = LOWER($1) AND activo = true',
+        [categoria.trim()]
+      )
+      
+      let categoriaId
+      if (categoriaResult.rows.length > 0) {
+        categoriaId = categoriaResult.rows[0].categoria_id
+        console.log('✅ Categoría encontrada, categoria_id:', categoriaId)
+      } else {
+        // Crear nueva categoría si no existe
+        console.log('⚠️ Categoría no encontrada, creando nueva:', categoria)
+        const nuevaCategoriaResult = await client.query(
+          'INSERT INTO categoria (nombre, activo) VALUES ($1, true) RETURNING categoria_id',
+          [categoria.trim()]
+        )
+        categoriaId = nuevaCategoriaResult.rows[0].categoria_id
+        console.log('✅ Nueva categoría creada con ID:', categoriaId)
+      }
+      
+      // Asignar categoría al producto
+      await client.query(
+        'INSERT INTO producto_categoria (producto_id, categoria_id) VALUES ($1, $2)',
+        [nuevoProducto.producto_id, categoriaId]
+      )
+      console.log('✅ Categoría asignada al producto')
+    }
+
+    await client.query('COMMIT')
+    return formatProduct(nuevoProducto)
+    
   } catch (error) {
+    await client.query('ROLLBACK')
     console.error('❌ Error en createProduct:', error)
     throw new Error('Error al crear producto: ' + error.message)
+  } finally {
+    client.release()
   }
 }
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { X } from 'lucide-react'
+import { X, Plus } from 'lucide-react'
 
 const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   const [formProducto, setFormProducto] = useState({
@@ -15,8 +15,94 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     stock: 0
   })
 
-  // Ya no necesitamos el estado para nueva característica
-  // const [nuevaCaracteristica, setNuevaCaracteristica] = useState('')
+  const [categorias, setCategorias] = useState([])
+  const [nuevaCategoria, setNuevaCategoria] = useState('')
+  const [mostrandoNuevaCategoria, setMostrandoNuevaCategoria] = useState(false)
+
+  // Función para convertir slug a nombre legible
+  const formatearNombreCategoria = (slug) => {
+    if (!slug) return ''
+    
+    // Mapeo de slugs a nombres legibles
+    const nombresCategorias = {
+      'gaming-streaming': 'Gaming & Streaming',
+      'computacion': 'Computación',
+      'componentes': 'Componentes',
+      'conectividad-redes': 'Conectividad & Redes',
+      'hogar-oficina': 'Hogar & Oficina',
+      'audio-video': 'Audio & Video',
+      'otras-categorias': 'Otras Categorías'
+    }
+    
+    // Si existe en el mapeo, usar el nombre legible
+    if (nombresCategorias[slug]) {
+      return nombresCategorias[slug]
+    }
+    
+    // Si no está en el mapeo, formatear automáticamente
+    return slug
+      .split('-')
+      .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+      .join(' ')
+  }
+
+  // Función para convertir nombre legible a slug
+  const convertirASlug = (nombre) => {
+    if (!nombre) return ''
+    
+    // Mapeo inverso de nombres legibles a slugs
+    const slugsCategorias = {
+      'Gaming & Streaming': 'gaming-streaming',
+      'Computación': 'computacion',
+      'Componentes': 'componentes',
+      'Conectividad & Redes': 'conectividad-redes',
+      'Hogar & Oficina': 'hogar-oficina',
+      'Audio & Video': 'audio-video',
+      'Otras Categorías': 'otras-categorias'
+    }
+    
+    // Si existe en el mapeo, usar el slug
+    if (slugsCategorias[nombre]) {
+      return slugsCategorias[nombre]
+    }
+    
+    // Si no está en el mapeo, convertir automáticamente
+    return nombre
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '') // Remover caracteres especiales
+      .replace(/\s+/g, '-') // Reemplazar espacios con guiones
+      .replace(/&/g, '') // Remover ampersands
+      .replace(/-+/g, '-') // Reemplazar múltiples guiones con uno solo
+      .trim('-') // Remover guiones al inicio y final
+  }
+
+  // Cargar categorías al montar el componente
+  useEffect(() => {
+    const cargarCategorias = async () => {
+      try {
+        console.log('🔍 Intentando cargar categorías desde:', 'http://localhost:3000/api/categorias')
+        const response = await fetch('http://localhost:3000/api/categorias')
+        console.log('🔍 Response status:', response.status)
+        console.log('🔍 Response ok:', response.ok)
+        
+        if (response.ok) {
+          const categoriasData = await response.json()
+          console.log('🔍 Categorías recibidas:', categoriasData)
+          console.log('🔍 Tipo de datos:', typeof categoriasData)
+          console.log('🔍 Es array:', Array.isArray(categoriasData))
+          console.log('🔍 Longitud:', categoriasData?.length)
+          
+          setCategorias(categoriasData)
+        } else {
+          const errorText = await response.text()
+          console.error('❌ Error en response:', response.status, errorText)
+        }
+      } catch (error) {
+        console.error('❌ Error al cargar categorías:', error)
+      }
+    }
+    cargarCategorias()
+  }, [])
 
   // Bloquear scroll del body cuando el modal está abierto
   useEffect(() => {
@@ -62,7 +148,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       const nuevoEstado = {
         nombre: productoEditando.nombre || '',
         marca: productoEditando.marca || '',
-        categoria: productoEditando.categoria || '',
+        categoria: productoEditando.categoria || '', // Mantener el slug como valor
         precio_original: productoEditando.precio_original || 0,
         precio_descuento: productoEditando.precio_descuento || 0,
         imagen: productoEditando.imagen || '',
@@ -139,7 +225,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       // Campos en español para el backend
       nombre: nombre,
       marca: marca,
-      categoria: categoria.toLowerCase(),
+      categoria: categoria, // Usar el slug tal como está, sin toLowerCase()
       precio_original: precio_original,
       precio_descuento: precio_descuento,
       imagen: imagen,
@@ -160,6 +246,55 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
 
     console.log('🟢 Enviando al backend:', productoParaBackend)
     onGuardar(productoParaBackend)
+  }
+
+  // Función para crear nueva categoría
+  const crearNuevaCategoria = async () => {
+    if (!nuevaCategoria.trim()) {
+      alert('Por favor ingresa un nombre para la categoría')
+      return
+    }
+
+    try {
+      // Convertir el nombre legible a slug para enviar al backend
+      const slugCategoria = convertirASlug(nuevaCategoria.trim())
+      
+      const response = await fetch('http://localhost:3000/api/categorias', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          nombre: slugCategoria // Enviar como slug
+        })
+      })
+
+      if (response.ok) {
+        const nuevaCategoriaCreada = await response.json()
+        
+        // Agregar la nueva categoría a la lista
+        setCategorias(prev => [...prev, nuevaCategoriaCreada])
+        
+        // Seleccionar automáticamente la nueva categoría (usando el slug)
+        setFormProducto(prev => ({
+          ...prev,
+          categoria: nuevaCategoriaCreada.nombre // Esto será el slug
+        }))
+        
+        // Limpiar y ocultar el formulario de nueva categoría
+        setNuevaCategoria('')
+        setMostrandoNuevaCategoria(false)
+        
+        alert('Categoría creada exitosamente')
+      } else {
+        const error = await response.json()
+        alert(`Error al crear categoría: ${error.message}`)
+      }
+    } catch (error) {
+      console.error('Error al crear categoría:', error)
+      alert('Error al crear categoría')
+    }
   }
 
   const handleInputChange = (field, value) => {
@@ -259,13 +394,73 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Categoría *
             </label>
-            <input
-              type="text"
-              value={formProducto.categoria}
-              onChange={(e) => handleInputChange('categoria', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-            />
+            <div className="space-y-2">
+              <select
+                value={formProducto.categoria}
+                onChange={(e) => {
+                  if (e.target.value === 'nueva') {
+                    setMostrandoNuevaCategoria(true)
+                    setFormProducto(prev => ({ ...prev, categoria: '' }))
+                  } else {
+                    setFormProducto(prev => ({ ...prev, categoria: e.target.value }))
+                    setMostrandoNuevaCategoria(false)
+                  }
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Selecciona una categoría</option>
+                {(() => {
+                  console.log('🔍 Renderizando dropdown - categorias state:', categorias)
+                  console.log('🔍 Categorias length:', categorias?.length)
+                  return categorias.map((cat) => {
+                    console.log('🔍 Categoria individual:', cat)
+                    const nombreLegible = formatearNombreCategoria(cat.nombre)
+                    return (
+                      <option key={cat.categoria_id} value={cat.nombre}>
+                        {nombreLegible}
+                      </option>
+                    )
+                  })
+                })()}
+                <option value="nueva">+ Agregar nueva categoría</option>
+              </select>
+
+              {mostrandoNuevaCategoria && (
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={nuevaCategoria}
+                    onChange={(e) => setNuevaCategoria(e.target.value)}
+                    placeholder="Nombre de la nueva categoría"
+                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    onKeyPress={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        crearNuevaCategoria()
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={crearNuevaCategoria}
+                    className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMostrandoNuevaCategoria(false)
+                      setNuevaCategoria('')
+                    }}
+                    className="px-3 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           <div>
