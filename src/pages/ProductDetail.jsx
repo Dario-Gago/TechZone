@@ -136,24 +136,24 @@ const DetalleProducto = () => {
           {/* Imagen del producto */}
           <div className="flex justify-center">
             <div className="bg-white rounded-lg p-8 w-full max-w-md">
-              <img
-                src={producto.imagen || 'https://via.placeholder.com/400x400?text=Sin+Imagen'}
-                alt={producto.nombre}
-                className={`w-full h-auto object-contain ${
-                  sinStock ? 'grayscale opacity-60' : ''
-                }`}
-              />
+              <div className="relative aspect-square w-full">
+                <img
+                  src={producto.imagen || 'https://via.placeholder.com/400x400?text=Sin+Imagen'}
+                  alt={producto.nombre}
+                  className={`w-full h-full object-contain ${
+                    sinStock ? 'grayscale opacity-60' : ''
+                  }`}
+                />
 
-              {/* Overlay de sin stock */}
-              {sinStock && (
-                <div className="relative">
-                  <div className="absolute inset-0 -mt-8 bg-black bg-opacity-40 flex items-center justify-center rounded-lg">
+                {/* Overlay de sin stock */}
+                {sinStock && (
+                  <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-lg">
                     <div className="bg-red-500 text-white px-4 py-2 rounded-lg text-lg font-bold">
                       AGOTADO
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
 

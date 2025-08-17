@@ -34,20 +34,30 @@ export const ProveedorCarrito = ({ children }) => {
   const obtenerItemCarritoConDatos = (itemCarrito) => {
     // Verificar que el contexto de productos esté disponible y tenga datos
     if (!contextoProducto || !contextoProducto.obtenerProductoPorId) {
+      console.log('CartContext - contexto de productos no disponible')
       return null
     }
 
     const producto = contextoProducto.obtenerProductoPorId(
       itemCarrito.productId
     )
-    if (!producto) return null
+    if (!producto) {
+      console.log('CartContext - producto no encontrado para ID:', itemCarrito.productId)
+      return null
+    }
 
-    return {
+    console.log('CartContext - producto encontrado:', producto)
+    console.log('CartContext - itemCarrito:', itemCarrito)
+
+    const itemCompleto = {
       ...producto,
       cantidadCarrito: itemCarrito.quantity,
       // Usar precio actual del producto, no datos obsoletos
       precioFinal: producto.precio_descuento || producto.precio_original
     }
+
+    console.log('CartContext - item completo generado:', itemCompleto)
+    return itemCompleto
   }
 
   // Función para obtener todos los items del carrito con datos completos
