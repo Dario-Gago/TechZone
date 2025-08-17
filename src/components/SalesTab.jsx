@@ -1,8 +1,11 @@
 import React from 'react'
 import { Package, AlertCircle, Loader2 } from 'lucide-react'
 import { useSales } from '../hooks/useSales'
+import { useAutenticacion } from '../contexts/AuthContext'
 
 const SalesTab = () => {
+  const { esAdmin } = useAutenticacion()
+  
   // Agregar try-catch para manejar errores del contexto
   let sales, loading, error, fetchSales, updateSaleStatus
 
@@ -36,6 +39,39 @@ const SalesTab = () => {
       hour: '2-digit',
       minute: '2-digit'
     })
+  }
+
+  const handleEstadoChange = async (e, ventaId) => {
+    e.preventDefault() // Prevenir cualquier comportamiento por defecto
+    e.stopPropagation() // Evitar propagación del evento
+    
+    const nuevoEstado = e.target.value
+    
+    try {
+      console.log('🔄 Actualizando estado de venta:', { ventaId, nuevoEstado })
+      
+      if (!updateSaleStatus) {
+        console.error('❌ updateSaleStatus no está disponible')
+        alert('Error: función de actualización no disponible')
+        return
+      }
+
+      await updateSaleStatus(ventaId, nuevoEstado)
+      console.log('✅ Estado actualizado correctamente')
+    } catch (error) {
+      console.error('❌ Error actualizando estado:', error)
+      
+      // Manejar diferentes tipos de errores
+      if (error.response?.status === 403) {
+        alert('❌ Solo los administradores pueden cambiar el estado de las ventas')
+      } else if (error.response?.status === 404) {
+        alert('❌ Venta no encontrada')
+      } else if (error.response?.status === 400) {
+        alert('❌ ' + (error.response?.data?.error || 'Datos inválidos'))
+      } else {
+        alert('❌ Error al actualizar el estado del pedido: ' + (error.message || error))
+      }
+    }
   }
 
   const obtenerEstadoColor = (estado) => {
@@ -194,24 +230,36 @@ const SalesTab = () => {
                   {formatearMoneda(venta.total)}
                 </p>
                 {(venta.estado_pedido || venta.estado) && (
-                  <select
-                    value={venta.estado_pedido || venta.estado}
-                    onChange={(e) =>
-                      updateSaleStatus(
-                        venta.id || venta.venta_id,
-                        e.target.value
-                      )
-                    }
-                    className={`inline-block px-2 py-1 text-xs font-medium rounded-full mt-1 ${obtenerEstadoColor(
-                      venta.estado_pedido || venta.estado
-                    )}`}
-                  >
-                    <option value="pendiente">Pendiente</option>
-                    <option value="en_proceso">En proceso</option>
-                    <option value="confirmado">Confirmado</option>
-                    <option value="entregado">Entregado</option>
-                    <option value="cancelado">Cancelado</option>
-                  </select>
+                  esAdmin ? (
+                    <select
+                      value={venta.estado_pedido || venta.estado}
+                      onChange={(e) =>
+                        handleEstadoChange(
+                          e,
+                          venta.id || venta.venta_id
+                        )
+                      }
+                      className={`inline-block px-2 py-1 text-xs font-medium rounded-full mt-1 ${obtenerEstadoColor(
+                        venta.estado_pedido || venta.estado
+                      )}`}
+                    >
+                      <option value="pendiente">Pendiente</option>
+                      <option value="en_proceso">En proceso</option>
+                      <option value="confirmado">Confirmado</option>
+                      <option value="entregado">Entregado</option>
+                      <option value="cancelado">Cancelado</option>
+                    </select>
+                  ) : (
+                    <span
+                      className={`inline-block px-2 py-1 text-xs font-medium rounded-full mt-1 ${obtenerEstadoColor(
+                        venta.estado_pedido || venta.estado
+                      )}`}
+                    >
+                      {(venta.estado_pedido || venta.estado)
+                        .replace('_', ' ')
+                        .replace(/\b\w/g, (l) => l.toUpperCase())}
+                    </span>
+                  )
                 )}
               </div>
             </div>

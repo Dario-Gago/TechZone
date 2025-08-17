@@ -159,7 +159,17 @@ export const SalesProvider = ({ children }) => {
         { estado: nuevoEstado },
         { headers: { Authorization: `Bearer ${token}` } }
       )
-      await fetchSales() // refrescar ventas después del cambio
+      
+      // Actualizar localmente en lugar de recargar todo
+      setSales(prevSales => 
+        prevSales.map(sale => 
+          (sale.id === ventaId || sale.venta_id === ventaId)
+            ? { ...sale, estado: nuevoEstado, estado_pedido: nuevoEstado }
+            : sale
+        )
+      )
+      
+      console.log('✅ Estado actualizado localmente sin recargar')
     } catch (err) {
       console.error('Error actualizando estado de venta:', err)
       throw err
