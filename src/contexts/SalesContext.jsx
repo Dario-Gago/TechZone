@@ -1,5 +1,5 @@
 // src/contexts/SalesContext.jsx
-import { createContext, useContext, useState, useEffect, useMemo } from 'react'
+import { createContext, useState, useEffect, useMemo, useCallback } from 'react'
 import axios from 'axios'
 import { API_ENDPOINTS } from '../config/api'
 import { useAuth } from './AuthContext'
@@ -10,37 +10,42 @@ export const SalesProvider = ({ children }) => {
   const [sales, setSales] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const { usuario } = useAuth()
+  const { usuario, estaAutenticado, token } = useAuth()
 
   // Función segura para obtener datos de autenticación
-  const getAuthData = () => {
+  const getAuthData = useCallback(() => {
     try {
-      const token = localStorage.getItem('token')
-      const userStr = localStorage.getItem('user')
-
-      let usuario = null
-      if (userStr) {
-        try {
-          usuario = JSON.parse(userStr)
-        } catch (parseError) {
-          console.warn('⚠️ Error parsing user from localStorage:', parseError)
+      const tokenFromContext = token || localStorage.getItem('token')
+      const userFromContext = usuario || (() => {
+        const userStr = localStorage.getItem('user')
+        if (userStr) {
+          try {
+            return JSON.parse(userStr)
+          } catch (parseError) {
+            console.warn('⚠️ Error parsing user from localStorage:', parseError)
+            return null
+          }
         }
+        return null
+      })()
+
+      // Solo logear si hay datos de auth disponibles
+      if (tokenFromContext && userFromContext) {
+        console.log('🔑 Auth data disponible:', {
+          token: 'Disponible',
+          usuario: userFromContext
+        })
       }
 
-      console.log('🔑 Auth data desde localStorage:', {
-        token: token ? 'Disponible' : 'No disponible',
-        usuario
-      })
-
-      return { token, usuario }
+      return { token: tokenFromContext, usuario: userFromContext }
     } catch (error) {
       console.error('❌ Error obteniendo datos de auth:', error)
       return { token: null, usuario: null }
     }
-  }
+  }, [token, usuario])
 
   // ✅ Get sales from backend
-  const fetchSales = async () => {
+  const fetchSales = useCallback(async () => {
     console.log('🔍 fetchSales llamado')
 
     const { token, usuario } = getAuthData()
@@ -92,7 +97,7 @@ export const SalesProvider = ({ children }) => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [getAuthData])
 
   // ✅ Create new sale
   const createSale = async (items, total) => {
@@ -161,8 +166,18 @@ export const SalesProvider = ({ children }) => {
     }
   }
 
-  // 🆕 Estadísticas calculadas con useMemo para optimizar rendimiento
+  // 🆕 Estadísticas calculadas con useMemo para optimizar rendimiento - SOLO SI HAY SESIÓN
   const userStats = useMemo(() => {
+    // No calcular estadísticas si no hay usuario autenticado
+    if (!usuario || !estaAutenticado) {
+      return {
+        totalGastado: 0,
+        comprasRealizadas: 0,
+        comprasEntregadas: 0,
+        comprasEntregadasData: []
+      }
+    }
+
     console.log('📊 Calculando estadísticas del usuario')
 
     if (!sales || sales.length === 0) {
@@ -223,10 +238,20 @@ export const SalesProvider = ({ children }) => {
 
     console.log('📊 Estadísticas del usuario calculadas:', stats)
     return stats
-  }, [sales])
+  }, [sales, usuario, estaAutenticado, getAuthData])
 
-  // 🆕 Estadísticas de administrador calculadas con useMemo
+  // 🆕 Estadísticas de administrador calculadas con useMemo - SOLO SI HAY SESIÓN
   const adminStats = useMemo(() => {
+    // No calcular estadísticas si no hay usuario autenticado
+    if (!usuario || !estaAutenticado) {
+      return {
+        totalVentas: 0,
+        ventasHoy: 0,
+        cantidadVentas: 0,
+        ventasHoyCount: 0
+      }
+    }
+
     console.log('📊 Calculando estadísticas de administrador')
 
     if (!sales || sales.length === 0) {
@@ -291,31 +316,48 @@ export const SalesProvider = ({ children }) => {
 
     console.log('📊 Estadísticas de admin calculadas:', stats)
     return stats
-  }, [sales])
+  }, [sales, usuario, estaAutenticado])
 
-  // Cargar ventas cuando el componente se monte
+  // Cargar ventas cuando el componente se monte - SOLO SI HAY SESIÓN
   useEffect(() => {
     console.log('🔄 SalesProvider montado, verificando autenticación...')
 
-    const { token, usuario } = getAuthData()
+    // Solo proceder si hay usuario autenticado
+    if (!usuario || !estaAutenticado) {
+      console.log('🚫 No hay sesión activa, no se cargarán ventas')
+      setSales([])
+      setError(null)
+      return
+    }
 
-    if (token && usuario) {
+    const { token, usuario: userData } = getAuthData()
+
+    if (token && userData) {
       console.log('🔄 Datos de auth disponibles, cargando ventas...')
       fetchSales()
     } else {
-      console.log('🚫 No hay datos de auth, esperando...')
+      console.log('🚫 No hay datos de auth válidos, esperando...')
       setSales([])
       setError(null)
     }
-  }, [])
+  }, [usuario, estaAutenticado, getAuthData, fetchSales]) // Dependencias específicas
 
-  // Escuchar cambios en localStorage
+  // Escuchar cambios en localStorage - SOLO SI HAY SESIÓN
   useEffect(() => {
     const handleStorageChange = () => {
       console.log('📱 Cambio detectado en localStorage')
-      const { token, usuario } = getAuthData()
+      
+      // Solo proceder si hay usuario autenticado en el contexto
+      if (!usuario || !estaAutenticado) {
+        console.log('🚫 No hay sesión activa después del cambio en storage')
+        setSales([])
+        setError(null)
+        return
+      }
 
-      if (token && usuario) {
+      const { token, usuario: userData } = getAuthData()
+
+      if (token && userData) {
         console.log('🔄 Nueva sesión detectada, cargando ventas...')
         fetchSales()
       } else {
@@ -325,31 +367,39 @@ export const SalesProvider = ({ children }) => {
       }
     }
 
-    window.addEventListener('storage', handleStorageChange)
-    return () => {
-      window.removeEventListener('storage', handleStorageChange)
+    // Solo añadir el listener si hay sesión activa
+    if (usuario && estaAutenticado) {
+      window.addEventListener('storage', handleStorageChange)
+      return () => {
+        window.removeEventListener('storage', handleStorageChange)
+      }
     }
-  }, [])
+  }, [usuario, estaAutenticado, getAuthData, fetchSales])
 
-  // Recargar ventas cuando cambie el usuario
+  // Recargar ventas cuando cambie el usuario - SOLO SI HAY SESIÓN
   useEffect(() => {
-    if (usuario) {
+    if (usuario && estaAutenticado) {
+      console.log('🔄 Usuario cambió, recargando ventas...')
       fetchSales()
     } else {
+      console.log('🚫 Usuario se desconectó, limpiando ventas...')
       setSales([])
       setError(null)
     }
-  }, [usuario])
+  }, [usuario, estaAutenticado, fetchSales])
 
-  // Debug del estado
+  // Debug del estado - SOLO SI HAY SESIÓN PARA EVITAR LOGS INNECESARIOS
   useEffect(() => {
-    console.log('🎯 ESTADO DEL CONTEXTO SALES:')
-    console.log('🎯 Sales count:', sales?.length || 0)
-    console.log('🎯 Loading:', loading)
-    console.log('🎯 Error:', error)
-    console.log('🎯 User Stats:', userStats)
-    console.log('🎯 Admin Stats:', adminStats)
-  }, [sales, loading, error, userStats, adminStats])
+    // Solo logear si hay sesión activa
+    if (usuario && estaAutenticado) {
+      console.log('🎯 ESTADO DEL CONTEXTO SALES:')
+      console.log('🎯 Sales count:', sales?.length || 0)
+      console.log('🎯 Loading:', loading)
+      console.log('🎯 Error:', error)
+      console.log('🎯 User Stats:', userStats)
+      console.log('🎯 Admin Stats:', adminStats)
+    }
+  }, [sales, loading, error, userStats, adminStats, usuario, estaAutenticado])
 
   const contextValue = {
     sales: sales || [],
@@ -370,11 +420,4 @@ export const SalesProvider = ({ children }) => {
   )
 }
 
-// Hook para usar en componentes
-export const useSales = () => {
-  const context = useContext(SalesContext)
-  if (!context) {
-    throw new Error('useSales debe ser usado dentro de SalesProvider')
-  }
-  return context
-}
+export { SalesContext }
