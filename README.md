@@ -5,7 +5,7 @@
 
 **TechZone** es una aplicación web de comercio electrónico **Full-Stack** moderna especializada en productos tecnológicos y gaming. Desarrollada con React 18+ en el frontend y Node.js + PostgreSQL en el backend, siguiendo las mejores prácticas de desarrollo web y arquitectura escalable preparada para crecimiento empresarial.
 
-### ✨ Características Principalesgn="center">
+<div align="center">
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React">
   <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js">
   <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js">
