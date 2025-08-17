@@ -13,7 +13,7 @@ const StatsCards = ({ esAdmin, usuarios, productos }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
       {esAdmin ? (
         <>
           {/* Total de Ventas - calculado desde el contexto */}
@@ -135,7 +135,7 @@ const StatsCards = ({ esAdmin, usuarios, productos }) => {
           </div>
 
           {/* Pedidos Entregados - calculado desde el contexto */}
-          <div className="bg-white rounded-lg shadow-sm p-6 md:col-span-2">
+          <div className="bg-white rounded-lg shadow-sm p-6 md:col-span-1">
             <div className="flex items-center">
               <div className="bg-purple-100 p-3 rounded-full mr-4">
                 <TrendingUp className="w-6 h-6 text-purple-600" />
