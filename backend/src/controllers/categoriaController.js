@@ -35,7 +35,7 @@ export const getCategoriaByIdController = async (req, res) => {
 
 export const createCategoriaController = async (req, res) => {
   try {
-    const { nombre, descripcion } = req.body
+    const { nombre } = req.body
 
     if (!nombre || typeof nombre !== 'string' || !nombre.trim()) {
       return res.status(400).json({
@@ -44,7 +44,7 @@ export const createCategoriaController = async (req, res) => {
       })
     }
 
-    const categoria = await categoriaModel.createCategoria(nombre.trim(), descripcion)
+    const categoria = await categoriaModel.createCategoria(nombre.trim())
     res.status(201).json(categoria)
   } catch (error) {
     res.status(400).json({

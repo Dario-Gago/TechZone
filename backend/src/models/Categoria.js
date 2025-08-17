@@ -23,11 +23,11 @@ export const getCategoriaById = async (id) => {
 }
 
 // Crear nueva categoría
-export const createCategoria = async (nombre, descripcion = null) => {
+export const createCategoria = async (nombre) => {
   try {
     const result = await pool.query(
-      'INSERT INTO categoria (nombre, descripcion) VALUES ($1, $2) RETURNING *',
-      [nombre, descripcion]
+      'INSERT INTO categoria (nombre) VALUES ($1) RETURNING *',
+      [nombre]
     )
     return result.rows[0]
   } catch (error) {
