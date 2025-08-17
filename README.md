@@ -685,41 +685,6 @@ lsof -ti:5173 | xargs kill -9
 - **Validaciones**: Frontend y backend con manejo de errores
 - **Responsive Design**: Totalmente adaptado a dispositivos móviles
 
-### 🚧 Próximas Funcionalidades
-
-### E-commerce Features Avanzadas
-- [ ] Sistema de reviews y calificaciones de productos
-- [ ] Wishlist de productos favoritos por usuario
-- [ ] Comparador de productos lado a lado
-- [ ] Sistema de notificaciones push
-- [ ] Cupones y descuentos promocionales
-- [ ] Sistema de devoluciones y reembolsos
-
-### Backend Optimizations
-- [ ] Cache con Redis para mejorar performance
-- [ ] Paginación optimizada en todos los endpoints
-- [ ] Sistema de logs centralizados
-- [ ] Tests unitarios y de integración
-- [ ] Rate limiting para protección de API
-- [ ] Backup automático de base de datos
-
-### Sales & Analytics Enhancements
-- [ ] Reportes de ventas por período
-- [ ] Gráficos de ventas con Chart.js
-- [ ] Análisis de productos más vendidos
-- [ ] Dashboard de métricas avanzadas
-- [ ] Exportación de reportes a PDF/Excel
-
-### Frontend Enhancements
-- [ ] PWA (Progressive Web App) capabilities
-- [ ] Modo oscuro/claro toggle
-- [ ] Internacionalización (i18n) multi-idioma
-- [ ] Optimización de imágenes con lazy loading
-- [ ] Service Workers para cache offline
-- [ ] Comparador de productos
-- [ ] Sistema de notificaciones
-- [ ] Historial de pedidos detallado
-
 ## 📱 Demo y Capturas
 
 ### 🔐 Sistema de Autenticación
