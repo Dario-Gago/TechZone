@@ -73,15 +73,6 @@ const ProductosDestacados = () => {
         <h2 className="text-3xl font-bold text-gray-800 mb-2">
           Productos Destacados
         </h2>
-        <p className="text-gray-600">
-          Los mejores productos con ofertas especiales
-        </p>
-        {/* ✅ Mostrar cantidad de productos destacados */}
-        <p className="text-sm text-blue-600 mt-2">
-          {productosDestacados.length} producto
-          {productosDestacados.length !== 1 ? 's' : ''} destacado
-          {productosDestacados.length !== 1 ? 's' : ''}
-        </p>
       </div>
 
       {/* Slider horizontal con navegación */}

@@ -32,17 +32,31 @@ export const ProveedorProducto = ({ children }) => {
 
   // ---------------- Categorías ----------------
   const actualizarCategorias = (productosActualizados) => {
-    const categoriasUnicas = [
+    // Orden correcto según la base de datos
+    const ordenCategorias = [
+      'gaming-streaming',
+      'computacion', 
+      'componentes',
+      'conectividad-redes',
+      'hogar-oficina',
+      'audio-video',
+      'otras-categorias'
+    ]
+
+    const categoriasEncontradas = [
       ...new Set(productosActualizados.map((p) => p.categoria || p.category))
     ].filter(Boolean)
 
-    const categoriasObjetos = categoriasUnicas.map((categoria, index) => ({
-      id: index + 1,
-      name: categoria,
-      slug: categoria.toLowerCase().replace(/\s+/g, '-')
-    }))
+    // Ordenar según el orden predefinido
+    const categoriasOrdenadas = ordenCategorias
+      .filter(categoriaOrden => categoriasEncontradas.includes(categoriaOrden))
+      .map((categoria, index) => ({
+        id: index + 1,
+        name: categoria.replace(/-/g, ' '),
+        slug: categoria
+      }))
 
-    setCategorias(categoriasObjetos)
+    setCategorias(categoriasOrdenadas)
   }
 
   // ---------------- Cargar productos ----------------

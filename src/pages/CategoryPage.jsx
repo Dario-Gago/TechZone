@@ -14,7 +14,7 @@ const PaginaCategoria = () => {
   // ✅ Usar productos apropiados según el tipo de usuario
   const productosDisponibles = esAdmin ? todosLosProductos : productos
 
-  // ✅ Extraer categorías únicas de los productos
+  // ✅ Extraer categorías únicas de los productos con orden específico
   const categorias = useMemo(() => {
     if (
       !Array.isArray(productosDisponibles) ||
@@ -23,20 +23,31 @@ const PaginaCategoria = () => {
       return []
     }
 
-    const categoriasUnicas = [
-      ...new Set(productosDisponibles.map((producto) => producto.category))
+    // Orden correcto según la base de datos
+    const ordenCategorias = [
+      'gaming-streaming',
+      'computacion', 
+      'componentes',
+      'conectividad-redes',
+      'hogar-oficina',
+      'audio-video',
+      'otras-categorias'
     ]
-      .filter((categoria) => categoria && categoria.trim() !== '')
+
+    const categoriasEncontradas = [
+      ...new Set(productosDisponibles.map((producto) => producto.category))
+    ].filter((categoria) => categoria && categoria.trim() !== '')
+
+    // Ordenar según el orden predefinido
+    const categoriasOrdenadas = ordenCategorias
+      .filter(categoriaOrden => categoriasEncontradas.includes(categoriaOrden))
       .map((categoria, index) => ({
         id: index + 1,
-        slug: categoria
-          .toLowerCase()
-          .replace(/\s+/g, '-')
-          .replace(/[^a-z0-9-]/g, ''),
-        name: categoria.charAt(0).toUpperCase() + categoria.slice(1).trim()
+        slug: categoria,
+        name: categoria.charAt(0).toUpperCase() + categoria.slice(1).replace(/-/g, ' ').trim()
       }))
 
-    return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...categoriasUnicas]
+    return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...categoriasOrdenadas]
   }, [productosDisponibles])
 
   // ✅ Filtrar productos por categoría

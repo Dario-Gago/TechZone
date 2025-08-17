@@ -5,6 +5,8 @@ import authRoutes from './src/routes/auth.js'
 import usuarios from './src/routes/usuarios.js'
 import product from './src/routes/product.js'
 import sales from './src/routes/sales.js'
+import marca from './src/routes/marca.js'
+import categoria from './src/routes/categoria.js'
 dotenv.config()
 
 const app = express()
@@ -19,6 +21,8 @@ app.use('/api', authRoutes)
 app.use('/api/usuarios', usuarios)
 app.use('/api/productos', product)
 app.use('/api/ventas', sales)
+app.use('/api/marcas', marca)
+app.use('/api/categorias', categoria)
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`)

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 
 // Middleware para verificar token JWT
-export const verifyToken = (req, res, next) => {
+export const authMiddleware = (req, res, next) => {
   try {
     // Obtener el token del header Authorization
     const authHeader = req.headers.authorization
@@ -70,3 +70,33 @@ export const verifyToken = (req, res, next) => {
     })
   }
 }
+
+// Middleware para verificar si el usuario es administrador
+export const adminMiddleware = (req, res, next) => {
+  try {
+    // Verificar si el usuario está autenticado (debe ejecutarse después de authMiddleware)
+    if (!req.user) {
+      return res.status(401).json({
+        message: 'Usuario no autenticado'
+      })
+    }
+
+    // Verificar si el usuario es administrador
+    if (!req.user.admin) {
+      return res.status(403).json({
+        message: 'Acceso denegado. Se requieren privilegios de administrador'
+      })
+    }
+
+    // El usuario es administrador, continuar
+    next()
+  } catch (error) {
+    console.error('Admin verification error:', error)
+    return res.status(500).json({
+      message: 'Error interno del servidor'
+    })
+  }
+}
+
+// Exportar también verifyToken para compatibilidad hacia atrás
+export const verifyToken = authMiddleware
