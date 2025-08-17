@@ -1,5 +1,5 @@
 // src/contexts/SalesContext.jsx
-import { createContext, useState, useEffect, useMemo, useCallback } from 'react'
+import { createContext, useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import axios from 'axios'
 import { API_ENDPOINTS } from '../config/api'
 import { useAuth } from './AuthContext'
@@ -10,9 +10,13 @@ export const SalesProvider = ({ children }) => {
   const [sales, setSales] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [isInitialized, setIsInitialized] = useState(false)
   const { usuario, estaAutenticado, token } = useAuth()
 
-  // Función segura para obtener datos de autenticación
+  // Ref para evitar múltiples llamadas simultáneas
+  const fetchSalesRef = useRef(false)
+
+  // Función segura para obtener datos de autenticación (sin logs redundantes)
   const getAuthData = useCallback(() => {
     try {
       const tokenFromContext = token || localStorage.getItem('token')
@@ -29,14 +33,6 @@ export const SalesProvider = ({ children }) => {
         return null
       })()
 
-      // Solo logear si hay datos de auth disponibles
-      if (tokenFromContext && userFromContext) {
-        console.log('🔑 Auth data disponible:', {
-          token: 'Disponible',
-          usuario: userFromContext
-        })
-      }
-
       return { token: tokenFromContext, usuario: userFromContext }
     } catch (error) {
       console.error('❌ Error obteniendo datos de auth:', error)
@@ -44,9 +40,12 @@ export const SalesProvider = ({ children }) => {
     }
   }, [token, usuario])
 
-  // ✅ Get sales from backend
+  // ✅ Get sales from backend (con prevención de llamadas duplicadas)
   const fetchSales = useCallback(async () => {
-    console.log('🔍 fetchSales llamado')
+    // Prevenir múltiples llamadas simultáneas
+    if (fetchSalesRef.current) {
+      return
+    }
 
     const { token, usuario } = getAuthData()
 
@@ -65,6 +64,7 @@ export const SalesProvider = ({ children }) => {
     }
 
     try {
+      fetchSalesRef.current = true
       setLoading(true)
       setError(null)
 
@@ -72,8 +72,6 @@ export const SalesProvider = ({ children }) => {
       const url = usuario?.admin
         ? API_ENDPOINTS.VENTAS
         : `${API_ENDPOINTS.VENTAS}/me`
-
-      console.log('🌐 Haciendo petición GET a:', url)
 
       const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
@@ -88,6 +86,7 @@ export const SalesProvider = ({ children }) => {
       } else {
         setSales([])
       }
+      setIsInitialized(true)
     } catch (err) {
       console.error('❌ Error en fetchSales:', err)
       setError(
@@ -96,6 +95,7 @@ export const SalesProvider = ({ children }) => {
       setSales([])
     } finally {
       setLoading(false)
+      fetchSalesRef.current = false
     }
   }, [getAuthData])
 
@@ -188,8 +188,6 @@ export const SalesProvider = ({ children }) => {
       }
     }
 
-    console.log('📊 Calculando estadísticas del usuario')
-
     if (!sales || sales.length === 0) {
       return {
         totalGastado: 0,
@@ -216,16 +214,12 @@ export const SalesProvider = ({ children }) => {
     let totalGastado = 0
     const comprasEntregadas = []
 
-    ventasUsuario.forEach((venta, index) => {
+    ventasUsuario.forEach((venta) => {
       // Calcular total gastado
       let montoVenta = 0
       if (venta.total !== undefined && venta.total !== null) {
         montoVenta = parseFloat(venta.total)
         if (isNaN(montoVenta)) {
-          console.warn(
-            `⚠️ Venta ${index + 1}: total no es un número válido:`,
-            venta.total
-          )
           montoVenta = 0
         }
       }
@@ -241,15 +235,12 @@ export const SalesProvider = ({ children }) => {
       }
     })
 
-    const stats = {
+    return {
       totalGastado,
       comprasRealizadas: ventasUsuario.length,
       comprasEntregadas: comprasEntregadas.length,
       comprasEntregadasData: comprasEntregadas
     }
-
-    console.log('📊 Estadísticas del usuario calculadas:', stats)
-    return stats
   }, [sales, usuario, estaAutenticado, getAuthData])
 
   // 🆕 Estadísticas de administrador calculadas con useMemo - SOLO SI HAY SESIÓN
@@ -263,8 +254,6 @@ export const SalesProvider = ({ children }) => {
         ventasHoyCount: 0
       }
     }
-
-    console.log('📊 Calculando estadísticas de administrador')
 
     if (!sales || sales.length === 0) {
       return {
@@ -287,18 +276,12 @@ export const SalesProvider = ({ children }) => {
     let cantidadVentas = sales.length
     let ventasHoyCount = 0
 
-    sales.forEach((venta, index) => {
-      console.log(`📊 Procesando venta ${index + 1}:`, venta)
-
+    sales.forEach((venta) => {
       // Convertir el total a número
       let montoVenta = 0
       if (venta.total !== undefined && venta.total !== null) {
         montoVenta = parseFloat(venta.total)
         if (isNaN(montoVenta)) {
-          console.warn(
-            `⚠️ Venta ${index + 1}: total no es un número válido:`,
-            venta.total
-          )
           montoVenta = 0
         }
       }
@@ -319,63 +302,70 @@ export const SalesProvider = ({ children }) => {
       }
     })
 
-    const stats = {
+    return {
       totalVentas,
       ventasHoy,
       cantidadVentas,
       ventasHoyCount
     }
-
-    console.log('📊 Estadísticas de admin calculadas:', stats)
-    return stats
   }, [sales, usuario, estaAutenticado])
 
-  // Cargar ventas cuando el componente se monte - SOLO SI HAY SESIÓN
+  // Cargar ventas cuando el componente se monte o cambien las credenciales (solo una vez por sesión)
   useEffect(() => {
-    console.log('🔄 SalesProvider montado, verificando autenticación...')
-
-    // Solo proceder si hay usuario autenticado
+    // Solo proceder si hay usuario autenticado y no se ha inicializado
     if (!usuario || !estaAutenticado) {
-      console.log('🚫 No hay sesión activa, no se cargarán ventas')
       setSales([])
       setError(null)
+      setIsInitialized(false)
+      return
+    }
+
+    // Si ya se inicializó para este usuario, no volver a cargar
+    if (isInitialized) {
       return
     }
 
     const { token, usuario: userData } = getAuthData()
 
     if (token && userData) {
-      console.log('🔄 Datos de auth disponibles, cargando ventas...')
       fetchSales()
     } else {
-      console.log('🚫 No hay datos de auth válidos, esperando...')
       setSales([])
       setError(null)
+      setIsInitialized(false)
     }
-  }, [usuario, estaAutenticado, getAuthData, fetchSales]) // Dependencias específicas
+  }, [usuario, estaAutenticado, isInitialized, getAuthData, fetchSales])
 
-  // Escuchar cambios en localStorage - SOLO SI HAY SESIÓN
+  // Limpiar estado cuando el usuario cambie o se desconecte
   useEffect(() => {
+    if (!usuario || !estaAutenticado) {
+      setSales([])
+      setError(null)
+      setIsInitialized(false)
+    }
+  }, [usuario, estaAutenticado]) // Solo reaccionar al cambio real de usuario
+
+  // Escuchar cambios en localStorage (solo si no está inicializado)
+  useEffect(() => {
+    if (isInitialized) return // No hacer nada si ya está inicializado
+
     const handleStorageChange = () => {
-      console.log('📱 Cambio detectado en localStorage')
-      
       // Solo proceder si hay usuario autenticado en el contexto
       if (!usuario || !estaAutenticado) {
-        console.log('🚫 No hay sesión activa después del cambio en storage')
         setSales([])
         setError(null)
+        setIsInitialized(false)
         return
       }
 
       const { token, usuario: userData } = getAuthData()
 
       if (token && userData) {
-        console.log('🔄 Nueva sesión detectada, cargando ventas...')
         fetchSales()
       } else {
-        console.log('🚫 Sesión cerrada, limpiando datos...')
         setSales([])
         setError(null)
+        setIsInitialized(false)
       }
     }
 
@@ -386,32 +376,14 @@ export const SalesProvider = ({ children }) => {
         window.removeEventListener('storage', handleStorageChange)
       }
     }
-  }, [usuario, estaAutenticado, getAuthData, fetchSales])
+  }, [usuario, estaAutenticado, isInitialized, getAuthData, fetchSales])
 
-  // Recargar ventas cuando cambie el usuario - SOLO SI HAY SESIÓN
+  // Debug del estado - solo en desarrollo y limitado
   useEffect(() => {
-    if (usuario && estaAutenticado) {
-      console.log('🔄 Usuario cambió, recargando ventas...')
-      fetchSales()
-    } else {
-      console.log('🚫 Usuario se desconectó, limpiando ventas...')
-      setSales([])
-      setError(null)
-    }
-  }, [usuario, estaAutenticado, fetchSales])
-
-  // Debug del estado - solo logear en modo desarrollo
-  useEffect(() => {
-    // Solo logear si hay sesión activa y está en modo desarrollo
     if (usuario && estaAutenticado && import.meta.env.DEV) {
-      console.log('🎯 ESTADO DEL CONTEXTO SALES:')
-      console.log('🎯 Sales count:', sales?.length || 0)
-      console.log('🎯 Loading:', loading)
-      console.log('🎯 Error:', error)
-      console.log('🎯 User Stats:', userStats)
-      console.log('🎯 Admin Stats:', adminStats)
+      console.log('🎯 Sales:', sales?.length || 0, 'Loading:', loading, 'Error:', !!error)
     }
-  }, [sales, loading, error, userStats, adminStats, usuario, estaAutenticado])
+  }, [sales?.length, loading, error, usuario, estaAutenticado])
 
   const contextValue = {
     sales: sales || [],

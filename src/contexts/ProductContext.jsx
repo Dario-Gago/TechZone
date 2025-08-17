@@ -51,7 +51,9 @@ export const ProveedorProducto = ({ children }) => {
       ...new Set(productosActualizados.map((p) => p.categoria))
     ].filter(Boolean)
 
-    console.log('🔍 Categorías encontradas en productos:', categoriasEncontradas)
+    if (import.meta.env.DEV) {
+      console.log('🔍 Categorías encontradas en productos:', categoriasEncontradas)
+    }
 
     // Ordenar según el orden predefinido y crear IDs únicos
     const categoriasOrdenadas = ordenCategorias
@@ -65,7 +67,9 @@ export const ProveedorProducto = ({ children }) => {
         slug: categoria
       }))
 
-    console.log('✅ Categorías procesadas:', categoriasOrdenadas)
+    if (import.meta.env.DEV) {
+      console.log('✅ Categorías procesadas:', categoriasOrdenadas)
+    }
     setCategorias(categoriasOrdenadas)
   }
 
@@ -74,10 +78,14 @@ export const ProveedorProducto = ({ children }) => {
     const cargarProductos = async () => {
       try {
         setCargando(true)
-        console.log('🔄 Cargando productos desde:', API_URL)
+        if (import.meta.env.DEV) {
+          console.log('🔄 Cargando productos desde:', API_URL)
+        }
         const response = await api.get('/')
         
-        console.log('✅ Respuesta del API:', response.data)
+        if (import.meta.env.DEV) {
+          console.log('✅ Respuesta del API:', response.data)
+        }
         
         // ✅ Convertir datos del backend (español) a formato del frontend (inglés/español mixto)
         const productosConvertidos = response.data.map(producto => {
@@ -117,7 +125,9 @@ export const ProveedorProducto = ({ children }) => {
           }
         })
         
-        console.log('✅ Productos convertidos:', productosConvertidos)
+        if (import.meta.env.DEV) {
+          console.log('✅ Productos convertidos:', productosConvertidos)
+        }
         setProductos(productosConvertidos)
         actualizarCategorias(productosConvertidos)
         setError(null)
