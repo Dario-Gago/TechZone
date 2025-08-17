@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 /package-lock.json
 /src/assets/slider.psd
+/test-cors.html
