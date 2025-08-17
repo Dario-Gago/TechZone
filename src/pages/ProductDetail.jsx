@@ -321,13 +321,6 @@ const DetalleProducto = () => {
                     </span>
                   </div>
 
-                  {yaEstaEnCarrito && (
-                    <p className="text-sm text-orange-600">
-                      {stockDisponible} disponibles (ya tienes{' '}
-                      {cantidadEnCarrito} en el carrito)
-                    </p>
-                  )}
-
                   {stockDisponible <= 5 && stockDisponible > 0 && (
                     <p className="text-sm text-red-600 font-medium">
                       ¡Últimas {stockDisponible} unidades disponibles!
