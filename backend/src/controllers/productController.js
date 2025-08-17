@@ -116,7 +116,18 @@ export const createProductController = async (req, res) => {
 
 export const deleteProductController = async (req, res) => {
   try {
+    console.log('🗑️ === DELETE PRODUCT CONTROLLER ===')
     const { id } = req.params
+    console.log('🗑️ Intentando eliminar producto ID:', id)
+    
+    // Validar que el ID sea un número válido
+    if (!id || isNaN(id)) {
+      return res.status(400).json({
+        error: 'ID inválido',
+        message: 'El ID del producto debe ser un número válido'
+      })
+    }
+    
     const product = await productModel.deleteProduct(id)
 
     if (!product) {
@@ -126,14 +137,27 @@ export const deleteProductController = async (req, res) => {
       })
     }
 
+    console.log('✅ Producto eliminado exitosamente:', product.nombre)
     res.json({
       message: 'Producto eliminado correctamente',
       deletedProduct: product
     })
   } catch (error) {
-    res.status(500).json({
+    console.error('❌ Error en deleteProductController:', error)
+    
+    // Proporcionar mensajes más específicos según el tipo de error
+    let errorMessage = error.message
+    let statusCode = 500
+    
+    if (error.message.includes('foreign key') || error.message.includes('llave foránea')) {
+      errorMessage = 'No se puede eliminar el producto porque tiene referencias en otras tablas (carritos, pedidos, ventas)'
+      statusCode = 409 // Conflict
+    }
+    
+    res.status(statusCode).json({
       error: 'Error al eliminar producto',
-      message: error.message
+      message: errorMessage,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     })
   }
 }
