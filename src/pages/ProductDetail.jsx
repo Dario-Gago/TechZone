@@ -168,44 +168,7 @@ const DetalleProducto = () => {
               )}
             </div>
 
-            {/* ✅ Información de stock */}
-            <div className="bg-gray-50 border rounded-lg p-4">
-              <div className="flex items-center space-x-2 mb-2">
-                <Package className="h-5 w-5 text-gray-600" />
-                <span className="font-medium text-gray-700">
-                  Disponibilidad
-                </span>
-              </div>
 
-              {sinStock ? (
-                <div className="flex items-center space-x-2 text-red-600">
-                  <AlertTriangle className="h-4 w-4" />
-                  <span className="text-sm font-medium">Producto agotado</span>
-                </div>
-              ) : (
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-2 text-green-600">
-                    <Check className="h-4 w-4" />
-                    <span className="text-sm font-medium">
-                      {producto.stock} unidades en stock
-                    </span>
-                  </div>
-
-                  {yaEstaEnCarrito && (
-                    <p className="text-sm text-orange-600">
-                      {stockDisponible} disponibles (ya tienes{' '}
-                      {cantidadEnCarrito} en el carrito)
-                    </p>
-                  )}
-
-                  {stockDisponible <= 5 && stockDisponible > 0 && (
-                    <p className="text-sm text-red-600 font-medium">
-                      ¡Últimas {stockDisponible} unidades disponibles!
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
 
             {/* Precios */}
             <div className="space-y-2">
@@ -334,6 +297,45 @@ const DetalleProducto = () => {
                 </div>
               </div>
             )}
+
+                        {/* ✅ Información de stock */}
+            <div className="bg-gray-50 border rounded-lg p-4">
+              <div className="flex items-center space-x-2 mb-2">
+                <Package className="h-5 w-5 text-gray-600" />
+                <span className="font-medium text-gray-700">
+                  Disponibilidad
+                </span>
+              </div>
+
+              {sinStock ? (
+                <div className="flex items-center space-x-2 text-red-600">
+                  <AlertTriangle className="h-4 w-4" />
+                  <span className="text-sm font-medium">Producto agotado</span>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-2 text-green-600">
+                    <Check className="h-4 w-4" />
+                    <span className="text-sm font-medium">
+                      {producto.stock} unidades en stock
+                    </span>
+                  </div>
+
+                  {yaEstaEnCarrito && (
+                    <p className="text-sm text-orange-600">
+                      {stockDisponible} disponibles (ya tienes{' '}
+                      {cantidadEnCarrito} en el carrito)
+                    </p>
+                  )}
+
+                  {stockDisponible <= 5 && stockDisponible > 0 && (
+                    <p className="text-sm text-red-600 font-medium">
+                      ¡Últimas {stockDisponible} unidades disponibles!
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Mensaje para productos sin stock */}
             {sinStock && (
