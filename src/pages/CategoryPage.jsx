@@ -35,7 +35,7 @@ const PaginaCategoria = () => {
     ]
 
     const categoriasEncontradas = [
-      ...new Set(productosDisponibles.map((producto) => producto.category))
+      ...new Set(productosDisponibles.map((producto) => producto.categoria))
     ].filter((categoria) => categoria && categoria.trim() !== '')
 
     // Ordenar según el orden predefinido
@@ -62,7 +62,7 @@ const PaginaCategoria = () => {
     }
 
     return productosDisponibles.filter((producto) => {
-      const slugProducto = producto.category
+      const slugProducto = producto.categoria
         ?.toLowerCase()
         .replace(/\s+/g, '-')
         .replace(/[^a-z0-9-]/g, '')
@@ -126,10 +126,10 @@ const PaginaCategoria = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productosFiltrados.map((product) => {
               const descuento =
-                product.discountPrice > 0
+                product.precio_descuento > 0
                   ? calcularDescuento(
-                      product.originalPrice,
-                      product.discountPrice
+                      product.precio_original,
+                      product.precio_descuento
                     )
                   : 0
 
@@ -151,8 +151,8 @@ const PaginaCategoria = () => {
                     {/* Imagen del producto */}
                     <div className="relative bg-white h-48 flex items-center justify-center p-4 border border-gray-100">
                       <img
-                        src={product.image || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
-                        alt={product.name}
+                        src={product.imagen || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
+                        alt={product.nombre}
                         className={`w-full h-full object-contain ${
                           sinStock ? 'grayscale' : ''
                         }`}
@@ -177,21 +177,6 @@ const PaginaCategoria = () => {
                         )}
                       </div>
 
-                      {/* Badge de stock */}
-                      <div className="absolute top-2 right-2">
-                        {sinStock ? (
-                          <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
-                            <AlertTriangle className="w-3 h-3 mr-1" />
-                            Sin Stock
-                          </div>
-                        ) : (
-                          <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
-                            <Package className="w-3 h-3 mr-1" />
-                            {product.stock}
-                          </div>
-                        )}
-                      </div>
-
                       {/* Overlay para productos sin stock (solo para admin) */}
                       {sinStock && esAdmin && (
                         <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
@@ -205,16 +190,16 @@ const PaginaCategoria = () => {
                     {/* Información del producto */}
                     <div className="p-4">
                       {/* Marca */}
-                      {product.brand && (
+                      {product.marca && (
                         <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                          {product.brand}
+                          {product.marca}
                         </p>
                       )}
 
                       {/* Nombre del producto */}
                       <div className="h-12 mb-3">
                         <h3 className="text-sm font-medium text-gray-800 line-clamp-2 leading-tight">
-                          {product.name}
+                          {product.nombre}
                         </h3>
                       </div>
 
@@ -233,18 +218,18 @@ const PaginaCategoria = () => {
 
                       {/* Precios */}
                       <div className="space-y-1">
-                        {product.discountPrice > 0 &&
-                        product.discountPrice < product.originalPrice ? (
+                        {product.precio_descuento > 0 &&
+                        product.precio_descuento < product.precio_original ? (
                           <>
                             <p className="text-sm text-gray-500 line-through">
-                              {formatearPrecio(product.originalPrice)}
+                              {formatearPrecio(product.precio_original)}
                             </p>
                             <p
                               className={`text-lg font-bold ${
                                 sinStock ? 'text-gray-500' : 'text-green-600'
                               }`}
                             >
-                              {formatearPrecio(product.discountPrice)}
+                              {formatearPrecio(product.precio_descuento)}
                             </p>
                           </>
                         ) : (
@@ -253,16 +238,16 @@ const PaginaCategoria = () => {
                               sinStock ? 'text-gray-500' : 'text-gray-900'
                             }`}
                           >
-                            {formatearPrecio(product.originalPrice)}
+                            {formatearPrecio(product.precio_original)}
                           </p>
                         )}
                       </div>
 
                       {/* Características destacadas */}
-                      {product.features && product.features.length > 0 && (
+                      {product.caracteristicas && product.caracteristicas.length > 0 && (
                         <div className="mt-3">
                           <p className="text-xs text-gray-600 line-clamp-1">
-                            {product.features[0]}
+                            {product.caracteristicas[0]}
                           </p>
                         </div>
                       )}

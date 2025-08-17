@@ -56,7 +56,7 @@ const BarraNavegacion = () => {
 
     // Extraer categorías únicas de los productos
     const categoriasEncontradas = [
-      ...new Set(productos.map((producto) => producto.category))
+      ...new Set(productos.map((producto) => producto.categoria))
     ].filter((categoria) => categoria && categoria.trim() !== '')
 
     // Ordenar según el orden predefinido

@@ -6,32 +6,29 @@ const BannerOferta = () => {
   const categorias = [
     {
       id: 'componentes',
-      name: 'Componentes',
-      name2: 'PC',
+      name: 'Tarjetas',
+      name2: 'Graficas',
       price: '$199.990',
       slug: 'componentes',
       tall: true // Ocupa 2 filas
     },
     {
       id: 'gaming-streaming',
-      name: 'Gaming',
-      name2: 'Streaming',
+      name: 'Monitores',
       price: '$129.990',
       slug: 'gaming-streaming',
       tall: false
     },
     {
       id: 'computacion',
-      name: 'Computación',
-      name2: 'Laptops',
+      name: 'Motherboard',
       price: '$999.990',
       slug: 'computacion',
       tall: true // Ocupa 2 filas
     },
     {
       id: 'audio-video',
-      name: 'Audio',
-      name2: 'Video',
+      name2: 'SSD',
       price: '$299.990',
       slug: 'audio-video',
       tall: false

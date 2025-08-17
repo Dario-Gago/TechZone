@@ -3,31 +3,31 @@ import pool from '../../db/config.js'
 // Función para formatear un producto
 export const formatProduct = (product) => {
   // Parsear características si están en formato JSON
-  let features = []
+  let caracteristicas = {}
   if (product.caracteristicas) {
     try {
-      features =
+      caracteristicas =
         typeof product.caracteristicas === 'string'
           ? JSON.parse(product.caracteristicas)
           : product.caracteristicas
     } catch (e) {
-      features = []
+      caracteristicas = {}
     }
   }
 
   return {
-    id: product.producto_id, // ✅ CORREGIDO: usar producto_id
-    name: product.nombre,
-    brand: product.marca_nombre || '', // ✅ Para cuando se haga JOIN con marca
-    description: product.descripcion,
-    originalPrice: parseFloat(product.precio_normal), // ✅ CORREGIDO: precio_normal
-    discountPrice: parseFloat(product.precio_oferta), // ✅ CORREGIDO: precio_oferta
-    discount: product.descuento,
-    image: product.imagen_url, // ✅ CORREGIDO: imagen_url
-    features: features,
-    category: product.categoria_nombres || '', // ✅ Para cuando se haga JOIN con categorías
-    shipping: product.envio || 'Envío estándar',
-    inStock: product.en_stock || 0,
+    id: product.producto_id,
+    nombre: product.nombre,
+    marca: product.marca_nombre || '',
+    descripcion: product.descripcion,
+    precio_original: parseFloat(product.precio_normal),
+    precio_descuento: parseFloat(product.precio_oferta),
+    descuento: product.descuento,
+    imagen: product.imagen_url,
+    caracteristicas: caracteristicas,
+    categoria: product.categoria_nombres || '',
+    envio: product.envio || 'Envío estándar',
+    en_stock: product.en_stock || 0,
     stock: product.stock || 0,
     destacado: product.destacado || false,
     marca_id: product.marca_id,

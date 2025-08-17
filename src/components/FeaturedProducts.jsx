@@ -132,10 +132,10 @@ const ProductosDestacados = () => {
             {productosDestacados.map((producto) => {
               // ✅ Calcular descuento usando los campos correctos
               const descuento =
-                producto.discountPrice > 0
+                producto.precio_descuento > 0
                   ? calcularDescuento(
-                      producto.originalPrice,
-                      producto.discountPrice
+                      producto.precio_original,
+                      producto.precio_descuento
                     )
                   : 0
 
@@ -148,8 +148,8 @@ const ProductosDestacados = () => {
                   {/* Imagen del producto */}
                   <div className="relative bg-white h-48 flex items-center justify-center p-4 border border-gray-100">
                     <img
-                      src={producto.image || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
-                      alt={producto.name}
+                      src={producto.imagen || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
+                      alt={producto.nombre}
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.src =
@@ -168,43 +168,43 @@ const ProductosDestacados = () => {
                   {/* Información del producto */}
                   <div className="p-4">
                     {/* Marca */}
-                    {producto.brand && (
+                    {producto.marca && (
                       <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                        {producto.brand}
+                        {producto.marca}
                       </p>
                     )}
 
                     {/* Nombre del producto */}
                     <div className="h-12 mb-3">
                       <h3 className="text-sm font-medium text-gray-800 line-clamp-2 leading-tight">
-                        {producto.name}
+                        {producto.nombre}
                       </h3>
                     </div>
 
                     {/* Precios */}
                     <div className="space-y-1">
-                      {producto.discountPrice > 0 &&
-                      producto.discountPrice < producto.originalPrice ? (
+                      {producto.precio_descuento > 0 &&
+                      producto.precio_descuento < producto.precio_original ? (
                         <>
                           <p className="text-sm text-gray-500 line-through">
-                            {formatearPrecio(producto.originalPrice)}
+                            {formatearPrecio(producto.precio_original)}
                           </p>
                           <p className="text-lg font-bold text-green-600">
-                            {formatearPrecio(producto.discountPrice)}
+                            {formatearPrecio(producto.precio_descuento)}
                           </p>
                         </>
                       ) : (
                         <p className="text-lg font-bold text-gray-900">
-                          {formatearPrecio(producto.originalPrice)}
+                          {formatearPrecio(producto.precio_original)}
                         </p>
                       )}
                     </div>
 
                     {/* ✅ Características destacadas */}
-                    {producto.features && producto.features.length > 0 && (
+                    {producto.caracteristicas && producto.caracteristicas.length > 0 && (
                       <div className="mt-3">
                         <p className="text-xs text-gray-600 line-clamp-1">
-                          {producto.features[0]}
+                          {producto.caracteristicas[0]}
                         </p>
                       </div>
                     )}

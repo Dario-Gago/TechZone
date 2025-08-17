@@ -46,7 +46,7 @@ export const ProveedorCarrito = ({ children }) => {
       ...producto,
       cantidadCarrito: itemCarrito.quantity,
       // Usar precio actual del producto, no datos obsoletos
-      precioFinal: producto.discountPrice || producto.originalPrice
+      precioFinal: producto.precio_descuento || producto.precio_original
     }
   }
 

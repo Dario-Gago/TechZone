@@ -4,13 +4,13 @@ import { X } from 'lucide-react'
 
 const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   const [formProducto, setFormProducto] = useState({
-    name: '',
-    brand: '',
-    category: '',
-    originalPrice: 0,
-    discountPrice: 0,
-    image: '',
-    features: '',  // Cambiar a string en lugar de array
+    nombre: '',
+    marca: '',
+    categoria: '',
+    precio_original: 0,
+    precio_descuento: 0,
+    imagen: '',
+    caracteristicas: '',  // Cambiar a string en lugar de array
     destacado: false,
     stock: 0
   })
@@ -31,29 +31,57 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
 
   useEffect(() => {
     if (productoEditando) {
-      // ✅ Mapear datos del backend (en inglés) al estado del frontend
-      setFormProducto({
-        name: productoEditando.name || '',
-        brand: productoEditando.brand || '',
-        category: productoEditando.category || '',
-        originalPrice: productoEditando.originalPrice || 0,
-        discountPrice: productoEditando.discountPrice || 0,
-        image: productoEditando.image || '',
-        features: Array.isArray(productoEditando.features) 
-          ? productoEditando.features.join('\n') // Convertir array a string con saltos de línea
-          : productoEditando.features || '',
+      console.log('🔍 Producto completo:', productoEditando)
+      console.log('🔍 Características del producto:', productoEditando.caracteristicas)
+      console.log('🔍 Tipo de características:', typeof productoEditando.caracteristicas)
+      console.log('🔍 Es array características?:', Array.isArray(productoEditando.caracteristicas))
+      
+      // ✅ Usar directamente los datos del backend en español
+      const caracteristicasText = (() => {
+        // Usar características del backend
+        if (Array.isArray(productoEditando.caracteristicas) && productoEditando.caracteristicas.length > 0) {
+          console.log('🟢 Usando caracteristicas como array:', productoEditando.caracteristicas)
+          return productoEditando.caracteristicas.join('\n')
+        }
+        if (typeof productoEditando.caracteristicas === 'string' && productoEditando.caracteristicas.trim()) {
+          console.log('🟢 Usando caracteristicas como string:', productoEditando.caracteristicas)
+          return productoEditando.caracteristicas
+        }
+        // Si no hay características específicas, usar la descripción como base
+        if (typeof productoEditando.descripcion === 'string' && productoEditando.descripcion.trim()) {
+          console.log('🟢 Usando descripcion como características:', productoEditando.descripcion)
+          return productoEditando.descripcion
+        }
+        console.log('🔴 No se encontraron características válidas')
+        return ''
+      })()
+      
+      console.log('🔍 Características procesadas finales:', caracteristicasText)
+      console.log('🔍 Length de características procesadas:', caracteristicasText.length)
+      
+      const nuevoEstado = {
+        nombre: productoEditando.nombre || '',
+        marca: productoEditando.marca || '',
+        categoria: productoEditando.categoria || '',
+        precio_original: productoEditando.precio_original || 0,
+        precio_descuento: productoEditando.precio_descuento || 0,
+        imagen: productoEditando.imagen || '',
+        caracteristicas: caracteristicasText,
         destacado: productoEditando.destacado || false,
         stock: productoEditando.stock || 0
-      })
+      }
+      
+      console.log('🔍 Estado que se va a establecer:', nuevoEstado)
+      setFormProducto(nuevoEstado)
     } else {
       setFormProducto({
-        name: '',
-        brand: '',
-        category: '',
-        originalPrice: 0,
-        discountPrice: 0,
-        image: '',
-        features: '',
+        nombre: '',
+        marca: '',
+        categoria: '',
+        precio_original: 0,
+        precio_descuento: 0,
+        imagen: '',
+        caracteristicas: '',
         destacado: false,
         stock: 0
       })
@@ -64,12 +92,12 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     e.preventDefault()
 
     // ✅ Normalizar todos los campos a string antes de usar trim()
-    const name = String(formProducto.name || '').trim()
-    const brand = String(formProducto.brand || '').trim()
-    const category = String(formProducto.category || '').trim()
-    const image = String(formProducto.image || '').trim()
+    const nombre = String(formProducto.nombre || '').trim()
+    const marca = String(formProducto.marca || '').trim()
+    const categoria = String(formProducto.categoria || '').trim()
+    const imagen = String(formProducto.imagen || '').trim()
 
-    if (!name || !brand || !category || !image) {
+    if (!nombre || !marca || !categoria || !imagen) {
       alert(
         'Por favor completa todos los campos requeridos (Nombre, Marca, Categoría e Imagen)'
       )
@@ -77,15 +105,15 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     }
 
     // Validar precios
-    const originalPrice = Number(formProducto.originalPrice) || 0
-    const discountPrice = Number(formProducto.discountPrice) || 0
+    const precio_original = Number(formProducto.precio_original) || 0
+    const precio_descuento = Number(formProducto.precio_descuento) || 0
 
-    if (originalPrice <= 0) {
+    if (precio_original <= 0) {
       alert('El precio original debe ser mayor a 0')
       return
     }
 
-    if (discountPrice > originalPrice) {
+    if (precio_descuento > precio_original) {
       alert('El precio con descuento no puede ser mayor al precio original')
       return
     }
@@ -99,8 +127,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     }
 
     // ✅ Procesar características: convertir texto a array
-    const featuresArray = formProducto.features
-      ? formProducto.features
+    const caracteristicasArray = formProducto.caracteristicas
+      ? formProducto.caracteristicas
           .split('\n') // Dividir por saltos de línea
           .map(feature => feature.trim()) // Eliminar espacios extra
           .filter(feature => feature.length > 0) // Eliminar líneas vacías
@@ -109,19 +137,19 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     // ✅ Mapear campos del frontend al formato que espera el backend
     const productoParaBackend = {
       // Campos en español para el backend
-      nombre: name,
-      marca: brand,
-      categoria: category.toLowerCase(),
-      precio_original: originalPrice,
-      precio_descuento: discountPrice,
-      imagen: image,
-      caracteristicas: featuresArray, // Usar el array procesado
+      nombre: nombre,
+      marca: marca,
+      categoria: categoria.toLowerCase(),
+      precio_original: precio_original,
+      precio_descuento: precio_descuento,
+      imagen: imagen,
+      caracteristicas: caracteristicasArray, // Usar el array procesado
 
       // Campos adicionales con valores por defecto
       descripcion: '',
       descuento:
-        discountPrice > 0
-          ? Math.round(((originalPrice - discountPrice) / originalPrice) * 100)
+        precio_descuento > 0
+          ? Math.round(((precio_original - precio_descuento) / precio_original) * 100)
           : 0,
       subcategoria: '',
       envio: 'Envío estándar',
@@ -207,8 +235,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
             </label>
             <input
               type="text"
-              value={formProducto.name}
-              onChange={(e) => handleInputChange('name', e.target.value)}
+              value={formProducto.nombre}
+              onChange={(e) => handleInputChange('nombre', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -220,8 +248,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
             </label>
             <input
               type="text"
-              value={formProducto.brand}
-              onChange={(e) => handleInputChange('brand', e.target.value)}
+              value={formProducto.marca}
+              onChange={(e) => handleInputChange('marca', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -233,8 +261,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
             </label>
             <input
               type="text"
-              value={formProducto.category}
-              onChange={(e) => handleInputChange('category', e.target.value)}
+              value={formProducto.categoria}
+              onChange={(e) => handleInputChange('categoria', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -248,10 +276,10 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
               type="number"
               step="0.01"
               min="0"
-              value={formProducto.originalPrice}
+              value={formProducto.precio_original}
               onChange={(e) =>
                 handleInputChange(
-                  'originalPrice',
+                  'precio_original',
                   parseFloat(e.target.value) || 0
                 )
               }
@@ -268,10 +296,10 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
               type="number"
               step="0.01"
               min="0"
-              value={formProducto.discountPrice}
+              value={formProducto.precio_descuento}
               onChange={(e) =>
                 handleInputChange(
-                  'discountPrice',
+                  'precio_descuento',
                   parseFloat(e.target.value) || 0
                 )
               }
@@ -308,8 +336,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
             </label>
             <input
               type="url"
-              value={formProducto.image}
-              onChange={(e) => handleInputChange('image', e.target.value)}
+              value={formProducto.imagen}
+              onChange={(e) => handleInputChange('imagen', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="https://ejemplo.com/imagen.jpg"
               required
@@ -339,11 +367,12 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
               Características
             </label>
             <textarea
-              value={formProducto.features}
-              onChange={(e) => handleInputChange('features', e.target.value)}
+              value={formProducto.caracteristicas}
+              onChange={(e) => handleInputChange('caracteristicas', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
               placeholder="Escribe las características del producto, una por línea:&#10;• 8GB RAM&#10;• Procesador Intel i7&#10;• Tarjeta gráfica dedicada"
               rows={4}
+              onFocus={() => console.log('🔍 Valor actual en textarea al hacer focus:', formProducto.caracteristicas)}
             />
             <p className="text-xs text-gray-500 mt-1">
               Escribe cada característica en una línea separada. Las características se agregarán automáticamente al crear el producto.
