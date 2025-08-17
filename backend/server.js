@@ -14,11 +14,29 @@ const PORT = process.env.PORT || 3000
 
 // Configuración CORS específica
 const corsOptions = {
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: (origin, callback) => {
+    // Lista de dominios permitidos
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://127.0.0.1:5173',
+      // Agregar dominio de producción aquí cuando esté disponible
+      // 'https://tu-dominio-produccion.com'
+    ]
+    
+    // Permitir requests sin origin (ej: apps móviles, Postman)
+    if (!origin) return callback(null, true)
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      console.warn(`🚨 CORS blocked for origin: ${origin}`)
+      callback(new Error('Blocked by CORS policy'))
+    }
+  },
   credentials: true,
   optionsSuccessStatus: 200,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Origin', 'Accept']
 }
 
 // Middleware
