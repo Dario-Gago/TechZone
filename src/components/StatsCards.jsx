@@ -1,6 +1,6 @@
 import React from 'react'
 import { ShoppingCart, Package, TrendingUp, Calendar, User } from 'lucide-react'
-import { useSales } from '../contexts/SalesContext'
+import { useSales } from '../hooks/useSales'
 
 const StatsCards = ({ esAdmin, usuarios, productos }) => {
   const { adminStats, userStats } = useSales()

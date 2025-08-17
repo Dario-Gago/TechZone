@@ -1,6 +1,6 @@
 import React from 'react'
 import { ShoppingCart } from 'lucide-react'
-import { useSales } from '../contexts/SalesContext'
+import { useSales } from '../hooks/useSales'
 
 const UserPurchases = () => {
   const { sales: comprasUsuario, loading, error } = useSales()
