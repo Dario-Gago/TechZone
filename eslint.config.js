@@ -30,6 +30,7 @@ export default defineConfig([
   // Backend configuration (Node.js)
   {
     files: ['backend/**/*.js'],
+    ignores: ['backend/tests/**/*.js'], // Ignore test files for this config
     extends: [js.configs.recommended],
     languageOptions: {
       ecmaVersion: 2020,
@@ -41,6 +42,34 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+  // Test files configuration (Jest)
+  {
+    files: ['backend/tests/**/*.js'],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: {
+        ...globals.node,
+        ...globals.jest,
+        describe: 'readonly',
+        test: 'readonly',
+        expect: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        jest: 'readonly',
+      },
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'no-console': 'off', // Allow console in tests
     },
   },
 ])
