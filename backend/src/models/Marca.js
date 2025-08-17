@@ -1,5 +1,18 @@
 import pool from '../../db/config.js'
 
+// Obtener marca por nombre
+export const getMarcaByName = async (nombre) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM marca WHERE LOWER(nombre) = LOWER($1) AND activo = true',
+      [nombre]
+    )
+    return result.rows[0] || null
+  } catch (error) {
+    throw new Error('Error al obtener marca por nombre: ' + error.message)
+  }
+}
+
 // Obtener todas las marcas
 export const getAllMarcas = async () => {
   try {

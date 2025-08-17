@@ -1,5 +1,18 @@
 import pool from '../../db/config.js'
 
+// Obtener categoría por nombre
+export const getCategoriaByName = async (nombre) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM categoria WHERE LOWER(nombre) = LOWER($1) AND activo = true',
+      [nombre]
+    )
+    return result.rows[0] || null
+  } catch (error) {
+    throw new Error('Error al obtener categoría por nombre: ' + error.message)
+  }
+}
+
 // Obtener todas las categorías activas
 export const getAllCategorias = async () => {
   try {
