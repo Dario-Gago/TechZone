@@ -2,14 +2,14 @@ import React, { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { useProductos } from '../hooks/useProducts'
-import { useAuth } from '../contexts/AuthContext'
+import { useAutenticacion } from '../contexts/AuthContext'
 import { ShoppingCart, Package, AlertTriangle } from 'lucide-react'
 
 const PaginaCategoria = () => {
   const { categorySlug } = useParams()
   const { productos, todosLosProductos, formatearPrecio, cargando } =
     useProductos()
-  const { esAdmin } = useAuth()
+  const { esAdmin } = useAutenticacion()
 
   // ✅ Usar productos apropiados según el tipo de usuario
   const productosDisponibles = esAdmin ? todosLosProductos : productos
@@ -44,7 +44,10 @@ const PaginaCategoria = () => {
       .map((categoria, index) => ({
         id: index + 1,
         slug: categoria,
-        name: categoria.charAt(0).toUpperCase() + categoria.slice(1).replace(/-/g, ' ').trim()
+        name: categoria
+          .split('-')
+          .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+          .join(' ')
       }))
 
     return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...categoriasOrdenadas]

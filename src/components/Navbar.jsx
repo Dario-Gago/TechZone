@@ -65,20 +65,15 @@ const BarraNavegacion = () => {
       .map((categoria, index) => ({
         id: index + 1,
         slug: categoria,
-        name: capitalizar(categoria.replace(/-/g, ' ').trim())
+        name: categoria
+          .split('-')
+          .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+          .join(' ')
       }))
-
-    console.log('Categorías ordenadas según BD:', categoriasOrdenadas)
 
     // Agregar la categoría "Todo" al inicio
     return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...categoriasOrdenadas]
   }, [productos, cargando])
-
-  console.log('Estado del hook useProductos:', {
-    productos: productos?.length,
-    cargando,
-    categoriasValidas: categoriasValidas.length
-  })
 
   // Función para determinar si una categoría está activa
   const esCategoriaActiva = (categorySlug) => {

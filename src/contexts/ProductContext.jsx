@@ -52,7 +52,10 @@ export const ProveedorProducto = ({ children }) => {
       .filter(categoriaOrden => categoriasEncontradas.includes(categoriaOrden))
       .map((categoria, index) => ({
         id: index + 1,
-        name: categoria.replace(/-/g, ' '),
+        name: categoria
+          .split('-')
+          .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+          .join(' '),
         slug: categoria
       }))
 
