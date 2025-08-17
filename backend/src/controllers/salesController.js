@@ -83,9 +83,25 @@ export const updateSale = async (req, res) => {
   try {
     const { ventaId } = req.params
     const { estado } = req.body
+    const user = req.user
+
+    // Verificar que el usuario sea administrador
+    if (!user.admin) {
+      return res.status(403).json({ 
+        error: 'Solo los administradores pueden cambiar el estado de las ventas' 
+      })
+    }
 
     if (!estado) {
       return res.status(400).json({ error: 'Estado es requerido' })
+    }
+
+    // Validar que el estado sea uno de los valores permitidos
+    const estadosPermitidos = ['pendiente', 'en_proceso', 'confirmado', 'entregado', 'cancelado']
+    if (!estadosPermitidos.includes(estado)) {
+      return res.status(400).json({ 
+        error: `Estado inválido. Estados permitidos: ${estadosPermitidos.join(', ')}` 
+      })
     }
 
     const updatedSale = await updateSaleStatus(ventaId, estado)
@@ -104,7 +120,6 @@ export const updateSale = async (req, res) => {
 // ✅ Get user sales
 export const getUserSales = async (req, res) => {
   try {
-    const userId = req.user.userId
     const sales = await findSales(req.user)
     res.json(sales)
   } catch (err) {

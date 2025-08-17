@@ -13,7 +13,7 @@ const StatsCards = ({ esAdmin, usuarios, productos }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div className={`grid grid-cols-1 md:grid-cols-2 ${esAdmin ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6 mb-8`}>
       {esAdmin ? (
         <>
           {/* Total de Ventas - calculado desde el contexto */}
