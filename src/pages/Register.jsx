@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Mail, Lock, User, Phone, MapPin, Eye, EyeOff } from 'lucide-react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { useAutenticacion } from '../contexts/AuthContext'
 import axios from 'axios'
 import { API_ENDPOINTS } from '../config/api'
 
@@ -21,7 +20,6 @@ const Registro = () => {
   const [estaCargando, setEstaCargando] = useState(false)
   const [mensajeError, setMensajeError] = useState('')
 
-  const { iniciarSesion } = useAutenticacion()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -101,7 +99,7 @@ const Registro = () => {
     setMensajeError('')
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `${API_ENDPOINTS.REGISTER}`,
         {
           nombre: datosFormulario.nombre.trim(),
