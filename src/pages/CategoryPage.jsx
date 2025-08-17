@@ -277,7 +277,7 @@ const PaginaCategoria = () => {
                               </button>
                             )
                           ) : (
-                            <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center">
+                            <button className="w-full bg-gray-700 text-white px-6 py-3 rounded hover:bg-gray-800 transition-colors text-sm font-medium flex items-center justify-center">
                               <ShoppingCart className="w-4 h-4 mr-2" />
                               Ver Producto
                             </button>
