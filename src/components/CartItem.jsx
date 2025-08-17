@@ -12,7 +12,7 @@ const CartItem = ({ item, alCambiarCantidad, alEliminar, formatearPrecio }) => {
         <div className="flex items-start space-x-4 flex-1">
           <div className="w-16 h-16 aspect-square bg-white rounded-lg overflow-hidden border flex items-center justify-center p-1">
             <img 
-              src={item.imagen || 'https://via.placeholder.com/80x80?text=Sin+Imagen'} 
+              src={item.imagen_url || 'https://via.placeholder.com/80x80?text=Sin+Imagen'} 
               alt={item.nombre}
               className="w-full h-full object-contain"
             />
@@ -50,19 +50,19 @@ const CartItem = ({ item, alCambiarCantidad, alEliminar, formatearPrecio }) => {
         </div>
         
         <div className="text-right">
-          {item.precio_original && item.precio_descuento && item.precio_descuento < item.precio_original ? (
+          {item.precio_normal && item.precio_oferta && item.precio_oferta < item.precio_normal ? (
             <div className="flex items-center space-x-2">
-              <span className="line-through text-gray-400 text-sm">{formatearPrecio(item.precio_original)}</span>
-              <span className="font-semibold text-gray-900">{formatearPrecio(item.precio_descuento)}</span>
+              <span className="line-through text-gray-400 text-sm">{formatearPrecio(item.precio_normal)}</span>
+              <span className="font-semibold text-gray-900">{formatearPrecio(item.precio_oferta)}</span>
             </div>
           ) : (
             <span className="font-semibold text-gray-900">
-              {formatearPrecio(item.precio_descuento || item.precio_original || item.precioFinal || 0)}
+              {formatearPrecio(item.precio_oferta || item.precio_normal || item.precioFinal || 0)}
             </span>
           )}
-          {item.precio_original && item.precio_descuento && item.precio_descuento < item.precio_original && (
+          {item.precio_normal && item.precio_oferta && item.precio_oferta < item.precio_normal && (
             <p className="text-xs text-green-600 mt-1">
-              Ahorras un {Math.round((1 - item.precio_descuento / item.precio_original) * 100)}%
+              Ahorras un {Math.round((1 - item.precio_oferta / item.precio_normal) * 100)}%
             </p>
           )}
         </div>

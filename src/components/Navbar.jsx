@@ -21,7 +21,7 @@ const BarraNavegacion = () => {
   const { estaAutenticado, cerrarSesion, esAdmin } = useAutenticacion()
 
   // ✅ Obtener productos y extraer categorías de ellos
-  const { productos, cargando } = useProductos()
+  const { todosLosProductos: productos, cargando } = useProductos()
   const { obtenerTotalItems } = useCarrito()
   const location = useLocation()
 
@@ -53,11 +53,11 @@ const BarraNavegacion = () => {
       ...new Set(productos.map((producto) => producto.categoria))
     ].filter((categoria) => categoria && categoria.trim() !== '')
 
-    // Ordenar según el orden predefinido
+    // Ordenar según el orden predefinido y crear IDs únicos
     const categoriasOrdenadas = ordenCategorias
       .filter(categoriaOrden => categoriasEncontradas.includes(categoriaOrden))
       .map((categoria, index) => ({
-        id: index + 1,
+        id: `nav-cat-${index}`, // ID único para evitar duplicados
         slug: categoria,
         name: categoria
           .split('-')
@@ -66,7 +66,7 @@ const BarraNavegacion = () => {
       }))
 
     // Agregar la categoría "Todo" al inicio
-    return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...categoriasOrdenadas]
+    return [{ id: 'nav-todo', slug: 'todo', name: 'Todo' }, ...categoriasOrdenadas]
   }, [productos, cargando])
 
   // Función para determinar si una categoría está activa
@@ -198,7 +198,7 @@ const BarraNavegacion = () => {
               <div className="flex space-x-8">
                 {[...Array(6)].map((_, index) => (
                   <div
-                    key={index}
+                    key={`desktop-skeleton-${index}`}
                     className="h-4 w-16 bg-gray-300 rounded animate-pulse"
                   ></div>
                 ))}
@@ -206,7 +206,7 @@ const BarraNavegacion = () => {
             ) : categoriasValidas.length > 0 ? (
               categoriasValidas.map((category) => (
                 <Link
-                  key={category.id}
+                  key={`desktop-${category.id}`}
                   to={`/category/${category.slug}`}
                   className={`whitespace-nowrap text-sm font-medium transition-colors duration-200 hover:text-gray-900 ${
                     esCategoriaActiva(category.slug)
@@ -284,7 +284,7 @@ const BarraNavegacion = () => {
                   <div className="space-y-2">
                     {[...Array(6)].map((_, index) => (
                       <div
-                        key={index}
+                        key={`mobile-skeleton-${index}`}
                         className="h-10 bg-gray-300 rounded animate-pulse"
                       ></div>
                     ))}
@@ -292,7 +292,7 @@ const BarraNavegacion = () => {
                 ) : categoriasValidas.length > 0 ? (
                   categoriasValidas.map((category) => (
                     <Link
-                      key={category.id}
+                      key={`mobile-${category.id}`}
                       to={`/category/${category.slug}`}
                       onClick={manejarClicCategoria}
                       className={`block w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${

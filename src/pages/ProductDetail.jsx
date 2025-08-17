@@ -138,7 +138,7 @@ const DetalleProducto = () => {
             <div className="bg-white rounded-lg p-8 w-full max-w-md">
               <div className="relative aspect-square w-full">
                 <img
-                  src={producto.imagen || 'https://via.placeholder.com/400x400?text=Sin+Imagen'}
+                  src={producto.imagen_url || 'https://via.placeholder.com/400x400?text=Sin+Imagen'}
                   alt={producto.nombre}
                   className={`w-full h-full object-contain ${
                     sinStock ? 'grayscale opacity-60' : ''
@@ -173,17 +173,17 @@ const DetalleProducto = () => {
             {/* Precios */}
             <div className="space-y-2">
               {/* Solo mostrar precio original tachado si hay descuento real */}
-              {producto.precio_descuento > 0 &&
-                producto.precio_descuento < producto.precio_original && (
+              {producto.precio_oferta > 0 &&
+                producto.precio_oferta < producto.precio_normal && (
                   <div className="flex items-center space-x-3">
                     <span className="text-2xl text-gray-500 line-through">
-                      {formatearPrecio(producto.precio_original)}
+                      {formatearPrecio(producto.precio_normal)}
                     </span>
                     <span className="bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
                       -
                       {calcularDescuento(
-                        producto.precio_original,
-                        producto.precio_descuento
+                        producto.precio_normal,
+                        producto.precio_oferta
                       )}
                       %
                     </span>
@@ -192,10 +192,10 @@ const DetalleProducto = () => {
 
               <div className="text-4xl font-bold text-gray-900">
                 {formatearPrecio(
-                  producto.precio_descuento > 0 &&
-                    producto.precio_descuento < producto.precio_original
-                    ? producto.precio_descuento
-                    : producto.precio_original
+                  producto.precio_oferta > 0 &&
+                    producto.precio_oferta < producto.precio_normal
+                    ? producto.precio_oferta
+                    : producto.precio_normal
                 )}
               </div>
             </div>

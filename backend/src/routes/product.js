@@ -7,6 +7,11 @@ import {
   updateProductController
 } from '../controllers/productController.js'
 import { verifyToken } from '../../middleware/authMiddleware.js'
+import { 
+  validateProductCreation, 
+  validateProductUpdate, 
+  validateProductId 
+} from '../validators/productValidators.js'
 
 const router = express.Router()
 
@@ -14,15 +19,15 @@ const router = express.Router()
 router.get('/', getAllProductsController)
 
 // GET /api/productos/:id - Obtener producto por ID
-router.get('/:id', getProductByIdController)
+router.get('/:id', validateProductId, getProductByIdController)
 
 // POST /api/productos - Crear un nuevo producto
-router.post('/', verifyToken, createProductController)
+router.post('/', verifyToken, validateProductCreation, createProductController)
 
 // DELETE /api/productos/:id - Eliminar un producto
-router.delete('/:id', verifyToken, deleteProductController)
+router.delete('/:id', verifyToken, validateProductId, deleteProductController)
 
 // PUT /api/productos/:id - Actualizar un producto
-router.put('/:id', verifyToken, updateProductController)
+router.put('/:id', verifyToken, validateProductId, validateProductUpdate, updateProductController)
 
 export default router

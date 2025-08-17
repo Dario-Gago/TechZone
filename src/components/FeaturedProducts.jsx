@@ -132,10 +132,10 @@ const ProductosDestacados = () => {
             {productosDestacados.map((producto) => {
               // ✅ Calcular descuento usando los campos correctos
               const descuento =
-                producto.precio_descuento > 0
+                producto.precio_oferta > 0
                   ? calcularDescuento(
-                      producto.precio_original,
-                      producto.precio_descuento
+                      producto.precio_normal,
+                      producto.precio_oferta
                     )
                   : 0
 
@@ -148,7 +148,7 @@ const ProductosDestacados = () => {
                   {/* Imagen del producto */}
                   <div className="relative bg-white aspect-square flex items-center justify-center p-4 border border-gray-100">
                     <img
-                      src={producto.imagen || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
+                      src={producto.imagen_url || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
                       alt={producto.nombre}
                       className="w-full h-full object-contain"
                       onError={(e) => {
@@ -183,19 +183,19 @@ const ProductosDestacados = () => {
 
                     {/* Precios */}
                     <div className="space-y-1">
-                      {producto.precio_descuento > 0 &&
-                      producto.precio_descuento < producto.precio_original ? (
+                      {producto.precio_oferta > 0 &&
+                      producto.precio_oferta < producto.precio_normal ? (
                         <>
                           <p className="text-sm text-gray-500 line-through">
-                            {formatearPrecio(producto.precio_original)}
+                            {formatearPrecio(producto.precio_normal)}
                           </p>
                           <p className="text-lg font-bold text-green-600">
-                            {formatearPrecio(producto.precio_descuento)}
+                            {formatearPrecio(producto.precio_oferta)}
                           </p>
                         </>
                       ) : (
                         <p className="text-lg font-bold text-gray-900">
-                          {formatearPrecio(producto.precio_original)}
+                          {formatearPrecio(producto.precio_normal)}
                         </p>
                       )}
                     </div>

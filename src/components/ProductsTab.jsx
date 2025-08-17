@@ -123,8 +123,8 @@ const ProductsTab = () => {
           >
             <div className="w-full aspect-square bg-white rounded-md mb-2 flex items-center justify-center border border-gray-100">
               <img
-                src={producto.image || 'https://via.placeholder.com/80x80?text=Sin+Imagen'}
-                alt={producto.name}
+                src={producto.imagen_url || 'https://via.placeholder.com/80x80?text=Sin+Imagen'}
+                alt={producto.nombre}
                 className="w-full h-full object-contain"
                 onError={(e) => {
                   e.target.src =
@@ -133,12 +133,12 @@ const ProductsTab = () => {
               />
             </div>
             <h4 className="font-medium text-gray-900 text-xs mb-1 line-clamp-2">
-              {producto.name}
+              {producto.nombre}
             </h4>
-            <p className="text-xs text-gray-500 mb-2">{producto.brand}</p>
+            <p className="text-xs text-gray-500 mb-2">{producto.marca}</p>
             <p className="font-bold text-green-600 text-sm mb-2">
               {formatearPrecio(
-                producto.discountPrice || producto.originalPrice
+                producto.precio_oferta || producto.precio_normal
               )}
             </p>
             <div className="flex space-x-1">

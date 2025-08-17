@@ -30,7 +30,7 @@ const UsersTab = ({ usuarios, onEliminarUsuario }) => {
           timer: 2000,
           timerProgressBar: true
         })
-      } catch (error) {
+      } catch {
         Swal.fire({
           title: 'Error',
           text: 'No se pudo eliminar el usuario. Inténtalo de nuevo.',

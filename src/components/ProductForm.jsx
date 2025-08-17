@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Plus } from 'lucide-react'
+import axios from 'axios'
+import { API_ENDPOINTS } from '../config/api'
 
 const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   const [formProducto, setFormProducto] = useState({
     nombre: '',
     marca: '',
     categoria: '',
-    precio_original: 0,
-    precio_descuento: 0,
-    imagen: '',
+    precio_normal: 0,
+    precio_oferta: 0,
+    imagen_url: '',
     caracteristicas: '',  // Cambiar a string en lugar de array
     destacado: false,
     stock: 0
@@ -80,25 +82,21 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   useEffect(() => {
     const cargarCategorias = async () => {
       try {
-        console.log('🔍 Intentando cargar categorías desde:', 'http://localhost:3000/api/categorias')
-        const response = await fetch('http://localhost:3000/api/categorias')
+        console.log('🔍 Intentando cargar categorías desde:', API_ENDPOINTS.CATEGORIAS)
+        const response = await axios.get(API_ENDPOINTS.CATEGORIAS)
         console.log('🔍 Response status:', response.status)
-        console.log('🔍 Response ok:', response.ok)
+        console.log('🔍 Response data:', response.data)
         
-        if (response.ok) {
-          const categoriasData = await response.json()
-          console.log('🔍 Categorías recibidas:', categoriasData)
-          console.log('🔍 Tipo de datos:', typeof categoriasData)
-          console.log('🔍 Es array:', Array.isArray(categoriasData))
-          console.log('🔍 Longitud:', categoriasData?.length)
-          
-          setCategorias(categoriasData)
-        } else {
-          const errorText = await response.text()
-          console.error('❌ Error en response:', response.status, errorText)
-        }
+        const categoriasData = response.data
+        console.log('🔍 Categorías recibidas:', categoriasData)
+        console.log('🔍 Tipo de datos:', typeof categoriasData)
+        console.log('🔍 Es array:', Array.isArray(categoriasData))
+        console.log('🔍 Longitud:', categoriasData?.length)
+        
+        setCategorias(categoriasData)
       } catch (error) {
         console.error('❌ Error al cargar categorías:', error)
+        console.error('❌ Response data:', error.response?.data)
       }
     }
     cargarCategorias()
@@ -149,9 +147,9 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         nombre: productoEditando.nombre || '',
         marca: productoEditando.marca || '',
         categoria: productoEditando.categoria || '', // Mantener el slug como valor
-        precio_original: productoEditando.precio_original || 0,
-        precio_descuento: productoEditando.precio_descuento || 0,
-        imagen: productoEditando.imagen || '',
+        precio_normal: productoEditando.precio_normal || 0,
+        precio_oferta: productoEditando.precio_oferta || 0,
+        imagen_url: productoEditando.imagen_url || '',
         caracteristicas: caracteristicasText,
         destacado: productoEditando.destacado || false,
         stock: productoEditando.stock || 0
@@ -164,9 +162,9 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         nombre: '',
         marca: '',
         categoria: '',
-        precio_original: 0,
-        precio_descuento: 0,
-        imagen: '',
+        precio_normal: 0,
+        precio_oferta: 0,
+        imagen_url: '',
         caracteristicas: '',
         destacado: false,
         stock: 0
@@ -181,10 +179,10 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     const nombre = String(formProducto.nombre || '').trim()
     const marca = String(formProducto.marca || '').trim()
     const categoria = String(formProducto.categoria || '').trim()
-    const imagen = String(formProducto.imagen || '').trim()
+    const imagen_url = String(formProducto.imagen_url || '').trim()
 
     // ✅ Validación modificada para manejar nuevas categorías
-    if (!nombre || !marca || !imagen) {
+    if (!nombre || !marca || !imagen_url) {
       alert(
         'Por favor completa todos los campos requeridos (Nombre, Marca e Imagen)'
       )
@@ -204,15 +202,15 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     }
 
     // Validar precios
-    const precio_original = Number(formProducto.precio_original) || 0
-    const precio_descuento = Number(formProducto.precio_descuento) || 0
+    const precio_normal = Number(formProducto.precio_normal) || 0
+    const precio_oferta = Number(formProducto.precio_oferta) || 0
 
-    if (precio_original <= 0) {
+    if (precio_normal <= 0) {
       alert('El precio original debe ser mayor a 0')
       return
     }
 
-    if (precio_descuento > precio_original) {
+    if (precio_oferta > precio_normal) {
       alert('El precio con descuento no puede ser mayor al precio original')
       return
     }
@@ -233,33 +231,24 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         // Crear la nueva categoría primero
         const slugCategoria = convertirASlug(nuevaCategoria.trim())
         
-        const response = await fetch('http://localhost:3000/api/categorias', {
-          method: 'POST',
+        const response = await axios.post(API_ENDPOINTS.CATEGORIAS, {
+          nombre: slugCategoria
+        }, {
           headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify({
-            nombre: slugCategoria
-          })
+          }
         })
 
-        if (response.ok) {
-          const nuevaCategoriaCreada = await response.json()
-          categoriaFinal = nuevaCategoriaCreada.nombre // Usar el slug de la nueva categoría
-          
-          // Agregar la nueva categoría a la lista para futuros usos
-          setCategorias(prev => [...prev, nuevaCategoriaCreada])
-          
-          console.log('✅ Nueva categoría creada:', nuevaCategoriaCreada)
-        } else {
-          const error = await response.json()
-          alert(`Error al crear categoría: ${error.message}`)
-          return
-        }
+        const nuevaCategoriaCreada = response.data
+        categoriaFinal = nuevaCategoriaCreada.nombre // Usar el slug de la nueva categoría
+        
+        // Agregar la nueva categoría a la lista para futuros usos
+        setCategorias(prev => [...prev, nuevaCategoriaCreada])
+        
+        console.log('✅ Nueva categoría creada:', nuevaCategoriaCreada)
       } catch (error) {
-        console.error('Error al crear categoría:', error)
-        alert('Error al crear categoría')
+        console.error('❌ Error al crear categoría:', error)
+        alert(`Error al crear categoría: ${error.response?.data?.message || error.message}`)
         return
       }
     }
@@ -272,22 +261,21 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
           .filter(feature => feature.length > 0) // Eliminar líneas vacías
       : []
 
-    // ✅ Mapear campos del frontend al formato que espera el backend
     const productoParaBackend = {
-      // Campos en español para el backend
+      // Usar directamente los nombres del backend
       nombre: nombre,
       marca: marca,
       categoria: categoriaFinal, // Usar la categoría final (existente o recién creada)
-      precio_original: precio_original,
-      precio_descuento: precio_descuento,
-      imagen: imagen,
+      precio_normal: precio_normal,
+      precio_oferta: precio_oferta,
+      imagen_url: imagen_url,
       caracteristicas: caracteristicasArray, // Usar el array procesado
 
       // Campos adicionales con valores por defecto
       descripcion: '',
       descuento:
-        precio_descuento > 0
-          ? Math.round(((precio_original - precio_descuento) / precio_original) * 100)
+        precio_oferta > 0
+          ? Math.round(((precio_normal - precio_oferta) / precio_normal) * 100)
           : 0,
       subcategoria: '',
       envio: 'Envío estándar',
@@ -318,41 +306,33 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       // Convertir el nombre legible a slug para enviar al backend
       const slugCategoria = convertirASlug(nuevaCategoria.trim())
       
-      const response = await fetch('http://localhost:3000/api/categorias', {
-        method: 'POST',
+      const response = await axios.post(API_ENDPOINTS.CATEGORIAS, {
+        nombre: slugCategoria // Enviar como slug
+      }, {
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          nombre: slugCategoria // Enviar como slug
-        })
+        }
       })
 
-      if (response.ok) {
-        const nuevaCategoriaCreada = await response.json()
+      const nuevaCategoriaCreada = response.data
+      
+      // Agregar la nueva categoría a la lista
+      setCategorias(prev => [...prev, nuevaCategoriaCreada])
+      
+      // Seleccionar automáticamente la nueva categoría (usando el slug)
+      setFormProducto(prev => ({
+        ...prev,
+        categoria: nuevaCategoriaCreada.nombre // Esto será el slug
+      }))
+      
+      // Limpiar y ocultar el formulario de nueva categoría
+      setNuevaCategoria('')
+      setMostrandoNuevaCategoria(false)
         
-        // Agregar la nueva categoría a la lista
-        setCategorias(prev => [...prev, nuevaCategoriaCreada])
-        
-        // Seleccionar automáticamente la nueva categoría (usando el slug)
-        setFormProducto(prev => ({
-          ...prev,
-          categoria: nuevaCategoriaCreada.nombre // Esto será el slug
-        }))
-        
-        // Limpiar y ocultar el formulario de nueva categoría
-        setNuevaCategoria('')
-        setMostrandoNuevaCategoria(false)
-        
-        alert('Categoría creada exitosamente')
-      } else {
-        const error = await response.json()
-        alert(`Error al crear categoría: ${error.message}`)
-      }
+      alert('Categoría creada exitosamente')
     } catch (error) {
       console.error('Error al crear categoría:', error)
-      alert('Error al crear categoría')
+      alert(`Error al crear categoría: ${error.response?.data?.message || error.message}`)
     }
   }
 
@@ -524,16 +504,16 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Precio Original *
+              Precio Normal *
             </label>
             <input
               type="number"
               step="0.01"
               min="0"
-              value={formProducto.precio_original}
+              value={formProducto.precio_normal}
               onChange={(e) =>
                 handleInputChange(
-                  'precio_original',
+                  'precio_normal',
                   parseFloat(e.target.value) || 0
                 )
               }
@@ -544,21 +524,21 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Precio con Descuento
+              Precio con Oferta
             </label>
             <input
               type="number"
               step="0.01"
               min="0"
-              value={formProducto.precio_descuento}
+              value={formProducto.precio_oferta}
               onChange={(e) =>
                 handleInputChange(
-                  'precio_descuento',
+                  'precio_oferta',
                   parseFloat(e.target.value) || 0
                 )
               }
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Opcional - dejar en 0 si no hay descuento"
+              placeholder="Opcional - dejar en 0 si no hay oferta"
             />
           </div>
 
@@ -590,8 +570,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
             </label>
             <input
               type="url"
-              value={formProducto.imagen}
-              onChange={(e) => handleInputChange('imagen', e.target.value)}
+              value={formProducto.imagen_url}
+              onChange={(e) => handleInputChange('imagen_url', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="https://ejemplo.com/imagen.jpg"
               required

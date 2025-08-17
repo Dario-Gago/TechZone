@@ -126,10 +126,10 @@ const PaginaCategoria = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productosFiltrados.map((product) => {
               const descuento =
-                product.precio_descuento > 0
+                product.precio_oferta > 0
                   ? calcularDescuento(
-                      product.precio_original,
-                      product.precio_descuento
+                      product.precio_normal,
+                      product.precio_oferta
                     )
                   : 0
 
@@ -151,7 +151,7 @@ const PaginaCategoria = () => {
                     {/* Imagen del producto */}
                     <div className="relative bg-white aspect-square flex items-center justify-center p-4 border border-gray-100">
                       <img
-                        src={product.imagen || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
+                        src={product.imagen_url || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
                         alt={product.nombre}
                         className={`w-full h-full object-contain ${
                           sinStock ? 'grayscale' : ''
@@ -218,18 +218,18 @@ const PaginaCategoria = () => {
 
                       {/* Precios */}
                       <div className="space-y-1">
-                        {product.precio_descuento > 0 &&
-                        product.precio_descuento < product.precio_original ? (
+                        {product.precio_oferta > 0 &&
+                        product.precio_oferta < product.precio_normal ? (
                           <>
                             <p className="text-sm text-gray-500 line-through">
-                              {formatearPrecio(product.precio_original)}
+                              {formatearPrecio(product.precio_normal)}
                             </p>
                             <p
                               className={`text-lg font-bold ${
                                 sinStock ? 'text-gray-500' : 'text-green-600'
                               }`}
                             >
-                              {formatearPrecio(product.precio_descuento)}
+                              {formatearPrecio(product.precio_oferta)}
                             </p>
                           </>
                         ) : (
@@ -238,7 +238,7 @@ const PaginaCategoria = () => {
                               sinStock ? 'text-gray-500' : 'text-gray-900'
                             }`}
                           >
-                            {formatearPrecio(product.precio_original)}
+                            {formatearPrecio(product.precio_normal)}
                           </p>
                         )}
                       </div>
