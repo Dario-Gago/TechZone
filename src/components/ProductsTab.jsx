@@ -133,12 +133,12 @@ const ProductsTab = () => {
               />
             </div>
             <h4 className="font-medium text-gray-900 text-xs mb-1 line-clamp-2">
-              {producto.name}
+              {producto.nombre}
             </h4>
-            <p className="text-xs text-gray-500 mb-2">{producto.brand}</p>
+            <p className="text-xs text-gray-500 mb-2">{producto.marca}</p>
             <p className="font-bold text-green-600 text-sm mb-2">
               {formatearPrecio(
-                producto.discountPrice || producto.originalPrice
+                producto.precio_oferta || producto.precio_normal
               )}
             </p>
             <div className="flex space-x-1">

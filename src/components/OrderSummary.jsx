@@ -54,8 +54,8 @@ const OrderSummary = ({
           item.cantidadCarrito || item.quantity || item.cantidad || 1
         const precio_unitario =
           item.precioFinal ||
-          item.discountPrice ||
-          item.originalPrice ||
+          item.precio_oferta ||
+          item.precio_normal ||
           item.precio ||
           item.price
 

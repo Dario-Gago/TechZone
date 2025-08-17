@@ -87,7 +87,7 @@ export const ProveedorProducto = ({ children }) => {
           console.log('✅ Respuesta del API:', response.data)
         }
         
-        // ✅ Convertir datos del backend (español) a formato del frontend (inglés/español mixto)
+        // ✅ Usar directamente los datos del backend sin mapeo innecesario
         const productosConvertidos = response.data.map(producto => {
           const caracteristicasProcessed = (() => {
             if (Array.isArray(producto.caracteristicas)) {
@@ -104,24 +104,11 @@ export const ProveedorProducto = ({ children }) => {
           })()
           
           return {
-            // Backend fields (Spanish)
+            // Usar directamente los campos del backend
             ...producto,
             caracteristicas: caracteristicasProcessed,
             destacado: Boolean(producto.destacado),
-            stock: Number(producto.stock) || 0,
-            
-            // Frontend compatibility fields (English names for components)
-            name: producto.nombre,
-            brand: producto.marca,
-            description: producto.descripcion,
-            originalPrice: Number(producto.precio_original) || 0,
-            discountPrice: Number(producto.precio_descuento) || 0,
-            image: producto.imagen,
-            category: producto.categoria,
-            features: caracteristicasProcessed,
-            inStock: Number(producto.en_stock) || 1,
-            shipping: producto.envio || 'Envío estándar',
-            availability: producto.disponibilidad || 'disponible'
+            stock: Number(producto.stock) || 0
           }
         })
         
@@ -150,15 +137,15 @@ export const ProveedorProducto = ({ children }) => {
     try {
       console.log('🟢 Datos recibidos en agregarProducto:', nuevoProducto)
 
-      // ✅ Mapear campos del frontend al formato exacto que espera el backend
+      // ✅ Usar directamente los nombres del backend sin mapeo innecesario
       const payload = {
         nombre: (nuevoProducto.nombre || '').trim(),
         marca: (nuevoProducto.marca || '').trim(),
         descripcion: nuevoProducto.descripcion || '',
-        precio_normal: Number(nuevoProducto.precio_original) || 0, // ✅ Mapear correctamente
-        precio_oferta: Number(nuevoProducto.precio_descuento) || 0, // ✅ Mapear correctamente
+        precio_normal: Number(nuevoProducto.precio_normal) || 0,
+        precio_oferta: Number(nuevoProducto.precio_oferta) || 0,
         descuento: Number(nuevoProducto.descuento) || 0,
-        imagen_url: (nuevoProducto.imagen || '').trim(), // ✅ Usar imagen_url
+        imagen_url: (nuevoProducto.imagen_url || '').trim(),
         categoria: (nuevoProducto.categoria || '').trim(),
         subcategoria: nuevoProducto.subcategoria || '',
         stock: Number(nuevoProducto.stock) || 0,
@@ -172,23 +159,10 @@ export const ProveedorProducto = ({ children }) => {
 
       const response = await api.post('/', payload)
 
-      // ✅ Convertir respuesta del backend (español) con compatibilidad frontend (inglés)
+      // ✅ Usar directamente la respuesta del backend
       const productoCreado = {
         ...response.data,
-        caracteristicas: response.data.caracteristicas || [],
-        
-        // Frontend compatibility fields
-        name: response.data.nombre,
-        brand: response.data.marca,
-        description: response.data.descripcion,
-        originalPrice: Number(response.data.precio_original) || 0,
-        discountPrice: Number(response.data.precio_descuento) || 0,
-        image: response.data.imagen,
-        category: response.data.categoria,
-        features: response.data.caracteristicas || [],
-        inStock: Number(response.data.en_stock) || 1,
-        shipping: response.data.envio || 'Envío estándar',
-        availability: response.data.disponibilidad || 'disponible'
+        caracteristicas: response.data.caracteristicas || []
       }
 
       setProductos((prev) => {
@@ -212,15 +186,15 @@ export const ProveedorProducto = ({ children }) => {
     try {
       console.log('🟡 Datos recibidos en editarProducto:', productoActualizado)
 
-      // ✅ Mapear campos del frontend al formato exacto que espera el backend
+      // ✅ Usar directamente los nombres del backend sin mapeo innecesario
       const payload = {
         nombre: (productoActualizado.nombre || '').trim(),
         marca: (productoActualizado.marca || '').trim(),
         descripcion: (productoActualizado.descripcion || '').trim(),
-        precio_normal: Number(productoActualizado.precio_original) || 0, // ✅ Mapear correctamente
-        precio_oferta: Number(productoActualizado.precio_descuento) || 0, // ✅ Mapear correctamente
+        precio_normal: Number(productoActualizado.precio_normal) || 0,
+        precio_oferta: Number(productoActualizado.precio_oferta) || 0,
         descuento: Number(productoActualizado.descuento) || 0,
-        imagen_url: (productoActualizado.imagen || '').trim(), // ✅ Usar imagen_url
+        imagen_url: (productoActualizado.imagen_url || '').trim(),
         categoria: (productoActualizado.categoria || '').trim(),
         subcategoria: (productoActualizado.subcategoria || '').trim(),
         stock: Number(productoActualizado.stock) || 0,
@@ -234,23 +208,10 @@ export const ProveedorProducto = ({ children }) => {
 
       const response = await api.put(`/${id}`, payload)
 
-      // ✅ Convertir respuesta del backend (español) con compatibilidad frontend (inglés)
+      // ✅ Usar directamente la respuesta del backend
       const productoEditado = {
         ...response.data,
-        caracteristicas: response.data.caracteristicas || [],
-        
-        // Frontend compatibility fields
-        name: response.data.nombre,
-        brand: response.data.marca,
-        description: response.data.descripcion,
-        originalPrice: Number(response.data.precio_original) || 0,
-        discountPrice: Number(response.data.precio_descuento) || 0,
-        image: response.data.imagen,
-        category: response.data.categoria,
-        features: response.data.caracteristicas || [],
-        inStock: Number(response.data.en_stock) || 1,
-        shipping: response.data.envio || 'Envío estándar',
-        availability: response.data.disponibilidad || 'disponible'
+        caracteristicas: response.data.caracteristicas || []
       }
 
       setProductos((prev) =>

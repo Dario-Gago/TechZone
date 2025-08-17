@@ -135,7 +135,7 @@ const Carrito = () => {
                       {/* Product Image */}
                       <div className="w-20 h-20 aspect-square bg-white rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center p-2 border border-gray-100">
                         <img
-                          src={item.imagen || 'https://via.placeholder.com/80x80?text=Sin+Imagen'}
+                          src={item.imagen_url || 'https://via.placeholder.com/80x80?text=Sin+Imagen'}
                           alt={item.nombre}
                           className={`w-full h-full object-contain ${
                             tieneProblemas ? 'opacity-60 grayscale' : ''
@@ -246,11 +246,11 @@ const Carrito = () => {
                           )}
 
                           <div className="text-right">
-                            {item.precio_descuento &&
-                            item.precio_descuento < item.precio_original ? (
+                            {item.precio_oferta &&
+                            item.precio_oferta < item.precio_normal ? (
                               <div>
                                 <span className="text-sm text-gray-500 line-through">
-                                  ${item.precio_original.toLocaleString('es-CL')}
+                                  ${item.precio_normal.toLocaleString('es-CL')}
                                 </span>
                                 <span
                                   className={`text-lg font-semibold ml-2 ${
@@ -259,7 +259,7 @@ const Carrito = () => {
                                       : 'text-gray-900'
                                   }`}
                                 >
-                                  ${item.precio_descuento.toLocaleString('es-CL')}
+                                  ${item.precio_oferta.toLocaleString('es-CL')}
                                 </span>
                               </div>
                             ) : (
@@ -270,7 +270,7 @@ const Carrito = () => {
                                     : 'text-gray-900'
                                 }`}
                               >
-                                ${(item.precio_descuento || item.precio_original || item.precioFinal || 0).toLocaleString('es-CL')}
+                                ${(item.precio_oferta || item.precio_normal || item.precioFinal || 0).toLocaleString('es-CL')}
                               </span>
                             )}
                           </div>

@@ -77,9 +77,9 @@ const PaginaBusqueda = () => {
               // ✅ Calcular precio con descuento en tiempo real
               const precioConDescuento =
                 product.descuento > 0
-                  ? product.precio_original -
-                    (product.precio_original * product.descuento) / 100
-                  : product.precio_original
+                  ? product.precio_normal -
+                    (product.precio_normal * product.descuento) / 100
+                  : product.precio_normal
 
               return (
                 <Link
@@ -90,7 +90,7 @@ const PaginaBusqueda = () => {
                   {/* Imagen del producto */}
                   <div className="relative bg-white aspect-square flex items-center justify-center p-4 border border-gray-100">
                     <img
-                      src={product.imagen || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
+                      src={product.imagen_url || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
                       alt={product.nombre}
                       className="w-full h-full object-contain"
                     />
@@ -120,9 +120,9 @@ const PaginaBusqueda = () => {
                     {/* Precios */}
                     <div className="space-y-1">
                       {/* Precio original tachado - Solo mostrar si es mayor a 0 y hay descuento */}
-                      {product.descuento > 0 && product.precio_original > 0 && (
+                      {product.descuento > 0 && product.precio_normal > 0 && (
                         <p className="text-sm text-gray-500 line-through">
-                          {formatearPrecio(product.precio_original)}
+                          {formatearPrecio(product.precio_normal)}
                         </p>
                       )}
 
