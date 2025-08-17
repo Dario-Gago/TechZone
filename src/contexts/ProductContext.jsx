@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react'
+import React, { createContext, useState, useEffect, useMemo } from 'react'
 import axios from 'axios'
 import { API_ENDPOINTS } from '../config/api'
 
@@ -13,22 +13,26 @@ export const ProveedorProducto = ({ children }) => {
   const API_URL = API_ENDPOINTS.PRODUCTOS
 
   // ---------------- Instancia de Axios con token ----------------
-  const api = axios.create({
-    baseURL: API_URL,
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    }
-  })
+  const api = useMemo(() => {
+    const instance = axios.create({
+      baseURL: API_URL,
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json'
+      }
+    })
 
-  // Interceptor para agregar token automáticamente
-  api.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  })
+    // Interceptor para agregar token automáticamente
+    instance.interceptors.request.use((config) => {
+      const token = localStorage.getItem('token')
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
+      return config
+    })
+
+    return instance
+  }, [API_URL])
 
   // ---------------- Categorías ----------------
   const actualizarCategorias = (productosActualizados) => {
@@ -47,11 +51,13 @@ export const ProveedorProducto = ({ children }) => {
       ...new Set(productosActualizados.map((p) => p.categoria))
     ].filter(Boolean)
 
-    // Ordenar según el orden predefinido
+    console.log('🔍 Categorías encontradas en productos:', categoriasEncontradas)
+
+    // Ordenar según el orden predefinido y crear IDs únicos
     const categoriasOrdenadas = ordenCategorias
       .filter(categoriaOrden => categoriasEncontradas.includes(categoriaOrden))
       .map((categoria, index) => ({
-        id: index + 1,
+        id: `cat-${index}`, // ID único usando prefijo
         name: categoria
           .split('-')
           .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
@@ -59,6 +65,7 @@ export const ProveedorProducto = ({ children }) => {
         slug: categoria
       }))
 
+    console.log('✅ Categorías procesadas:', categoriasOrdenadas)
     setCategorias(categoriasOrdenadas)
   }
 
@@ -67,7 +74,10 @@ export const ProveedorProducto = ({ children }) => {
     const cargarProductos = async () => {
       try {
         setCargando(true)
-        const response = await axios.get(API_ENDPOINTS.PRODUCTOS)
+        console.log('🔄 Cargando productos desde:', API_URL)
+        const response = await api.get('/')
+        
+        console.log('✅ Respuesta del API:', response.data)
         
         // ✅ Convertir datos del backend (español) a formato del frontend (inglés/español mixto)
         const productosConvertidos = response.data.map(producto => {
@@ -107,11 +117,13 @@ export const ProveedorProducto = ({ children }) => {
           }
         })
         
+        console.log('✅ Productos convertidos:', productosConvertidos)
         setProductos(productosConvertidos)
         actualizarCategorias(productosConvertidos)
         setError(null)
       } catch (err) {
-        console.error(err)
+        console.error('❌ Error al cargar productos:', err)
+        console.error('❌ Error details:', err.response?.data)
         setError('Error al cargar los productos')
       } finally {
         setCargando(false)
@@ -119,7 +131,8 @@ export const ProveedorProducto = ({ children }) => {
     }
 
     cargarProductos()
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api]) // API_URL está incluido indirectamente a través de api
 
   // ---------------- CRUD ----------------
 

@@ -5,7 +5,7 @@ const BannerOferta = () => {
   // Usar categorías que existen en la base de datos
   const categorias = [
     {
-      id: 'componentes',
+      id: 'componentes-gpu',
       name: 'Componentes',
       name2: 'y GPU',
       price: '$199.990',
@@ -20,7 +20,7 @@ const BannerOferta = () => {
       tall: false
     },
     {
-      id: 'componentes',
+      id: 'componentes-motherboard',
       name: 'Motherboard',
       price: '$999.990',
       slug: 'componentes',
@@ -162,7 +162,7 @@ const BannerOferta = () => {
                   'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)',
                 'computacion':
                   'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)',
-                'audio-video':
+                'otras-categorias':
                   'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
               }
 
@@ -172,7 +172,7 @@ const BannerOferta = () => {
                   to={`/category/${categoria.slug}`}
                   className="bg-gray-200 rounded-lg p-6 flex flex-col justify-center items-start hover:shadow-lg transition-all duration-300 min-h-[200px] bg-cover bg-center relative"
                   style={{
-                    backgroundImage: backgroundImages[categoria.id]
+                    backgroundImage: backgroundImages[categoria.slug]
                   }}
                 >
                   {/* Contenido con texto en blanco y sombras fuertes */}
@@ -209,7 +209,7 @@ const BannerOferta = () => {
                   'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)',
                 'computacion':
                   'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)',
-                'audio-video':
+                'otras-categorias':
                   'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
               }
 
@@ -219,7 +219,7 @@ const BannerOferta = () => {
                   to={`/category/${categoria.slug}`}
                   className="bg-gray-200 rounded-lg p-6 flex flex-row items-center hover:shadow-lg transition-all duration-300 min-h-[120px] bg-cover bg-center relative"
                   style={{
-                    backgroundImage: backgroundImages[categoria.id]
+                    backgroundImage: backgroundImages[categoria.slug]
                   }}
                 >
                   {/* Contenido con texto en blanco y sombras fuertes */}

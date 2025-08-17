@@ -48,13 +48,13 @@ const PieDePagina = () => {
             <ul className="space-y-3">
               {cargando ? (
                 [...Array(4)].map((_, i) => (
-                  <li key={i}>
+                  <li key={`loading-col1-${i}`}>
                     <div className="h-4 bg-gray-300 rounded animate-pulse"></div>
                   </li>
                 ))
               ) : categoriasValidas.length > 0 ? (
                 categoriasValidas.slice(0, 4).map((categoria) => (
-                  <li key={categoria.id}>
+                  <li key={`col1-${categoria.slug}`}>
                     <Link
                       to={`/category/${categoria.slug}`}
                       className="text-gray-600 hover:text-gray-800 transition-colors"
@@ -80,7 +80,7 @@ const PieDePagina = () => {
               {!cargando &&
                 categoriasValidas.length > 4 &&
                 categoriasValidas.slice(4).map((categoria) => (
-                  <li key={categoria.id}>
+                  <li key={`col2-${categoria.slug}`}>
                     <Link
                       to={`/category/${categoria.slug}`}
                       className="text-gray-600 hover:text-gray-800 transition-colors"
