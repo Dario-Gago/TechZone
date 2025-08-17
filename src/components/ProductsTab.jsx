@@ -123,8 +123,8 @@ const ProductsTab = () => {
           >
             <div className="w-full aspect-square bg-white rounded-md mb-2 flex items-center justify-center border border-gray-100">
               <img
-                src={producto.image || 'https://via.placeholder.com/80x80?text=Sin+Imagen'}
-                alt={producto.name}
+                src={producto.imagen_url || 'https://via.placeholder.com/80x80?text=Sin+Imagen'}
+                alt={producto.nombre}
                 className="w-full h-full object-contain"
                 onError={(e) => {
                   e.target.src =
