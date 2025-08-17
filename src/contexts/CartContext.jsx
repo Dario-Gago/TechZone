@@ -1,10 +1,10 @@
 import React, { createContext, useState, useContext, useEffect } from 'react'
-import ContextoProducto from './ProductContext'
+import { ProductContext } from './ProductContext'
 
 const ContextoCarrito = createContext()
 
 export const ProveedorCarrito = ({ children }) => {
-  const contextoProducto = useContext(ContextoProducto)
+  const contextoProducto = useContext(ProductContext)
   const [articulosCarrito, setArticulosCarrito] = useState([])
   const [carritoInicializado, setCarritoInicializado] = useState(false)
 
