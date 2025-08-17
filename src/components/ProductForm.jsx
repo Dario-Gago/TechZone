@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { X, Plus, Trash2 } from 'lucide-react'
+import { X } from 'lucide-react'
 
 const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   const [formProducto, setFormProducto] = useState({
@@ -10,12 +10,13 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     originalPrice: 0,
     discountPrice: 0,
     image: '',
-    features: [],
-    destacado: false, // ✅ Campo agregado para destacado
-    stock: 0 // ✅ Campo agregado para stock
+    features: '',  // Cambiar a string en lugar de array
+    destacado: false,
+    stock: 0
   })
 
-  const [nuevaCaracteristica, setNuevaCaracteristica] = useState('')
+  // Ya no necesitamos el estado para nueva característica
+  // const [nuevaCaracteristica, setNuevaCaracteristica] = useState('')
 
   // Bloquear scroll del body cuando el modal está abierto
   useEffect(() => {
@@ -38,9 +39,11 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         originalPrice: productoEditando.originalPrice || 0,
         discountPrice: productoEditando.discountPrice || 0,
         image: productoEditando.image || '',
-        features: productoEditando.features || [],
-        destacado: productoEditando.destacado || false, // ✅ Mapear destacado del backend
-        stock: productoEditando.stock || 0 // ✅ Mapear stock del backend
+        features: Array.isArray(productoEditando.features) 
+          ? productoEditando.features.join('\n') // Convertir array a string con saltos de línea
+          : productoEditando.features || '',
+        destacado: productoEditando.destacado || false,
+        stock: productoEditando.stock || 0
       })
     } else {
       setFormProducto({
@@ -50,7 +53,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         originalPrice: 0,
         discountPrice: 0,
         image: '',
-        features: [],
+        features: '',
         destacado: false,
         stock: 0
       })
@@ -95,6 +98,14 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       return
     }
 
+    // ✅ Procesar características: convertir texto a array
+    const featuresArray = formProducto.features
+      ? formProducto.features
+          .split('\n') // Dividir por saltos de línea
+          .map(feature => feature.trim()) // Eliminar espacios extra
+          .filter(feature => feature.length > 0) // Eliminar líneas vacías
+      : []
+
     // ✅ Mapear campos del frontend al formato que espera el backend
     const productoParaBackend = {
       // Campos en español para el backend
@@ -104,9 +115,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       precio_original: originalPrice,
       precio_descuento: discountPrice,
       imagen: image,
-      caracteristicas: Array.isArray(formProducto.features)
-        ? formProducto.features
-        : [],
+      caracteristicas: featuresArray, // Usar el array procesado
 
       // Campos adicionales con valores por defecto
       descripcion: '',
@@ -138,33 +147,6 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       ...prev,
       destacado: e.target.checked
     }))
-  }
-
-  // ✅ Función para agregar característica
-  const agregarCaracteristica = () => {
-    if (nuevaCaracteristica.trim()) {
-      setFormProducto((prev) => ({
-        ...prev,
-        features: [...prev.features, nuevaCaracteristica.trim()]
-      }))
-      setNuevaCaracteristica('')
-    }
-  }
-
-  // ✅ Función para eliminar característica
-  const eliminarCaracteristica = (index) => {
-    setFormProducto((prev) => ({
-      ...prev,
-      features: prev.features.filter((_, i) => i !== index)
-    }))
-  }
-
-  // ✅ Manejar Enter en el input de características
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      agregarCaracteristica()
-    }
   }
 
   // Manejar clic en el overlay para cerrar el modal
@@ -351,59 +333,21 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
             </label>
           </div>
 
-          {/* ✅ Sección de características */}
+          {/* ✅ Sección de características simplificada */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Características
             </label>
-
-            {/* Input para agregar nueva característica */}
-            <div className="flex space-x-2 mb-3">
-              <input
-                type="text"
-                value={nuevaCaracteristica}
-                onChange={(e) => setNuevaCaracteristica(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Escribe una característica..."
-              />
-              <button
-                type="button"
-                onClick={agregarCaracteristica}
-                className="px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center"
-              >
-                <Plus className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Lista de características */}
-            {formProducto.features.length > 0 && (
-              <div className="space-y-2 max-h-32 overflow-y-auto">
-                {formProducto.features.map((feature, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between bg-gray-50 px-3 py-2 rounded-lg"
-                  >
-                    <span className="text-sm text-gray-700 flex-1">
-                      {feature}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => eliminarCaracteristica(index)}
-                      className="text-red-500 hover:text-red-700 ml-2"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {formProducto.features.length === 0 && (
-              <p className="text-sm text-gray-500 italic">
-                No hay características agregadas
-              </p>
-            )}
+            <textarea
+              value={formProducto.features}
+              onChange={(e) => handleInputChange('features', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
+              placeholder="Escribe las características del producto, una por línea:&#10;• 8GB RAM&#10;• Procesador Intel i7&#10;• Tarjeta gráfica dedicada"
+              rows={4}
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Escribe cada característica en una línea separada. Las características se agregarán automáticamente al crear el producto.
+            </p>
           </div>
 
           <div className="flex space-x-3 pt-4">
