@@ -9,26 +9,23 @@ export const API_ENDPOINTS = {
 
   // 👥 Usuarios endpoints
   USUARIOS: `${API_BASE_URL}/api/usuarios`,
-  USUARIO_BY_ID: (id) => `${API_BASE_URL}/usuarios/${id}`,
+  USUARIO_BY_ID: (id) => `${API_BASE_URL}/api/usuarios/${id}`,
 
   // 📂 Categorías endpoints
-  CATEGORIAS: `${API_BASE_URL}/categorias`,
-  CATEGORIA_BY_ID: (id) => `${API_BASE_URL}/categorias/${id}`,
+  CATEGORIAS: `${API_BASE_URL}/api/categorias`,
+  CATEGORIA_BY_ID: (id) => `${API_BASE_URL}/api/categorias/${id}`,
 
-  // 📦 Productos endpoints
+  // 🏷️ Marcas endpoints
+  MARCAS: `${API_BASE_URL}/api/marcas`,
+  MARCA_BY_ID: (id) => `${API_BASE_URL}/api/marcas/${id}`,
+
+  // � Productos endpoints
   PRODUCTOS: `${API_BASE_URL}/api/productos`,
   PRODUCTO_BY_ID: (id) => `${API_BASE_URL}/api/productos/${id}`,
 
-  // 🛒 Carrito endpoints
-  CARRITO: `${API_BASE_URL}/carrito`,
-  CARRITO_ITEM: (producto_id) => `${API_BASE_URL}/carrito/${producto_id}`,
-
-  // 💳 Compras endpoints
-  COMPRAS: `${API_BASE_URL}/compras`,
-  COMPRAS_ADMIN: `${API_BASE_URL}/compras/admin`,
-
-  // 📊 Ventas endpoints
-  VENTAS: `${API_BASE_URL}/api/ventas`
+  // � Ventas endpoints
+  VENTAS: `${API_BASE_URL}/api/ventas`,
+  VENTAS_USER: `${API_BASE_URL}/api/ventas/me`
 }
 
 // Ejemplos de uso con query parameters:

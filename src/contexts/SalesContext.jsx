@@ -197,6 +197,8 @@ export const SalesProvider = ({ children }) => {
       ? sales
       : sales.filter(
           (venta) =>
+            venta.usuario_id === currentUser?.usuario_id ||
+            venta.user_id === currentUser?.usuario_id ||
             venta.usuario_id === currentUser?.id ||
             venta.user_id === currentUser?.id
         )
@@ -388,10 +390,10 @@ export const SalesProvider = ({ children }) => {
     }
   }, [usuario, estaAutenticado, fetchSales])
 
-  // Debug del estado - SOLO SI HAY SESIÓN PARA EVITAR LOGS INNECESARIOS
+  // Debug del estado - solo logear en modo desarrollo
   useEffect(() => {
-    // Solo logear si hay sesión activa
-    if (usuario && estaAutenticado) {
+    // Solo logear si hay sesión activa y está en modo desarrollo
+    if (usuario && estaAutenticado && import.meta.env.DEV) {
       console.log('🎯 ESTADO DEL CONTEXTO SALES:')
       console.log('🎯 Sales count:', sales?.length || 0)
       console.log('🎯 Loading:', loading)

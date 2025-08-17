@@ -12,7 +12,7 @@ const CartItem = ({ item, alCambiarCantidad, alEliminar, formatearPrecio }) => {
         <div className="flex items-start space-x-4 flex-1">
           <div className="w-16 h-16 bg-white rounded-lg overflow-hidden border">
             <img 
-              src={item.image} 
+              src={item.image || 'https://via.placeholder.com/80x80?text=Sin+Imagen'} 
               alt={item.name}
               className="w-full h-full object-cover"
             />

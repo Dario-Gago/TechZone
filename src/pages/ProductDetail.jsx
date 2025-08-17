@@ -137,7 +137,7 @@ const DetalleProducto = () => {
           <div className="flex justify-center">
             <div className="bg-white rounded-lg p-8 w-full max-w-md">
               <img
-                src={producto.image}
+                src={producto.image || 'https://via.placeholder.com/400x400?text=Sin+Imagen'}
                 alt={producto.name}
                 className={`w-full h-auto object-contain ${
                   sinStock ? 'grayscale opacity-60' : ''

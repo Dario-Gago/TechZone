@@ -148,7 +148,7 @@ const ProductosDestacados = () => {
                   {/* Imagen del producto */}
                   <div className="relative bg-gray-50 h-48 flex items-center justify-center p-4">
                     <img
-                      src={producto.image}
+                      src={producto.image || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
                       alt={producto.name}
                       className="w-full h-full object-contain"
                       onError={(e) => {

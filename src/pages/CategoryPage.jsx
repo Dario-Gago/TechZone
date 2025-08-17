@@ -151,7 +151,7 @@ const PaginaCategoria = () => {
                     {/* Imagen del producto */}
                     <div className="relative bg-gray-50 h-48 flex items-center justify-center p-4">
                       <img
-                        src={product.image}
+                        src={product.image || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
                         alt={product.name}
                         className={`w-full h-full object-contain ${
                           sinStock ? 'grayscale' : ''

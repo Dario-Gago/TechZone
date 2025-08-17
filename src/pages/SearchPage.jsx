@@ -90,7 +90,7 @@ const PaginaBusqueda = () => {
                   {/* Imagen del producto */}
                   <div className="relative bg-white h-48 flex items-center justify-center">
                     <img
-                      src={product.image}
+                      src={product.image || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
                       alt={product.name}
                       className="w-full h-full object-cover"
                     />

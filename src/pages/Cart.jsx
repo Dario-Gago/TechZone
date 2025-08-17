@@ -135,7 +135,7 @@ const Carrito = () => {
                       {/* Product Image */}
                       <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0 overflow-hidden">
                         <img
-                          src={item.image}
+                          src={item.image || 'https://via.placeholder.com/80x80?text=Sin+Imagen'}
                           alt={item.name}
                           className={`w-full h-full object-cover ${
                             tieneProblemas ? 'opacity-60 grayscale' : ''
