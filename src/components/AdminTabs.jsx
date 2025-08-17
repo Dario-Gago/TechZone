@@ -5,7 +5,6 @@ import ProductsTab from './ProductsTab'
 import UsersTab from './UsersTab'
 
 const AdminTabs = ({
-  pedidos,
   productos,
   usuarios,
   onEliminarUsuario,
@@ -47,7 +46,7 @@ const AdminTabs = ({
 
       {/* Contenido de las pestañas */}
       <div className="bg-gray-50 rounded-lg p-6">
-        {tabActiva === 'ventas' && <SalesTab pedidos={pedidos} />}
+        {tabActiva === 'ventas' && <SalesTab />}
 
         {tabActiva === 'productos' && (
           <ProductsTab
