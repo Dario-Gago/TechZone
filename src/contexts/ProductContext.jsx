@@ -67,7 +67,8 @@ export const ProveedorProducto = ({ children }) => {
     const cargarProductos = async () => {
       try {
         setCargando(true)
-        const response = await api.get('/')
+        // ✅ CORRECCIÓN: Usar la URL completa en lugar de baseURL + '/'
+        const response = await axios.get(API_ENDPOINTS.PRODUCTOS)
         setProductos(response.data)
         actualizarCategorias(response.data)
         setError(null)
