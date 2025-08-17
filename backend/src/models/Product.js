@@ -272,18 +272,74 @@ export const updateProduct = async (id, productData) => {
 
 // Eliminar un producto
 export const deleteProduct = async (id) => {
+  const client = await pool.connect()
+  
   try {
-    const result = await pool.query(
+    // Iniciar transacción
+    await client.query('BEGIN')
+    
+    console.log('🗑️ Iniciando eliminación del producto ID:', id)
+    
+    // Primero verificar que el producto existe
+    const productExists = await client.query(
+      'SELECT * FROM producto WHERE producto_id = $1',
+      [id]
+    )
+    
+    if (productExists.rows.length === 0) {
+      await client.query('ROLLBACK')
+      return null
+    }
+    
+    const product = productExists.rows[0]
+    console.log('✅ Producto encontrado:', product.nombre)
+    
+    // 1. Eliminar relaciones en producto_categoria
+    const deletedCategories = await client.query(
+      'DELETE FROM producto_categoria WHERE producto_id = $1 RETURNING *',
+      [id]
+    )
+    console.log(`🗑️ Eliminadas ${deletedCategories.rows.length} relaciones de categorías`)
+    
+    // 2. Eliminar de carritos (carrito_producto)
+    const deletedCartItems = await client.query(
+      'DELETE FROM carrito_producto WHERE producto_id = $1 RETURNING *',
+      [id]
+    )
+    console.log(`🗑️ Eliminadas ${deletedCartItems.rows.length} referencias en carritos`)
+    
+    // 3. Eliminar de pedidos (pedido_producto)
+    const deletedOrderItems = await client.query(
+      'DELETE FROM pedido_producto WHERE producto_id = $1 RETURNING *',
+      [id]
+    )
+    console.log(`🗑️ Eliminadas ${deletedOrderItems.rows.length} referencias en pedidos`)
+    
+    // 4. Eliminar de detalle de ventas
+    const deletedSaleDetails = await client.query(
+      'DELETE FROM detalle_ventas WHERE producto_id = $1 RETURNING *',
+      [id]
+    )
+    console.log(`🗑️ Eliminadas ${deletedSaleDetails.rows.length} referencias en ventas`)
+    
+    // 5. Finalmente eliminar el producto
+    const result = await client.query(
       'DELETE FROM producto WHERE producto_id = $1 RETURNING *',
       [id]
     )
-
-    if (result.rows.length === 0) {
-      return null
-    }
-
+    
+    // Confirmar transacción
+    await client.query('COMMIT')
+    
+    console.log('✅ Producto eliminado exitosamente')
     return formatProduct(result.rows[0])
+    
   } catch (error) {
+    // Hacer rollback en caso de error
+    await client.query('ROLLBACK')
+    console.error('❌ Error al eliminar producto:', error)
     throw new Error('Error al eliminar producto: ' + error.message)
+  } finally {
+    client.release()
   }
 }
