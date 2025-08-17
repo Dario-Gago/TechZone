@@ -1,6 +1,6 @@
 import React from 'react'
 import { Package, AlertCircle, Loader2 } from 'lucide-react'
-import { useSales } from '../contexts/SalesContext'
+import { useSales } from '../hooks/useSales'
 
 const SalesTab = () => {
   // Agregar try-catch para manejar errores del contexto

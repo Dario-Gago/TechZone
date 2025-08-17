@@ -5,19 +5,19 @@ import pool from '../../db/config.js'
 export const findSales = async (user) => {
   if (user.admin) {
     const query = `
-      SELECT v.venta_id, v.fecha as created_at, v.total, v.estado, u.nombre AS user_name
+      SELECT v.venta_id, v.fecha_venta as created_at, v.total, v.estado, u.nombre AS user_name
       FROM ventas v
       JOIN usuario u ON v.usuario_id = u.usuario_id
-      ORDER BY v.fecha DESC
+      ORDER BY v.fecha_venta DESC
     `
     const result = await pool.query(query)
     return result.rows
   } else {
     const query = `
-      SELECT v.venta_id, v.fecha as created_at, v.total, v.estado
+      SELECT v.venta_id, v.fecha_venta as created_at, v.total, v.estado
       FROM ventas v
       WHERE v.usuario_id = $1
-      ORDER BY v.fecha DESC
+      ORDER BY v.fecha_venta DESC
     `
     const result = await pool.query(query, [user.userId])
     return result.rows

@@ -136,24 +136,24 @@ const DetalleProducto = () => {
           {/* Imagen del producto */}
           <div className="flex justify-center">
             <div className="bg-white rounded-lg p-8 w-full max-w-md">
-              <img
-                src={producto.image}
-                alt={producto.name}
-                className={`w-full h-auto object-contain ${
-                  sinStock ? 'grayscale opacity-60' : ''
-                }`}
-              />
+              <div className="relative aspect-square w-full">
+                <img
+                  src={producto.imagen || 'https://via.placeholder.com/400x400?text=Sin+Imagen'}
+                  alt={producto.nombre}
+                  className={`w-full h-full object-contain ${
+                    sinStock ? 'grayscale opacity-60' : ''
+                  }`}
+                />
 
-              {/* Overlay de sin stock */}
-              {sinStock && (
-                <div className="relative">
-                  <div className="absolute inset-0 -mt-8 bg-black bg-opacity-40 flex items-center justify-center rounded-lg">
+                {/* Overlay de sin stock */}
+                {sinStock && (
+                  <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-lg">
                     <div className="bg-red-500 text-white px-4 py-2 rounded-lg text-lg font-bold">
                       AGOTADO
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
 
@@ -161,66 +161,29 @@ const DetalleProducto = () => {
           <div className="space-y-6">
             <div>
               <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-                {producto.name}
+                {producto.nombre}
               </h1>
-              {producto.brand && (
-                <p className="text-lg text-gray-600 mb-4">{producto.brand}</p>
+              {producto.marca && (
+                <p className="text-lg text-gray-600 mb-4">{producto.marca}</p>
               )}
             </div>
 
-            {/* ✅ Información de stock */}
-            <div className="bg-gray-50 border rounded-lg p-4">
-              <div className="flex items-center space-x-2 mb-2">
-                <Package className="h-5 w-5 text-gray-600" />
-                <span className="font-medium text-gray-700">
-                  Disponibilidad
-                </span>
-              </div>
 
-              {sinStock ? (
-                <div className="flex items-center space-x-2 text-red-600">
-                  <AlertTriangle className="h-4 w-4" />
-                  <span className="text-sm font-medium">Producto agotado</span>
-                </div>
-              ) : (
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-2 text-green-600">
-                    <Check className="h-4 w-4" />
-                    <span className="text-sm font-medium">
-                      {producto.stock} unidades en stock
-                    </span>
-                  </div>
-
-                  {yaEstaEnCarrito && (
-                    <p className="text-sm text-orange-600">
-                      {stockDisponible} disponibles (ya tienes{' '}
-                      {cantidadEnCarrito} en el carrito)
-                    </p>
-                  )}
-
-                  {stockDisponible <= 5 && stockDisponible > 0 && (
-                    <p className="text-sm text-red-600 font-medium">
-                      ¡Últimas {stockDisponible} unidades disponibles!
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
 
             {/* Precios */}
             <div className="space-y-2">
               {/* Solo mostrar precio original tachado si hay descuento real */}
-              {producto.discountPrice > 0 &&
-                producto.discountPrice < producto.originalPrice && (
+              {producto.precio_descuento > 0 &&
+                producto.precio_descuento < producto.precio_original && (
                   <div className="flex items-center space-x-3">
                     <span className="text-2xl text-gray-500 line-through">
-                      {formatearPrecio(producto.originalPrice)}
+                      {formatearPrecio(producto.precio_original)}
                     </span>
                     <span className="bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
                       -
                       {calcularDescuento(
-                        producto.originalPrice,
-                        producto.discountPrice
+                        producto.precio_original,
+                        producto.precio_descuento
                       )}
                       %
                     </span>
@@ -229,23 +192,23 @@ const DetalleProducto = () => {
 
               <div className="text-4xl font-bold text-gray-900">
                 {formatearPrecio(
-                  producto.discountPrice > 0 &&
-                    producto.discountPrice < producto.originalPrice
-                    ? producto.discountPrice
-                    : producto.originalPrice
+                  producto.precio_descuento > 0 &&
+                    producto.precio_descuento < producto.precio_original
+                    ? producto.precio_descuento
+                    : producto.precio_original
                 )}
               </div>
             </div>
 
             {/* Descripción */}
             <p className="text-gray-600 leading-relaxed">
-              {producto.description}
+              {producto.descripcion}
             </p>
 
             {/* Características */}
-            {producto.features && producto.features.length > 0 && (
+            {producto.caracteristicas && producto.caracteristicas.length > 0 && (
               <ul className="space-y-3">
-                {producto.features.map((feature, index) => (
+                {producto.caracteristicas.map((feature, index) => (
                   <li key={index} className="flex items-start space-x-3">
                     <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <span className="text-gray-700">{feature}</span>
@@ -334,6 +297,38 @@ const DetalleProducto = () => {
                 </div>
               </div>
             )}
+
+                        {/* ✅ Información de stock */}
+            <div className="bg-gray-50 border rounded-lg p-4">
+              <div className="flex items-center space-x-2 mb-2">
+                <Package className="h-5 w-5 text-gray-600" />
+                <span className="font-medium text-gray-700">
+                  Disponibilidad
+                </span>
+              </div>
+
+              {sinStock ? (
+                <div className="flex items-center space-x-2 text-red-600">
+                  <AlertTriangle className="h-4 w-4" />
+                  <span className="text-sm font-medium">Producto agotado</span>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-2 text-green-600">
+                    <Check className="h-4 w-4" />
+                    <span className="text-sm font-medium">
+                      {producto.stock} unidades en stock
+                    </span>
+                  </div>
+
+                  {stockDisponible <= 5 && stockDisponible > 0 && (
+                    <p className="text-sm text-red-600 font-medium">
+                      ¡Últimas {stockDisponible} unidades disponibles!
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Mensaje para productos sin stock */}
             {sinStock && (

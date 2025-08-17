@@ -9,15 +9,17 @@ import UserPurchases from '../components/UserPurchases'
 import AdminTabs from '../components/AdminTabs'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { ProductContext } from '../contexts/ProductContext'
+import { useSales } from '../hooks/useSales'
 
 const Dashboard = () => {
   const { esAdmin, usuario } = useAutenticacion()
-  const [comprasUsuario, setComprasUsuario] = useState([])
-  const [estadisticas, setEstadisticas] = useState({})
   const [loading, setLoading] = useState(true)
   const [usuarios, setUsuarios] = useState([])
   const { productos } = useContext(ProductContext)
   const [pedidos, setPedidos] = useState([])
+  
+  // Usar SalesContext para obtener las ventas y estadísticas
+  const { sales, loading: salesLoading } = useSales()
 
   // Función para obtener usuarios de la base de datos
   const cargarUsuarios = async () => {
@@ -43,7 +45,7 @@ const Dashboard = () => {
     }
   }
 
-  // Función para cargar pedidos desde la base de datos
+  // Función para cargar pedidos desde la base de datos (usando ventas)
   const cargarPedidos = async () => {
     try {
       const token = localStorage.getItem('token')
@@ -53,7 +55,8 @@ const Dashboard = () => {
         return
       }
 
-      const { data } = await axios.get(API_ENDPOINTS.PEDIDOS, {
+      // Los pedidos son las ventas, usar el endpoint de ventas
+      const { data } = await axios.get(API_ENDPOINTS.VENTAS, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -63,57 +66,6 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error al obtener pedidos:', error)
       setPedidos([])
-    }
-  }
-
-  // Función para cargar compras del usuario actual
-  const cargarComprasUsuario = async () => {
-    if (!usuario?.usuario_id) return
-
-    try {
-      const token = localStorage.getItem('token')
-
-      if (!token) {
-        console.error('No hay token de autenticación')
-        return
-      }
-
-      const { data } = await axios.get(
-        `${API_ENDPOINTS.USUARIOS}/${usuario.usuario_id}/compras`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-
-      setComprasUsuario(data)
-    } catch (error) {
-      console.error('Error al obtener compras del usuario:', error)
-      setComprasUsuario([])
-    }
-  }
-
-  // Función para cargar estadísticas desde la base de datos
-  const cargarEstadisticas = async () => {
-    try {
-      const token = localStorage.getItem('token')
-
-      if (!token) {
-        console.error('No hay token de autenticación')
-        return
-      }
-
-      const { data } = await axios.get(API_ENDPOINTS.ESTADISTICAS, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      setEstadisticas(data)
-    } catch (error) {
-      console.error('Error al obtener estadísticas:', error)
-      setEstadisticas({})
     }
   }
 
@@ -156,16 +108,10 @@ const Dashboard = () => {
     const cargarDatos = async () => {
       setLoading(true)
 
-      // Cargar estadísticas para todos los usuarios
-      await cargarEstadisticas()
-
       if (esAdmin) {
         // Si es admin, cargar usuarios y pedidos
         await cargarUsuarios()
         await cargarPedidos()
-      } else {
-        // Si es usuario normal, cargar solo sus compras
-        await cargarComprasUsuario()
       }
 
       setLoading(false)
@@ -174,17 +120,24 @@ const Dashboard = () => {
     cargarDatos()
   }, [usuario, esAdmin])
 
-  if (loading) {
+  // Mostrar loading si está cargando datos generales o sales
+  if (loading || salesLoading) {
     return <LoadingSpinner />
   }
 
-  const totalGastado = comprasUsuario.reduce(
-    (total, compra) => total + compra.precio,
-    0
-  )
-  const comprasEntregadas = comprasUsuario.filter(
-    (c) => c.estado_pedido === 'entregado'
-  )
+  // Convertir las ventas del usuario actual a formato de compras para UserPurchases
+  const comprasUsuario = sales.filter(sale => 
+    !esAdmin && (
+      sale.usuario_id === usuario?.usuario_id ||
+      sale.user_id === usuario?.usuario_id ||
+      sale.usuario_id === usuario?.id ||
+      sale.user_id === usuario?.id
+    )
+  ).map(sale => ({
+    ...sale,
+    precio: parseFloat(sale.total || 0),
+    estado_pedido: sale.estado || 'pendiente'
+  }))
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -209,12 +162,8 @@ const Dashboard = () => {
         {/* Stats Cards */}
         <StatsCards
           esAdmin={esAdmin}
-          estadisticas={estadisticas}
           usuarios={usuarios}
           productos={productos}
-          totalGastado={totalGastado}
-          comprasUsuario={comprasUsuario}
-          comprasEntregadas={comprasEntregadas}
         />
 
         {/* Main Content */}

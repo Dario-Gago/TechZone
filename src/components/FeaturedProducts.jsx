@@ -73,15 +73,6 @@ const ProductosDestacados = () => {
         <h2 className="text-3xl font-bold text-gray-800 mb-2">
           Productos Destacados
         </h2>
-        <p className="text-gray-600">
-          Los mejores productos con ofertas especiales
-        </p>
-        {/* ✅ Mostrar cantidad de productos destacados */}
-        <p className="text-sm text-blue-600 mt-2">
-          {productosDestacados.length} producto
-          {productosDestacados.length !== 1 ? 's' : ''} destacado
-          {productosDestacados.length !== 1 ? 's' : ''}
-        </p>
       </div>
 
       {/* Slider horizontal con navegación */}
@@ -141,10 +132,10 @@ const ProductosDestacados = () => {
             {productosDestacados.map((producto) => {
               // ✅ Calcular descuento usando los campos correctos
               const descuento =
-                producto.discountPrice > 0
+                producto.precio_descuento > 0
                   ? calcularDescuento(
-                      producto.originalPrice,
-                      producto.discountPrice
+                      producto.precio_original,
+                      producto.precio_descuento
                     )
                   : 0
 
@@ -155,21 +146,16 @@ const ProductosDestacados = () => {
                   className="bg-white rounded-lg shadow-md overflow-hidden flex-shrink-0 w-48 sm:w-52 md:w-56 hover:shadow-lg transition-shadow duration-200 cursor-pointer border border-gray-200"
                 >
                   {/* Imagen del producto */}
-                  <div className="relative bg-gray-50 h-48 flex items-center justify-center p-4">
+                  <div className="relative bg-white aspect-square flex items-center justify-center p-4 border border-gray-100">
                     <img
-                      src={producto.image}
-                      alt={producto.name}
+                      src={producto.imagen || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
+                      alt={producto.nombre}
                       className="w-full h-full object-contain"
                       onError={(e) => {
                         e.target.src =
                           'https://via.placeholder.com/200x200?text=Sin+Imagen'
                       }}
                     />
-
-                    {/* ✅ Badge de destacado */}
-                    <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
-                      ⭐ Destacado
-                    </div>
 
                     {/* Badge de descuento */}
                     {descuento > 0 && (
@@ -182,43 +168,43 @@ const ProductosDestacados = () => {
                   {/* Información del producto */}
                   <div className="p-4">
                     {/* Marca */}
-                    {producto.brand && (
+                    {producto.marca && (
                       <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                        {producto.brand}
+                        {producto.marca}
                       </p>
                     )}
 
                     {/* Nombre del producto */}
                     <div className="h-12 mb-3">
                       <h3 className="text-sm font-medium text-gray-800 line-clamp-2 leading-tight">
-                        {producto.name}
+                        {producto.nombre}
                       </h3>
                     </div>
 
                     {/* Precios */}
                     <div className="space-y-1">
-                      {producto.discountPrice > 0 &&
-                      producto.discountPrice < producto.originalPrice ? (
+                      {producto.precio_descuento > 0 &&
+                      producto.precio_descuento < producto.precio_original ? (
                         <>
                           <p className="text-sm text-gray-500 line-through">
-                            {formatearPrecio(producto.originalPrice)}
+                            {formatearPrecio(producto.precio_original)}
                           </p>
                           <p className="text-lg font-bold text-green-600">
-                            {formatearPrecio(producto.discountPrice)}
+                            {formatearPrecio(producto.precio_descuento)}
                           </p>
                         </>
                       ) : (
                         <p className="text-lg font-bold text-gray-900">
-                          {formatearPrecio(producto.originalPrice)}
+                          {formatearPrecio(producto.precio_original)}
                         </p>
                       )}
                     </div>
 
                     {/* ✅ Características destacadas */}
-                    {producto.features && producto.features.length > 0 && (
+                    {producto.caracteristicas && producto.caracteristicas.length > 0 && (
                       <div className="mt-3">
                         <p className="text-xs text-gray-600 line-clamp-1">
-                          {producto.features[0]}
+                          {producto.caracteristicas[0]}
                         </p>
                       </div>
                     )}

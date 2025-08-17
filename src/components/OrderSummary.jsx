@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSales } from '../contexts/SalesContext'
+import { useSales } from '../hooks/useSales'
 import { useAuth } from '../contexts/AuthContext'
 import ContextoCarrito from '../contexts/CartContext'
 

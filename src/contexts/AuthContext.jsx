@@ -64,7 +64,14 @@ export const ProveedorAutenticacion = ({ children }) => {
       setToken(tokenAlmacenado)
       setEsAdmin(esAdminAlmacenado)
       if (usuarioAlmacenado) {
-        setUsuario(JSON.parse(usuarioAlmacenado))
+        try {
+          setUsuario(JSON.parse(usuarioAlmacenado))
+        } catch (error) {
+          console.error('Error al cargar usuario desde localStorage:', error)
+          // Limpiar datos corruptos
+          localStorage.removeItem('user')
+          setUsuario(null)
+        }
       }
     }
   }, [])

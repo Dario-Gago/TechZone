@@ -133,11 +133,11 @@ const Carrito = () => {
                   >
                     <div className="flex items-start space-x-4">
                       {/* Product Image */}
-                      <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0 overflow-hidden">
+                      <div className="w-20 h-20 aspect-square bg-white rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center p-2 border border-gray-100">
                         <img
-                          src={item.image}
-                          alt={item.name}
-                          className={`w-full h-full object-cover ${
+                          src={item.imagen || 'https://via.placeholder.com/80x80?text=Sin+Imagen'}
+                          alt={item.nombre}
+                          className={`w-full h-full object-contain ${
                             tieneProblemas ? 'opacity-60 grayscale' : ''
                           }`}
                         />
@@ -148,10 +148,10 @@ const Carrito = () => {
                         <div className="flex justify-between items-start">
                           <div>
                             <h3 className="font-semibold text-gray-900">
-                              {item.name}
+                              {item.nombre}
                             </h3>
                             <p className="text-sm text-gray-500">
-                              {item.brand}
+                              {item.marca}
                             </p>
 
                             {/* ✅ Información de stock */}
@@ -246,11 +246,11 @@ const Carrito = () => {
                           )}
 
                           <div className="text-right">
-                            {item.discountPrice &&
-                            item.discountPrice < item.originalPrice ? (
+                            {item.precio_descuento &&
+                            item.precio_descuento < item.precio_original ? (
                               <div>
                                 <span className="text-sm text-gray-500 line-through">
-                                  ${item.originalPrice.toLocaleString('es-CL')}
+                                  ${item.precio_original.toLocaleString('es-CL')}
                                 </span>
                                 <span
                                   className={`text-lg font-semibold ml-2 ${
@@ -259,7 +259,7 @@ const Carrito = () => {
                                       : 'text-gray-900'
                                   }`}
                                 >
-                                  ${item.discountPrice.toLocaleString('es-CL')}
+                                  ${item.precio_descuento.toLocaleString('es-CL')}
                                 </span>
                               </div>
                             ) : (
@@ -270,7 +270,7 @@ const Carrito = () => {
                                     : 'text-gray-900'
                                 }`}
                               >
-                                ${item.precioFinal.toLocaleString('es-CL')}
+                                ${(item.precio_descuento || item.precio_original || item.precioFinal || 0).toLocaleString('es-CL')}
                               </span>
                             )}
                           </div>

@@ -5,25 +5,21 @@ import { useProductos } from '../hooks/useProducts'
 const PieDePagina = () => {
   const { productos, cargando } = useProductos()
 
-  // Función para capitalizar
-  const capitalizar = (texto) =>
-    texto ? texto.charAt(0).toUpperCase() + texto.slice(1) : ''
-
   // Categorías extraídas de productos
   const categoriasValidas = useMemo(() => {
     if (cargando || !Array.isArray(productos) || productos.length === 0) {
       return []
     }
 
-    const categoriasUnicas = [...new Set(productos.map((p) => p.category))]
+    const categoriasUnicas = [...new Set(productos.map((p) => p.categoria))]
       .filter((c) => c && c.trim() !== '')
       .map((c, index) => ({
         id: index + 1,
-        slug: c
-          .toLowerCase()
-          .replace(/\s+/g, '-')
-          .replace(/[^a-z0-9-]/g, ''),
-        name: capitalizar(c.trim())
+        slug: c,
+        name: c
+          .split('-')
+          .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+          .join(' ')
       }))
 
     return categoriasUnicas

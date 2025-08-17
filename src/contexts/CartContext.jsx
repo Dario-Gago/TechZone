@@ -1,10 +1,10 @@
 import React, { createContext, useState, useContext, useEffect } from 'react'
-import ContextoProducto from './ProductContext'
+import { ProductContext } from './ProductContext'
 
 const ContextoCarrito = createContext()
 
 export const ProveedorCarrito = ({ children }) => {
-  const contextoProducto = useContext(ContextoProducto)
+  const contextoProducto = useContext(ProductContext)
   const [articulosCarrito, setArticulosCarrito] = useState([])
   const [carritoInicializado, setCarritoInicializado] = useState(false)
 
@@ -46,7 +46,7 @@ export const ProveedorCarrito = ({ children }) => {
       ...producto,
       cantidadCarrito: itemCarrito.quantity,
       // Usar precio actual del producto, no datos obsoletos
-      precioFinal: producto.discountPrice || producto.originalPrice
+      precioFinal: producto.precio_descuento || producto.precio_original
     }
   }
 

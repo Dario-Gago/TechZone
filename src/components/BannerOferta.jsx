@@ -2,37 +2,35 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 const BannerOferta = () => {
+  // Usar categorías que existen en la base de datos
   const categorias = [
     {
-      id: 'tarjetas-graficas',
+      id: 'componentes',
       name: 'Tarjetas',
       name2: 'Graficas',
       price: '$199.990',
-      slug: 'tarjetas-graficas',
+      slug: 'componentes',
       tall: true // Ocupa 2 filas
     },
     {
-      id: 'monitores',
+      id: 'gaming-streaming',
       name: 'Monitores',
-      name2: '',
       price: '$129.990',
-      slug: 'monitores',
+      slug: 'gaming-streaming',
       tall: false
     },
     {
-      id: 'placa-madre',
-      name: 'Placa',
-      name2: 'Madre',
-      price: '$59.990',
-      slug: 'placas-madre',
+      id: 'computacion',
+      name: 'Motherboard',
+      price: '$999.990',
+      slug: 'computacion',
       tall: true // Ocupa 2 filas
     },
     {
-      id: 'almacenamiento',
-      name: 'Almacenamiento',
+      id: 'audio-video',
       name2: 'SSD',
-      price: '$29.990',
-      slug: 'almacenamiento',
+      price: '$299.990',
+      slug: 'audio-video',
       tall: false
     }
   ]
@@ -158,13 +156,13 @@ const BannerOferta = () => {
           <div className="hidden md:grid lg:hidden grid-cols-2 gap-4">
             {categorias.map((categoria) => {
               const backgroundImages = {
-                'tarjetas-graficas':
+                'componentes':
                   'url(https://i.blogs.es/3c6697/nvidia/1200_800.jpeg)',
-                monitores:
+                'gaming-streaming':
                   'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)',
-                'placa-madre':
+                'computacion':
                   'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)',
-                almacenamiento:
+                'audio-video':
                   'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
               }
 
@@ -205,13 +203,13 @@ const BannerOferta = () => {
           <div className="grid md:hidden grid-cols-1 gap-4">
             {categorias.map((categoria) => {
               const backgroundImages = {
-                'tarjetas-graficas':
+                'componentes':
                   'url(https://i.blogs.es/3c6697/nvidia/1200_800.jpeg)',
-                monitores:
+                'gaming-streaming':
                   'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)',
-                'placa-madre':
+                'computacion':
                   'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)',
-                almacenamiento:
+                'audio-video':
                   'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
               }
 

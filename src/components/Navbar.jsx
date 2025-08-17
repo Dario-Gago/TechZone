@@ -27,13 +27,7 @@ const BarraNavegacion = () => {
 
   const totalArticulos = obtenerTotalItems()
 
-  // Función para capitalizar la primera letra
-  const capitalizar = (texto) => {
-    if (!texto) return ''
-    return texto.charAt(0).toUpperCase() + texto.slice(1)
-  }
-
-  // ✅ Extraer categorías únicas de los productos
+  // ✅ Extraer categorías únicas de los productos con orden específico
   const categoriasValidas = useMemo(() => {
     if (cargando || !Array.isArray(productos) || productos.length === 0) {
       console.log('Productos aún cargando o vacío:', {
@@ -43,31 +37,37 @@ const BarraNavegacion = () => {
       return []
     }
 
-    // Extraer categorías únicas de los productos
-    const categoriasUnicas = [
-      ...new Set(productos.map((producto) => producto.category))
+    // Orden correcto según la base de datos
+    const ordenCategorias = [
+      'gaming-streaming',
+      'computacion', 
+      'componentes',
+      'conectividad-redes',
+      'hogar-oficina',
+      'audio-video',
+      'otras-categorias'
     ]
-      .filter((categoria) => categoria && categoria.trim() !== '') // Filtrar categorías vacías
+
+    // Extraer categorías únicas de los productos
+    const categoriasEncontradas = [
+      ...new Set(productos.map((producto) => producto.categoria))
+    ].filter((categoria) => categoria && categoria.trim() !== '')
+
+    // Ordenar según el orden predefinido
+    const categoriasOrdenadas = ordenCategorias
+      .filter(categoriaOrden => categoriasEncontradas.includes(categoriaOrden))
       .map((categoria, index) => ({
         id: index + 1,
-        slug: categoria
-          .toLowerCase()
-          .replace(/\s+/g, '-')
-          .replace(/[^a-z0-9-]/g, ''),
-        name: capitalizar(categoria.trim())
+        slug: categoria,
+        name: categoria
+          .split('-')
+          .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+          .join(' ')
       }))
 
-    console.log('Categorías extraídas de productos:', categoriasUnicas)
-
     // Agregar la categoría "Todo" al inicio
-    return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...categoriasUnicas]
+    return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...categoriasOrdenadas]
   }, [productos, cargando])
-
-  console.log('Estado del hook useProductos:', {
-    productos: productos?.length,
-    cargando,
-    categoriasValidas: categoriasValidas.length
-  })
 
   // Función para determinar si una categoría está activa
   const esCategoriaActiva = (categorySlug) => {

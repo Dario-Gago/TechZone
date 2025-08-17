@@ -80,15 +80,15 @@ export const createProductController = async (req, res) => {
       })
     }
 
-    // Validación del precio_original
-    if (!req.body.precio_original || Number(req.body.precio_original) <= 0) {
+    // Validación del precio_normal (actualizado)
+    if (!req.body.precio_normal || Number(req.body.precio_normal) <= 0) {
       console.log(
-        '❌ Campo "precio_original" no es válido:',
-        req.body.precio_original
+        '❌ Campo "precio_normal" no es válido:',
+        req.body.precio_normal
       )
       return res.status(400).json({
         error: 'Campo inválido',
-        message: 'El campo "precio_original" debe ser un número mayor a 0'
+        message: 'El campo "precio_normal" debe ser un número mayor a 0'
       })
     }
 

@@ -121,11 +121,11 @@ const ProductsTab = () => {
             key={producto.id}
             className="bg-white rounded-lg p-3 border border-gray-200"
           >
-            <div className="w-full h-24 bg-gray-50 rounded-md mb-2 flex items-center justify-center">
+            <div className="w-full aspect-square bg-white rounded-md mb-2 flex items-center justify-center border border-gray-100">
               <img
-                src={producto.image}
+                src={producto.image || 'https://via.placeholder.com/80x80?text=Sin+Imagen'}
                 alt={producto.name}
-                className="max-w-full max-h-full object-contain"
+                className="w-full h-full object-contain"
                 onError={(e) => {
                   e.target.src =
                     'https://via.placeholder.com/150x150?text=No+Image'

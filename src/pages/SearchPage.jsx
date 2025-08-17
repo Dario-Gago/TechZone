@@ -76,10 +76,10 @@ const PaginaBusqueda = () => {
             {resultadosBusqueda.map((product) => {
               // ✅ Calcular precio con descuento en tiempo real
               const precioConDescuento =
-                product.discount > 0
-                  ? product.originalPrice -
-                    (product.originalPrice * product.discount) / 100
-                  : product.originalPrice
+                product.descuento > 0
+                  ? product.precio_original -
+                    (product.precio_original * product.descuento) / 100
+                  : product.precio_original
 
               return (
                 <Link
@@ -88,17 +88,17 @@ const PaginaBusqueda = () => {
                   className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-200"
                 >
                   {/* Imagen del producto */}
-                  <div className="relative bg-white h-48 flex items-center justify-center">
+                  <div className="relative bg-white aspect-square flex items-center justify-center p-4 border border-gray-100">
                     <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
+                      src={product.imagen || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
+                      alt={product.nombre}
+                      className="w-full h-full object-contain"
                     />
 
                     {/* Badge de descuento */}
-                    {product.discount > 0 && (
-                      <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
-                        -{product.discount}%
+                    {product.descuento > 0 && (
+                      <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                        -{product.descuento}%
                       </div>
                     )}
                   </div>
@@ -106,23 +106,23 @@ const PaginaBusqueda = () => {
                   {/* Información del producto */}
                   <div className="p-4">
                     {/* Marca */}
-                    {product.brand && (
+                    {product.marca && (
                       <p className="text-sm text-gray-500 uppercase tracking-wide mb-1">
-                        {product.brand}
+                        {product.marca}
                       </p>
                     )}
 
                     {/* Nombre del producto */}
                     <h3 className="text-sm font-medium text-gray-800 mb-3 line-clamp-2 leading-tight">
-                      {product.name}
+                      {product.nombre}
                     </h3>
 
                     {/* Precios */}
                     <div className="space-y-1">
                       {/* Precio original tachado - Solo mostrar si es mayor a 0 y hay descuento */}
-                      {product.discount > 0 && product.originalPrice > 0 && (
+                      {product.descuento > 0 && product.precio_original > 0 && (
                         <p className="text-sm text-gray-500 line-through">
-                          {formatearPrecio(product.originalPrice)}
+                          {formatearPrecio(product.precio_original)}
                         </p>
                       )}
 
@@ -134,7 +134,7 @@ const PaginaBusqueda = () => {
 
                     {/* Estado del stock */}
                     <div className="mt-3">
-                      {product.inStock ? (
+                      {product.stock > 0 ? (
                         <span className="text-sm text-green-600 font-medium">
                           En stock
                         </span>

@@ -32,17 +32,34 @@ export const ProveedorProducto = ({ children }) => {
 
   // ---------------- Categorías ----------------
   const actualizarCategorias = (productosActualizados) => {
-    const categoriasUnicas = [
-      ...new Set(productosActualizados.map((p) => p.categoria || p.category))
+    // Orden correcto según la base de datos
+    const ordenCategorias = [
+      'gaming-streaming',
+      'computacion', 
+      'componentes',
+      'conectividad-redes',
+      'hogar-oficina',
+      'audio-video',
+      'otras-categorias'
+    ]
+
+    const categoriasEncontradas = [
+      ...new Set(productosActualizados.map((p) => p.categoria))
     ].filter(Boolean)
 
-    const categoriasObjetos = categoriasUnicas.map((categoria, index) => ({
-      id: index + 1,
-      name: categoria,
-      slug: categoria.toLowerCase().replace(/\s+/g, '-')
-    }))
+    // Ordenar según el orden predefinido
+    const categoriasOrdenadas = ordenCategorias
+      .filter(categoriaOrden => categoriasEncontradas.includes(categoriaOrden))
+      .map((categoria, index) => ({
+        id: index + 1,
+        name: categoria
+          .split('-')
+          .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
+          .join(' '),
+        slug: categoria
+      }))
 
-    setCategorias(categoriasObjetos)
+    setCategorias(categoriasOrdenadas)
   }
 
   // ---------------- Cargar productos ----------------
@@ -50,9 +67,34 @@ export const ProveedorProducto = ({ children }) => {
     const cargarProductos = async () => {
       try {
         setCargando(true)
-        const response = await api.get('/')
-        setProductos(response.data)
-        actualizarCategorias(response.data)
+        const response = await axios.get(API_ENDPOINTS.PRODUCTOS)
+        
+        // ✅ Usar directamente los datos del backend en español
+        const productosConvertidos = response.data.map(producto => {
+          const caracteristicasProcessed = (() => {
+            if (Array.isArray(producto.caracteristicas)) {
+              return producto.caracteristicas
+            }
+            if (typeof producto.caracteristicas === 'string' && producto.caracteristicas.trim()) {
+              try {
+                return JSON.parse(producto.caracteristicas)
+              } catch {
+                return [producto.caracteristicas]
+              }
+            }
+            return []
+          })()
+          
+          return {
+            ...producto,
+            caracteristicas: caracteristicasProcessed,
+            destacado: Boolean(producto.destacado),
+            stock: Number(producto.stock) || 0
+          }
+        })
+        
+        setProductos(productosConvertidos)
+        actualizarCategorias(productosConvertidos)
         setError(null)
       } catch (err) {
         console.error(err)
@@ -71,7 +113,7 @@ export const ProveedorProducto = ({ children }) => {
     try {
       console.log('🟢 Datos recibidos en agregarProducto:', nuevoProducto)
 
-      // ✅ CORRECCIÓN: El formulario ahora envía datos en español, usar esos directamente
+      // ✅ Usar directamente los campos en español del backend
       const payload = {
         nombre: (nuevoProducto.nombre || '').trim(),
         marca: (nuevoProducto.marca || '').trim(),
@@ -86,28 +128,17 @@ export const ProveedorProducto = ({ children }) => {
         en_stock: Number(nuevoProducto.en_stock) || 1,
         destacado: Boolean(nuevoProducto.destacado),
         envio: nuevoProducto.envio || 'Envío estándar',
-        caracteristicas: nuevoProducto.caracteristicas || null // ✅ Características incluidas
+        caracteristicas: nuevoProducto.caracteristicas || null
       }
 
       console.log('🟢 Payload enviado al backend:', payload)
 
       const response = await api.post('/', payload)
 
+      // ✅ Usar directamente la respuesta del backend sin mapeo
       const productoCreado = {
         ...response.data,
-        name: response.data.nombre || response.data.name,
-        brand: response.data.marca || response.data.brand,
-        description:
-          response.data.descripcion || response.data.description || '',
-        originalPrice:
-          response.data.precio_original || response.data.originalPrice,
-        discountPrice:
-          response.data.precio_descuento || response.data.discountPrice,
-        category: response.data.categoria || response.data.category,
-        subcategory:
-          response.data.subcategoria || response.data.subcategory || '',
-        image: response.data.imagen || response.data.image,
-        features: response.data.features || [] // ✅ Asegurar que features esté presente
+        caracteristicas: response.data.caracteristicas || []
       }
 
       setProductos((prev) => {
@@ -131,76 +162,32 @@ export const ProveedorProducto = ({ children }) => {
     try {
       console.log('🟡 Datos recibidos en editarProducto:', productoActualizado)
 
-      // ✅ CORRECCIÓN: Manejar tanto formato español como inglés para compatibilidad
+      // ✅ Usar directamente los campos en español del backend
       const payload = {
-        nombre: (
-          productoActualizado.nombre ||
-          productoActualizado.name ||
-          ''
-        ).trim(),
-        marca: (
-          productoActualizado.marca ||
-          productoActualizado.brand ||
-          ''
-        ).trim(),
-        descripcion: (
-          productoActualizado.descripcion ||
-          productoActualizado.description ||
-          ''
-        ).trim(),
-        precio_original:
-          Number(
-            productoActualizado.precio_original ||
-              productoActualizado.originalPrice
-          ) || 0,
-        precio_descuento:
-          Number(
-            productoActualizado.precio_descuento ||
-              productoActualizado.discountPrice
-          ) || 0,
+        nombre: (productoActualizado.nombre || '').trim(),
+        marca: (productoActualizado.marca || '').trim(),
+        descripcion: (productoActualizado.descripcion || '').trim(),
+        precio_original: Number(productoActualizado.precio_original) || 0,
+        precio_descuento: Number(productoActualizado.precio_descuento) || 0,
         descuento: Number(productoActualizado.descuento) || 0,
-        imagen: (
-          productoActualizado.imagen ||
-          productoActualizado.image ||
-          ''
-        ).trim(),
-        categoria: (
-          productoActualizado.categoria ||
-          productoActualizado.category ||
-          ''
-        ).trim(),
-        subcategoria: (
-          productoActualizado.subcategoria ||
-          productoActualizado.subcategory ||
-          ''
-        ).trim(),
+        imagen: (productoActualizado.imagen || '').trim(),
+        categoria: (productoActualizado.categoria || '').trim(),
+        subcategoria: (productoActualizado.subcategoria || '').trim(),
         stock: Number(productoActualizado.stock) || 0,
         en_stock: Number(productoActualizado.en_stock) || 1,
         destacado: Boolean(productoActualizado.destacado),
         envio: productoActualizado.envio || 'Envío estándar',
-        caracteristicas:
-          productoActualizado.caracteristicas ||
-          productoActualizado.features ||
-          null // ✅ Manejar ambos nombres
+        caracteristicas: productoActualizado.caracteristicas || null
       }
 
       console.log('🟡 Payload enviado al backend:', payload)
 
       const response = await api.put(`/${id}`, payload)
 
+      // ✅ Usar directamente la respuesta del backend sin mapeo
       const productoEditado = {
         ...response.data,
-        name: response.data.nombre || response.data.name,
-        brand: response.data.marca || response.data.brand,
-        description: response.data.descripcion || response.data.description,
-        originalPrice:
-          response.data.precio_original || response.data.originalPrice,
-        discountPrice:
-          response.data.precio_descuento || response.data.discountPrice,
-        category: response.data.categoria || response.data.category,
-        subcategory: response.data.subcategoria || response.data.subcategory,
-        image: response.data.imagen || response.data.image,
-        features: response.data.features || [] // ✅ Asegurar que features esté presente
+        caracteristicas: response.data.caracteristicas || []
       }
 
       setProductos((prev) =>
@@ -244,10 +231,10 @@ export const ProveedorProducto = ({ children }) => {
   const obtenerProductoPorId = (id) =>
     productos.find((p) => p.id === parseInt(id))
 
-  const obtenerProductosPorCategoria = (category) =>
-    category === 'todo'
+  const obtenerProductosPorCategoria = (categoria) =>
+    categoria === 'todo'
       ? productos
-      : productos.filter((p) => (p.category || p.categoria) === category)
+      : productos.filter((p) => p.categoria === categoria)
 
   const obtenerProductosDestacados = () => productos.slice(0, 6)
 
@@ -256,9 +243,9 @@ export const ProveedorProducto = ({ children }) => {
     const q = query.toLowerCase()
     return productos.filter(
       (p) =>
-        (p.name || p.nombre || '').toLowerCase().includes(q) ||
-        (p.brand || p.marca || '').toLowerCase().includes(q) ||
-        (p.description || p.descripcion || '').toLowerCase().includes(q)
+        (p.nombre || '').toLowerCase().includes(q) ||
+        (p.marca || '').toLowerCase().includes(q) ||
+        (p.descripcion || '').toLowerCase().includes(q)
     )
   }
 
