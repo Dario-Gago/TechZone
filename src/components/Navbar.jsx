@@ -27,12 +27,6 @@ const BarraNavegacion = () => {
 
   const totalArticulos = obtenerTotalItems()
 
-  // Función para capitalizar la primera letra
-  const capitalizar = (texto) => {
-    if (!texto) return ''
-    return texto.charAt(0).toUpperCase() + texto.slice(1)
-  }
-
   // ✅ Extraer categorías únicas de los productos con orden específico
   const categoriasValidas = useMemo(() => {
     if (cargando || !Array.isArray(productos) || productos.length === 0) {

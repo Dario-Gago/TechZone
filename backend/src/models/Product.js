@@ -11,6 +11,7 @@ export const formatProduct = (product) => {
           ? JSON.parse(product.caracteristicas)
           : product.caracteristicas
     } catch (e) {
+      console.warn('Error al parsear características:', e.message)
       caracteristicas = {}
     }
   }
