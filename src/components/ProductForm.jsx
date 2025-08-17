@@ -174,7 +174,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     }
   }, [productoEditando])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     // ✅ Normalizar todos los campos a string antes de usar trim()
@@ -183,10 +183,23 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     const categoria = String(formProducto.categoria || '').trim()
     const imagen = String(formProducto.imagen || '').trim()
 
-    if (!nombre || !marca || !categoria || !imagen) {
+    // ✅ Validación modificada para manejar nuevas categorías
+    if (!nombre || !marca || !imagen) {
       alert(
-        'Por favor completa todos los campos requeridos (Nombre, Marca, Categoría e Imagen)'
+        'Por favor completa todos los campos requeridos (Nombre, Marca e Imagen)'
       )
+      return
+    }
+
+    // ✅ Validar categoría solo si no se está creando una nueva
+    if (!mostrandoNuevaCategoria && !categoria) {
+      alert('Por favor selecciona una categoría o crea una nueva')
+      return
+    }
+
+    // ✅ Si se está mostrando nueva categoría, validar que tenga nombre
+    if (mostrandoNuevaCategoria && !nuevaCategoria.trim()) {
+      alert('Por favor ingresa el nombre de la nueva categoría')
       return
     }
 
@@ -212,6 +225,45 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       return
     }
 
+    // ✅ Manejar creación de nueva categoría si es necesario
+    let categoriaFinal = categoria
+    
+    if (mostrandoNuevaCategoria && nuevaCategoria.trim()) {
+      try {
+        // Crear la nueva categoría primero
+        const slugCategoria = convertirASlug(nuevaCategoria.trim())
+        
+        const response = await fetch('http://localhost:3000/api/categorias', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          },
+          body: JSON.stringify({
+            nombre: slugCategoria
+          })
+        })
+
+        if (response.ok) {
+          const nuevaCategoriaCreada = await response.json()
+          categoriaFinal = nuevaCategoriaCreada.nombre // Usar el slug de la nueva categoría
+          
+          // Agregar la nueva categoría a la lista para futuros usos
+          setCategorias(prev => [...prev, nuevaCategoriaCreada])
+          
+          console.log('✅ Nueva categoría creada:', nuevaCategoriaCreada)
+        } else {
+          const error = await response.json()
+          alert(`Error al crear categoría: ${error.message}`)
+          return
+        }
+      } catch (error) {
+        console.error('Error al crear categoría:', error)
+        alert('Error al crear categoría')
+        return
+      }
+    }
+
     // ✅ Procesar características: convertir texto a array
     const caracteristicasArray = formProducto.caracteristicas
       ? formProducto.caracteristicas
@@ -225,7 +277,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       // Campos en español para el backend
       nombre: nombre,
       marca: marca,
-      categoria: categoria, // Usar el slug tal como está, sin toLowerCase()
+      categoria: categoriaFinal, // Usar la categoría final (existente o recién creada)
       precio_original: precio_original,
       precio_descuento: precio_descuento,
       imagen: imagen,
@@ -245,10 +297,17 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     }
 
     console.log('🟢 Enviando al backend:', productoParaBackend)
+    
+    // Limpiar el estado de nueva categoría después de usar
+    if (mostrandoNuevaCategoria) {
+      setNuevaCategoria('')
+      setMostrandoNuevaCategoria(false)
+    }
+    
     onGuardar(productoParaBackend)
   }
 
-  // Función para crear nueva categoría
+  // Función para crear nueva categoría (opcional, para crear sin producto)
   const crearNuevaCategoria = async () => {
     if (!nuevaCategoria.trim()) {
       alert('Por favor ingresa un nombre para la categoría')
