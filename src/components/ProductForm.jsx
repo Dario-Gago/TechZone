@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { X, Plus } from 'lucide-react'
+import axios from 'axios'
+import { API_ENDPOINTS } from '../config/api'
 
 const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   const [formProducto, setFormProducto] = useState({
@@ -80,25 +82,21 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   useEffect(() => {
     const cargarCategorias = async () => {
       try {
-        console.log('🔍 Intentando cargar categorías desde:', 'http://localhost:3000/api/categorias')
-        const response = await fetch('http://localhost:3000/api/categorias')
+        console.log('🔍 Intentando cargar categorías desde:', API_ENDPOINTS.CATEGORIAS)
+        const response = await axios.get(API_ENDPOINTS.CATEGORIAS)
         console.log('🔍 Response status:', response.status)
-        console.log('🔍 Response ok:', response.ok)
+        console.log('🔍 Response data:', response.data)
         
-        if (response.ok) {
-          const categoriasData = await response.json()
-          console.log('🔍 Categorías recibidas:', categoriasData)
-          console.log('🔍 Tipo de datos:', typeof categoriasData)
-          console.log('🔍 Es array:', Array.isArray(categoriasData))
-          console.log('🔍 Longitud:', categoriasData?.length)
-          
-          setCategorias(categoriasData)
-        } else {
-          const errorText = await response.text()
-          console.error('❌ Error en response:', response.status, errorText)
-        }
+        const categoriasData = response.data
+        console.log('🔍 Categorías recibidas:', categoriasData)
+        console.log('🔍 Tipo de datos:', typeof categoriasData)
+        console.log('🔍 Es array:', Array.isArray(categoriasData))
+        console.log('🔍 Longitud:', categoriasData?.length)
+        
+        setCategorias(categoriasData)
       } catch (error) {
         console.error('❌ Error al cargar categorías:', error)
+        console.error('❌ Response data:', error.response?.data)
       }
     }
     cargarCategorias()
@@ -233,33 +231,24 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         // Crear la nueva categoría primero
         const slugCategoria = convertirASlug(nuevaCategoria.trim())
         
-        const response = await fetch('http://localhost:3000/api/categorias', {
-          method: 'POST',
+        const response = await axios.post(API_ENDPOINTS.CATEGORIAS, {
+          nombre: slugCategoria
+        }, {
           headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
-          },
-          body: JSON.stringify({
-            nombre: slugCategoria
-          })
+          }
         })
 
-        if (response.ok) {
-          const nuevaCategoriaCreada = await response.json()
-          categoriaFinal = nuevaCategoriaCreada.nombre // Usar el slug de la nueva categoría
-          
-          // Agregar la nueva categoría a la lista para futuros usos
-          setCategorias(prev => [...prev, nuevaCategoriaCreada])
-          
-          console.log('✅ Nueva categoría creada:', nuevaCategoriaCreada)
-        } else {
-          const error = await response.json()
-          alert(`Error al crear categoría: ${error.message}`)
-          return
-        }
+        const nuevaCategoriaCreada = response.data
+        categoriaFinal = nuevaCategoriaCreada.nombre // Usar el slug de la nueva categoría
+        
+        // Agregar la nueva categoría a la lista para futuros usos
+        setCategorias(prev => [...prev, nuevaCategoriaCreada])
+        
+        console.log('✅ Nueva categoría creada:', nuevaCategoriaCreada)
       } catch (error) {
-        console.error('Error al crear categoría:', error)
-        alert('Error al crear categoría')
+        console.error('❌ Error al crear categoría:', error)
+        alert(`Error al crear categoría: ${error.response?.data?.message || error.message}`)
         return
       }
     }
@@ -317,41 +306,33 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       // Convertir el nombre legible a slug para enviar al backend
       const slugCategoria = convertirASlug(nuevaCategoria.trim())
       
-      const response = await fetch('http://localhost:3000/api/categorias', {
-        method: 'POST',
+      const response = await axios.post(API_ENDPOINTS.CATEGORIAS, {
+        nombre: slugCategoria // Enviar como slug
+      }, {
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: JSON.stringify({
-          nombre: slugCategoria // Enviar como slug
-        })
+        }
       })
 
-      if (response.ok) {
-        const nuevaCategoriaCreada = await response.json()
+      const nuevaCategoriaCreada = response.data
+      
+      // Agregar la nueva categoría a la lista
+      setCategorias(prev => [...prev, nuevaCategoriaCreada])
+      
+      // Seleccionar automáticamente la nueva categoría (usando el slug)
+      setFormProducto(prev => ({
+        ...prev,
+        categoria: nuevaCategoriaCreada.nombre // Esto será el slug
+      }))
+      
+      // Limpiar y ocultar el formulario de nueva categoría
+      setNuevaCategoria('')
+      setMostrandoNuevaCategoria(false)
         
-        // Agregar la nueva categoría a la lista
-        setCategorias(prev => [...prev, nuevaCategoriaCreada])
-        
-        // Seleccionar automáticamente la nueva categoría (usando el slug)
-        setFormProducto(prev => ({
-          ...prev,
-          categoria: nuevaCategoriaCreada.nombre // Esto será el slug
-        }))
-        
-        // Limpiar y ocultar el formulario de nueva categoría
-        setNuevaCategoria('')
-        setMostrandoNuevaCategoria(false)
-        
-        alert('Categoría creada exitosamente')
-      } else {
-        const error = await response.json()
-        alert(`Error al crear categoría: ${error.message}`)
-      }
+      alert('Categoría creada exitosamente')
     } catch (error) {
       console.error('Error al crear categoría:', error)
-      alert('Error al crear categoría')
+      alert(`Error al crear categoría: ${error.response?.data?.message || error.message}`)
     }
   }
 
