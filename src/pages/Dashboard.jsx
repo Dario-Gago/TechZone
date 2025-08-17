@@ -114,11 +114,15 @@ const Dashboard = () => {
         await cargarPedidos()
       }
 
+      // Debug: Log productos cargados
+      console.log('🔍 Productos en Dashboard:', productos)
+      console.log('🔍 Cantidad de productos:', productos?.length)
+      
       setLoading(false)
     }
 
     cargarDatos()
-  }, [usuario, esAdmin])
+  }, [usuario, esAdmin, productos])
 
   // Mostrar loading si está cargando datos generales o sales
   if (loading || salesLoading) {
@@ -180,6 +184,8 @@ const Dashboard = () => {
                 productos={productos}
                 usuarios={usuarios}
                 onEliminarUsuario={eliminarUsuario}
+                onEliminarProducto={(id) => console.log('Eliminar producto:', id)}
+                onGuardarProducto={(data) => console.log('Guardar producto:', data)}
               />
             ) : (
               <UserPurchases comprasUsuario={comprasUsuario} />

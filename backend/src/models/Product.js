@@ -90,7 +90,8 @@ export const createProduct = async (productData) => {
       precio_normal, // ✅ CORREGIDO: usar precio_normal
       precio_oferta, // ✅ CORREGIDO: usar precio_oferta
       descuento,
-      marca_id, // ✅ CORREGIDO: usar marca_id en lugar de marca
+      marca, // ✅ Aceptar marca como string
+      marca_id, // ✅ También aceptar marca_id
       imagen_url, // ✅ CORREGIDO: usar imagen_url
       stock,
       disponibilidad,
@@ -102,6 +103,7 @@ export const createProduct = async (productData) => {
 
     console.log('🟣 Campos extraídos:')
     console.log('  - nombre:', nombre, '(tipo:', typeof nombre, ')')
+    console.log('  - marca:', marca, '(tipo:', typeof marca, ')')
     console.log('  - marca_id:', marca_id, '(tipo:', typeof marca_id, ')')
     console.log('  - destacado:', destacado, '(tipo:', typeof destacado, ')')
     console.log('  - precio_normal:', precio_normal, '(tipo:', typeof precio_normal, ')')
@@ -113,6 +115,34 @@ export const createProduct = async (productData) => {
 
     if (!precio_normal || Number(precio_normal) <= 0) {
       throw new Error(`Precio normal inválido: recibido ${precio_normal}`)
+    }
+
+    // ✅ Resolver marca_id si solo se proporcionó el nombre de la marca
+    let marcaIdFinal = marca_id
+    if (!marcaIdFinal && marca) {
+      console.log('🔍 Buscando marca_id para marca:', marca)
+      try {
+        const marcaResult = await pool.query(
+          'SELECT marca_id FROM marca WHERE LOWER(nombre) = LOWER($1)',
+          [marca]
+        )
+        if (marcaResult.rows.length > 0) {
+          marcaIdFinal = marcaResult.rows[0].marca_id
+          console.log('✅ Marca encontrada, marca_id:', marcaIdFinal)
+        } else {
+          console.log('⚠️ Marca no encontrada, creando nueva marca:', marca)
+          // Crear nueva marca si no existe
+          const nuevaMarcaResult = await pool.query(
+            'INSERT INTO marca (nombre) VALUES ($1) RETURNING marca_id',
+            [marca]
+          )
+          marcaIdFinal = nuevaMarcaResult.rows[0].marca_id
+          console.log('✅ Nueva marca creada con ID:', marcaIdFinal)
+        }
+      } catch (marcaError) {
+        console.warn('⚠️ Error al buscar/crear marca:', marcaError.message)
+        marcaIdFinal = null
+      }
     }
 
     console.log('✅ Validaciones pasadas en modelo')
@@ -129,7 +159,7 @@ export const createProduct = async (productData) => {
         Number(precio_normal), // $3
         Number(precio_oferta) || Number(precio_normal), // $4
         Number(descuento) || 0, // $5
-        marca_id ? Number(marca_id) : null, // $6
+        marcaIdFinal, // $6 - Usar el ID resuelto
         Number(stock) || 0, // $7
         disponibilidad || 'disponible', // $8
         imagen_url || '', // $9
@@ -161,7 +191,8 @@ export const updateProduct = async (id, productData) => {
       precio_normal, // ✅ CORREGIDO: usar precio_normal
       precio_oferta, // ✅ CORREGIDO: usar precio_oferta
       descuento,
-      marca_id, // ✅ CORREGIDO: usar marca_id
+      marca, // ✅ Aceptar marca como string
+      marca_id, // ✅ También aceptar marca_id
       imagen_url, // ✅ CORREGIDO: usar imagen_url
       stock,
       disponibilidad,
@@ -172,6 +203,34 @@ export const updateProduct = async (id, productData) => {
     } = productData
 
     console.log('🟡 Campo destacado recibido:', destacado, '(tipo:', typeof destacado, ')')
+
+    // ✅ Resolver marca_id si solo se proporcionó el nombre de la marca
+    let marcaIdFinal = marca_id
+    if (!marcaIdFinal && marca) {
+      console.log('🔍 Buscando marca_id para marca:', marca)
+      try {
+        const marcaResult = await pool.query(
+          'SELECT marca_id FROM marca WHERE LOWER(nombre) = LOWER($1)',
+          [marca]
+        )
+        if (marcaResult.rows.length > 0) {
+          marcaIdFinal = marcaResult.rows[0].marca_id
+          console.log('✅ Marca encontrada, marca_id:', marcaIdFinal)
+        } else {
+          console.log('⚠️ Marca no encontrada, creando nueva marca:', marca)
+          // Crear nueva marca si no existe
+          const nuevaMarcaResult = await pool.query(
+            'INSERT INTO marca (nombre) VALUES ($1) RETURNING marca_id',
+            [marca]
+          )
+          marcaIdFinal = nuevaMarcaResult.rows[0].marca_id
+          console.log('✅ Nueva marca creada con ID:', marcaIdFinal)
+        }
+      } catch (marcaError) {
+        console.warn('⚠️ Error al buscar/crear marca:', marcaError.message)
+        marcaIdFinal = null
+      }
+    }
 
     const result = await pool.query(
       `UPDATE producto
@@ -187,7 +246,7 @@ export const updateProduct = async (id, productData) => {
         Number(precio_normal) || 0,
         Number(precio_oferta) || 0,
         Number(descuento) || 0,
-        marca_id ? Number(marca_id) : null,
+        marcaIdFinal, // Usar el ID resuelto
         imagen_url || '',
         caracteristicas ? JSON.stringify(caracteristicas) : null,
         Number(stock) || 0,
