@@ -7,7 +7,6 @@ import { API_ENDPOINTS } from '../config/api'
 const Login = () => {
   const [correo, setCorreo] = useState('')
   const [contrasena, setContrasena] = useState('')
-  const [recordarme, setRecordarme] = useState(false)
   const [error, setError] = useState(null)
   const [cargando, setCargando] = useState(false)
 
