@@ -10,11 +10,11 @@ const CartItem = ({ item, alCambiarCantidad, alEliminar, formatearPrecio }) => {
     <div className="border border-gray-200 rounded-lg p-4">
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-4 flex-1">
-          <div className="w-16 h-16 bg-white rounded-lg overflow-hidden border">
+          <div className="w-16 h-16 bg-white rounded-lg overflow-hidden border flex items-center justify-center p-1">
             <img 
               src={item.image || 'https://via.placeholder.com/80x80?text=Sin+Imagen'} 
               alt={item.name}
-              className="w-full h-full object-cover"
+              className="max-w-full max-h-full object-contain"
             />
           </div>
           <div className="flex-1">

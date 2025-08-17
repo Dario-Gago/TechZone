@@ -133,11 +133,11 @@ const Carrito = () => {
                   >
                     <div className="flex items-start space-x-4">
                       {/* Product Image */}
-                      <div className="w-20 h-20 bg-gray-200 rounded-lg flex-shrink-0 overflow-hidden">
+                      <div className="w-20 h-20 bg-white rounded-lg flex-shrink-0 overflow-hidden flex items-center justify-center p-2 border border-gray-100">
                         <img
                           src={item.image || 'https://via.placeholder.com/80x80?text=Sin+Imagen'}
                           alt={item.name}
-                          className={`w-full h-full object-cover ${
+                          className={`max-w-full max-h-full object-contain ${
                             tieneProblemas ? 'opacity-60 grayscale' : ''
                           }`}
                         />

@@ -88,11 +88,11 @@ const PaginaBusqueda = () => {
                   className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-200"
                 >
                   {/* Imagen del producto */}
-                  <div className="relative bg-white h-48 flex items-center justify-center">
+                  <div className="relative bg-white h-48 flex items-center justify-center p-4 border border-gray-100">
                     <img
                       src={product.image || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
                       alt={product.name}
-                      className="w-full h-full object-cover"
+                      className="max-w-full max-h-full object-contain"
                     />
 
                     {/* Badge de descuento */}

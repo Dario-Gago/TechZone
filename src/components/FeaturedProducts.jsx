@@ -146,7 +146,7 @@ const ProductosDestacados = () => {
                   className="bg-white rounded-lg shadow-md overflow-hidden flex-shrink-0 w-48 sm:w-52 md:w-56 hover:shadow-lg transition-shadow duration-200 cursor-pointer border border-gray-200"
                 >
                   {/* Imagen del producto */}
-                  <div className="relative bg-gray-50 h-48 flex items-center justify-center p-4">
+                  <div className="relative bg-white h-48 flex items-center justify-center p-4 border border-gray-100">
                     <img
                       src={producto.image || 'https://via.placeholder.com/200x200?text=Sin+Imagen'}
                       alt={producto.name}
