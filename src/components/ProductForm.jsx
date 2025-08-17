@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { X, Plus, Trash2 } from 'lucide-react'
 
 const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
@@ -15,6 +16,17 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   })
 
   const [nuevaCaracteristica, setNuevaCaracteristica] = useState('')
+
+  // Bloquear scroll del body cuando el modal está abierto
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    document.body.style.paddingRight = '0px' // Evitar el salto por scrollbar
+    
+    return () => {
+      document.body.style.overflow = 'unset'
+      document.body.style.paddingRight = 'unset'
+    }
+  }, [])
 
   useEffect(() => {
     if (productoEditando) {
@@ -155,9 +167,45 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
     }
   }
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-md w-full p-6 max-h-[90vh] overflow-y-auto">
+  // Manejar clic en el overlay para cerrar el modal
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onCerrar()
+    }
+  }
+
+  // Alternativa sin portal para debugging
+  const modalContent = (
+    <div 
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '16px',
+        zIndex: 999999
+      }}
+      onClick={handleOverlayClick}
+    >
+      <div 
+        style={{
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          maxWidth: '448px',
+          width: '100%',
+          padding: '24px',
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          zIndex: 1000000
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-medium text-gray-900">
             {productoEditando ? 'Editar Producto' : 'Nuevo Producto'}
@@ -378,6 +426,8 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       </div>
     </div>
   )
+
+  return createPortal(modalContent, document.body)
 }
 
 export default ProductForm
