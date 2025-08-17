@@ -16,7 +16,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [usuarios, setUsuarios] = useState([])
   const { productos } = useContext(ProductContext)
-  const [pedidos, setPedidos] = useState([])
   
   // Usar SalesContext para obtener las ventas y estadísticas
   const { sales, loading: salesLoading } = useSales()
@@ -46,28 +45,7 @@ const Dashboard = () => {
   }
 
   // Función para cargar pedidos desde la base de datos (usando ventas)
-  const cargarPedidos = async () => {
-    try {
-      const token = localStorage.getItem('token')
-
-      if (!token) {
-        console.error('No hay token de autenticación')
-        return
-      }
-
-      // Los pedidos son las ventas, usar el endpoint de ventas
-      const { data } = await axios.get(API_ENDPOINTS.VENTAS, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      setPedidos(data)
-    } catch (error) {
-      console.error('Error al obtener pedidos:', error)
-      setPedidos([])
-    }
-  }
+  // NOTA: Ahora SalesTab maneja esto directamente a través del SalesContext
 
   const eliminarUsuario = async (usuarioId) => {
     if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
@@ -109,9 +87,9 @@ const Dashboard = () => {
       setLoading(true)
 
       if (esAdmin) {
-        // Si es admin, cargar usuarios y pedidos
+        // Si es admin, cargar usuarios
+        // Los pedidos ahora se manejan directamente en SalesTab
         await cargarUsuarios()
-        await cargarPedidos()
       }
 
       // Debug: Log productos cargados
@@ -180,7 +158,6 @@ const Dashboard = () => {
           <div className="p-6">
             {esAdmin ? (
               <AdminTabs
-                pedidos={pedidos}
                 productos={productos}
                 usuarios={usuarios}
                 onEliminarUsuario={eliminarUsuario}
