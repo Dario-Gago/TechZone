@@ -157,11 +157,6 @@ const ProductosDestacados = () => {
                       }}
                     />
 
-                    {/* ✅ Badge de destacado */}
-                    <div className="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center">
-                      ⭐ Destacado
-                    </div>
-
                     {/* Badge de descuento */}
                     {descuento > 0 && (
                       <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
