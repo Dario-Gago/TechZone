@@ -27,7 +27,12 @@ import { SalesProvider } from './contexts/SalesContext'
 
 const App = () => {
   return (
-    <Router>
+    <Router
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true
+      }}
+    >
       <div className="min-h-screen flex flex-col bg-gray-50">
         <ProveedorAutenticacion>
           <ProveedorProducto>
