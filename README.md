@@ -1,5 +1,17 @@
 # 🎮 TechZone
 
+## ⚠️ Compatibilidad de Versiones
+
+**IMPORTANTE**: Si tienes problemas para levantar el proyecto, revisa las versiones recomendadas:
+
+### 📋 Versiones Compatibles (Actualizadas 2025)
+- **Node.js**: 20.18.0 LTS ✅
+- **npm**: 10.x.x ✅  
+- **React**: 18.3.1 ✅
+- **Vite**: 5.4.8 ✅
+- **@vitejs/plugin-react**: 4.3.2 ✅
+
+> ⚠️ **Nota**: Las versiones anteriores (React 19, Vite 7) pueden causar incompatibilidades. Ver [SETUP_GUIDE.md](./SETUP_GUIDE.md) para instrucciones detalladas de instalación.
 
 ## 📋 Descripción
 
@@ -56,6 +68,13 @@
 - **CORS** - Configuración de políticas de origen cruzado
 - **Helmet** - Middleware de seguridad para Express
 - **dotenv** - Gestión de variables de entorno
+
+### Testing & Quality Assurance
+- **Jest** - Framework de testing para JavaScript
+- **Supertest** - Biblioteca para testing de APIs HTTP
+- **Babel** - Transpilador para soporte de ES6 modules en tests
+- **ESLint** - Linter para código JavaScript consistente
+- **Code Coverage** - Análisis de cobertura de código con Jest
 
 ### Frontend
 - **React 18+** - Biblioteca principal con hooks y Context API
@@ -195,6 +214,11 @@ cd backend
 # Desarrollo
 npm run dev          # Servidor con nodemon (puerto 3000)
 npm start            # Servidor de producción
+
+# Testing
+npm test             # Ejecutar tests con Jest
+npm run test:watch   # Ejecutar tests en modo watch
+npm run test:coverage # Ejecutar tests con cobertura de código
 ```
 
 ### Base de Datos
@@ -240,6 +264,8 @@ TechZone/
 │   ├── .env                     # Variables de entorno
 │   ├── package.json             # Dependencias del backend
 │   ├── server.js                # Punto de entrada del servidor
+│   ├── babel.config.cjs         # Configuración de Babel para tests
+│   ├── jest.config.json         # Configuración de Jest para testing
 │   ├── db/                      # Configuración de base de datos
 │   │   ├── config.js                # Conexión a PostgreSQL
 │   │   └── schema/                  # Esquemas de base de datos
@@ -247,20 +273,38 @@ TechZone/
 │   │       └── DML.sql                  # Datos de prueba
 │   ├── middleware/              # Middleware personalizado
 │   │   └── authMiddleware.js        # Autenticación JWT
+│   ├── tests/                   # Tests automatizados
+│   │   ├── api.test.js              # Tests de API REST con supertest
+│   │   └── .eslintrc.json           # Configuración ESLint para tests
 │   └── src/                     # Lógica del servidor
 │       ├── controllers/             # Controladores de rutas
 │       │   ├── authController.js        # Login/register/usuarios
 │       │   ├── productController.js     # CRUD de productos
+│       │   ├── marcaController.js       # CRUD de marcas
+│       │   ├── categoriaController.js   # CRUD de categorías
 │       │   └── salesController.js       # Gestión de ventas completa
 │       ├── models/                  # Modelos de datos
 │       │   ├── User.js                  # Modelo de usuario
 │       │   ├── Product.js               # Modelo de producto
+│       │   ├── Marca.js                 # Modelo de marca
+│       │   ├── Categoria.js             # Modelo de categoría
 │       │   └── Sales.js                 # Modelo de ventas
-│       └── routes/                  # Definición de rutas
-│           ├── auth.js                  # Rutas de autenticación
-│           ├── product.js               # Rutas de productos
-│           ├── sales.js                 # Rutas de ventas
-│           └── usuarios.js              # Rutas de usuarios
+│       ├── routes/                  # Definición de rutas
+│       │   ├── auth.js                  # Rutas de autenticación
+│       │   ├── product.js               # Rutas de productos
+│       │   ├── marca.js                 # Rutas de marcas
+│       │   ├── categoria.js             # Rutas de categorías
+│       │   ├── sales.js                 # Rutas de ventas
+│       │   └── usuarios.js              # Rutas de usuarios
+│       ├── services/                # Servicios de negocio
+│       │   ├── UserService.js           # Lógica de usuarios
+│       │   ├── ProductService.js        # Lógica de productos
+│       │   ├── CategoryService.js       # Lógica de categorías
+│       │   └── SalesService.js          # Lógica de ventas
+│       └── validators/              # Validadores de datos
+│           ├── userValidators.js        # Validaciones de usuario
+│           ├── productValidators.js     # Validaciones de producto
+│           └── commonValidators.js      # Validaciones comunes
 ├── src/                     # Frontend React
 │   ├── components/              # Componentes reutilizables
 │   │   ├── AdminTabs.jsx           # Pestañas de administración
@@ -278,6 +322,10 @@ TechZone/
 │   │   ├── UserInfo.jsx            # Información del usuario
 │   │   ├── UserPurchases.jsx       # Historial de compras
 │   │   ├── ProductForm.jsx         # Formulario CRUD productos
+│   │   ├── ProductForm/            # Componentes de formulario modular
+│   │   │   ├── index.jsx               # Componente principal del formulario
+│   │   │   ├── ProductFormFields.jsx   # Campos específicos del producto
+│   │   │   └── CategoryManager.jsx     # Gestor de categorías dinámico
 │   │   ├── ProductsTab.jsx         # Gestión de productos admin
 │   │   ├── SalesTab.jsx            # Gestión de ventas admin
 │   │   ├── UsersTab.jsx            # Gestión de usuarios admin
@@ -309,11 +357,11 @@ TechZone/
 │   │   └── Contact.jsx             # Página de contacto
 │   ├── config/                  # Configuración
 │   │   └── api.js                  # Endpoints de la API
-│   ├── data/                    # Datos de respaldo (JSON)
-│   │   ├── products.json           # Productos de respaldo
-│   │   ├── usuarios.json           # Usuarios de respaldo
-│   │   ├── pedidos.json            # Pedidos de respaldo
-│   │   └── ...                     # Otros datos JSON
+│   ├── services/                # Servicios de frontend
+│   │   ├── apiClient.js            # Cliente HTTP con interceptors
+│   │   ├── authService.js          # Servicios de autenticación
+│   │   ├── productService.js       # Servicios de productos
+│   │   └── categoryService.js      # Servicios de categorías
 │   ├── assets/                  # Recursos estáticos
 │   │   ├── Logo.png                # Logo de la aplicación
 │   │   └── ...                     # Imágenes y recursos
@@ -340,6 +388,8 @@ TechZone/
 - **Dashboard Admin**: Panel de control con estadísticas en tiempo real
 - **Gestión de Usuarios**: CRUD completo desde la base de datos PostgreSQL
 - **Gestión de Productos**: Crear, editar y eliminar productos con formularios dinámicos
+- **ProductForm Modular**: Sistema de formularios componentizados con validaciones
+- **CategoryManager**: Gestor dinámico de categorías integrado
 - **Gestión de Ventas**: Sistema completo de ventas con base de datos PostgreSQL
 - **SalesContext**: Contexto dedicado para gestión de ventas con estadísticas
 - **Transacciones Seguras**: Control de transacciones con rollback automático
@@ -410,11 +460,139 @@ TechZone/
 - **Formularios Dinámicos**: ProductForm con validaciones y características
 - **Alertas Interactivas**: SweetAlert2 para feedback de usuario
 
+## 🛠️ Sistemas Implementados
+
+### 📋 **Sistema de Validaciones Backend**
+Implementación completa de validadores modulares y reutilizables:
+
+#### **commonValidators.js** - Validadores Genéricos
+```javascript
+// Validadores utilizados en múltiples controladores
+- validateNumericId()      // Validación de IDs numéricos
+- validateRequestBody()    // Verificación de body no vacío
+- validateRequiredString() // Campos de texto obligatorios
+- validatePositiveNumber() // Números positivos
+- validateMaxLength()      // Longitud máxima de strings
+```
+
+#### **userValidators.js** - Validaciones de Usuario
+```javascript
+// Específicos para autenticación y gestión de usuarios
+- Validación de formato de email
+- Longitud mínima de contraseñas (8 caracteres)
+- Límites de longitud para campos (nombre, email, teléfono)
+- Verificación de datos obligatorios
+```
+
+#### **productValidators.js** - Validaciones de Producto
+```javascript
+// Para gestión de productos y características
+- Validación de precios (normal vs. oferta)
+- Verificación de stock no negativo
+- Validación de URLs de imágenes
+- Control de campos obligatorios (nombre, marca, categoría)
+```
+
+### 🎯 **Sistema de Servicios Backend**
+Capa de lógica de negocio bien estructurada:
+
+#### **UserService.js** - Gestión de Usuarios
+```javascript
+- authenticateUser()    // Login con JWT
+- registerUser()        // Registro con validaciones
+- getAllUsers()         // Listado para admin
+- getUserById()         // Búsqueda específica
+- deleteUser()          // Eliminación con restricciones
+- _generateToken()      // Generación JWT
+- _formatUserData()     // Formateo de respuestas
+```
+
+#### **ProductService.js** - Gestión de Productos
+```javascript
+- Operaciones CRUD completas
+- Validaciones de negocio
+- Manejo de características JSONB
+- Control de stock y disponibilidad
+```
+
+#### **SalesService.js** - Gestión de Ventas
+```javascript
+- Creación de ventas con transacciones ACID
+- Cálculo automático de totales
+- Control de estados de venta
+- Estadísticas y reportes
+```
+
+### 🎨 **Sistema de Formularios Frontend Modular**
+Implementación de formularios componentizados y escalables:
+
+#### **ProductForm/index.jsx** - Formulario Principal
+```javascript
+- Manejo de estado local con validaciones
+- Integración con React Portal para modales
+- Procesamiento de características como array
+- Validación en tiempo real
+- Soporte para edición y creación
+```
+
+#### **ProductForm/ProductFormFields.jsx** - Campos Específicos
+```javascript
+- Campos reutilizables con validaciones
+- Manejo de errores inline
+- Componentes controlados
+- Formateo automático de datos
+```
+
+#### **ProductForm/CategoryManager.jsx** - Gestor de Categorías
+```javascript
+- Carga dinámica de categorías desde API
+- Selector inteligente con validaciones
+- Integración con el formulario principal
+```
+
+### 🌐 **Sistema de Servicios Frontend**
+Cliente HTTP centralizado y servicios especializados:
+
+#### **apiClient.js** - Cliente HTTP Central
+```javascript
+- Configuración de Axios con interceptors
+- Manejo automático de tokens JWT
+- Gestión de errores 401 (logout automático)
+- Timeout y configuración base
+- Redirección automática en token expirado
+```
+
+#### **authService.js** - Servicios de Autenticación
+```javascript
+- Login/logout con gestión de tokens
+- Verificación de estado de autenticación
+- Manejo de datos de usuario en localStorage
+```
+
+#### **productService.js** - Servicios de Productos
+```javascript
+- CRUD completo de productos
+- Búsquedas y filtrados
+- Integración con CategoryService
+```
+
+#### **categoryService.js** - Servicios de Categorías
+```javascript
+- Gestión de categorías dinámicas
+- Carga optimizada desde backend
+- Cache local para rendimiento
+```
+
 ## 🏗️ Arquitectura y Patrones
 
 ### Backend Architecture
 - **API RESTful**: Endpoints organizados por recursos (auth, users, products, sales)
 - **MVC Pattern**: Separación clara entre modelos, vistas y controladores
+- **Service Layer**: Capa de servicios para lógica de negocio (UserService, ProductService, SalesService, CategoryService)
+- **Validation System**: Sistema modular de validadores reutilizables
+  - `commonValidators.js`: Validadores genéricos para IDs, strings, números
+  - `userValidators.js`: Validaciones específicas de usuarios y autenticación
+  - `productValidators.js`: Validaciones de productos y características
 - **Middleware Layer**: Autenticación JWT y validaciones centralizadas
 - **Database Abstraction**: Modelos con métodos específicos para PostgreSQL
 - **Error Handling**: Manejo centralizado de errores con códigos HTTP apropiados
@@ -424,8 +602,11 @@ TechZone/
 - **Context API**: Gestión centralizada de estado (Auth, Products, Cart, Sales)
 - **Custom Hooks**: `useProducts`, `useAuth`, `useCart`, `useSales` para lógica reutilizable
 - **Component Composition**: Componentes modulares y reutilizables
+- **Modular Forms**: Sistema de formularios componentizados (ProductForm con subcomponentes)
+- **Service Layer**: Servicios frontend organizados (apiClient, authService, productService, categoryService)
+- **HTTP Client**: Axios con interceptors para manejo automático de tokens
 - **Route Protection**: PrivateRoute y PublicRoute para control de acceso
-- **API Integration**: Axios con interceptors para manejo de tokens
+- **API Integration**: Cliente HTTP centralizado con manejo de errores y autenticación
 
 ### Database Design
 ```sql
@@ -684,6 +865,9 @@ lsof -ti:5173 | xargs kill -9
 - **Estadísticas Avanzadas**: Cálculos optimizados con useMemo
 - **Validaciones**: Frontend y backend con manejo de errores
 - **Responsive Design**: Totalmente adaptado a dispositivos móviles
+- **Testing Automatizado**: Suite completa de tests con Jest y Supertest
+- **Quality Assurance**: ESLint configurado para frontend, backend y tests
+- **Babel Integration**: Soporte ES6 modules en entorno de testing
 
 ## 📱 Demo y Capturas
 
@@ -724,6 +908,74 @@ lsof -ti:5173 | xargs kill -9
 - **Confirmación**: Página de éxito con detalles del pedido
 
 ## 🧪 Testing y Calidad
+
+### Sistema de Testing Automatizado
+- **Jest Framework**: Framework de testing robusto para JavaScript/Node.js
+- **Supertest**: Biblioteca especializada para testing de APIs HTTP
+- **API Testing**: Tests completos de 4 rutas principales con diferentes códigos de estado HTTP
+- **Babel Integration**: Soporte para ES6 modules en entorno de testing
+- **Coverage Reports**: Análisis de cobertura de código con reportes detallados
+- **ESLint for Tests**: Configuración específica de linting para archivos de test
+
+### Tests Implementados
+
+#### 📋 **backend/tests/api.test.js** - Tests de API REST
+Sistema completo de testing que verifica:
+
+**Ruta 1: POST /api/login** (Autenticación)
+- ✅ 200 - Login exitoso con credenciales válidas
+- ❌ 400 - Datos faltantes en la petición
+- ❌ 401 - Credenciales inválidas
+
+**Ruta 2: GET /api/productos** (Catálogo público)
+- ✅ 200 - Obtener lista de productos correctamente
+
+**Ruta 3: GET /api/usuarios** (Administración protegida)
+- ❌ 401 - Sin token de autorización
+- ❌ 401 - Token inválido o malformado
+
+**Ruta 4: POST /api/ventas** (Transacciones protegidas)
+- ❌ 401 - Sin autenticación
+- ❌ 401 - Token malformado
+
+#### 🎯 **Cobertura de Testing**
+- **4 Rutas principales** testeadas exhaustivamente
+- **8 Tests diferentes** con códigos de estado HTTP variados
+- **Autenticación JWT** verificada en rutas protegidas
+- **Validación de entrada** comprobada con datos inválidos
+- **Estados de error** manejados apropiadamente
+
+#### ⚙️ **Configuración de Testing**
+```javascript
+// jest.config.json - Configuración Jest
+{
+  "testEnvironment": "node",
+  "testMatch": ["**/tests/**/*.test.js"],
+  "collectCoverageFrom": ["src/**/*.js"],
+  "testTimeout": 15000,
+  "verbose": true
+}
+
+// babel.config.cjs - Soporte ES6 en tests
+module.exports = {
+  presets: [['@babel/preset-env', { targets: { node: 'current' } }]]
+}
+```
+
+#### 📊 **Comandos de Testing**
+```bash
+# Ejecutar todos los tests
+npm test
+
+# Tests en modo watch (desarrollo)
+npm run test:watch
+
+# Tests con análisis de cobertura
+npm run test:coverage
+
+# Verificar sintaxis con ESLint
+npx eslint backend/tests/api.test.js
+```
 
 ### Code Standards
 - **ESLint**: Reglas de linting configuradas para frontend y backend
@@ -824,6 +1076,11 @@ cd backend
 # Desarrollo
 npm run dev          # Servidor con nodemon (puerto 3000)
 npm start            # Servidor de producción
+
+# Testing
+npm test             # Ejecutar tests con Jest
+npm run test:watch   # Ejecutar tests en modo watch
+npm run test:coverage # Ejecutar tests con cobertura de código
 ```
 
 ### Utilidades de Desarrollo
@@ -842,6 +1099,12 @@ lsof -i :5173
 
 # Ver logs del backend en tiempo real
 tail -f backend/logs/app.log
+
+# Testing específico
+npm test -- api.test.js              # Ejecutar solo tests de API
+npm test -- --verbose                # Tests con salida detallada
+npm run test:watch -- --coverage     # Tests en watch mode con coverage
+npx eslint backend/tests/api.test.js # Verificar sintaxis de tests
 ```
 
 ## 👨‍💻 Desarrolladores
