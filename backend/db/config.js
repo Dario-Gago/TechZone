@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 const { Pool } = pkg
 dotenv.config()
 
-// Configuración simplificada para producción
+// Configuración para producción
 const pool = process.env.DATABASE_URL 
   ? new Pool({
       connectionString: process.env.DATABASE_URL,

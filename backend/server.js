@@ -23,9 +23,6 @@ const corsOptions = {
       process.env.FRONTEND_URL, // Variable de entorno para frontend en producción
       // Ejemplos para Render:
       'https://techzone-frontend.onrender.com',
-      // Si usas otros servicios, agregar aquí:
-      // 'https://tu-app.netlify.app',
-      // 'https://tu-app.vercel.app'
     ].filter(Boolean) // Eliminar valores undefined
     
     // Permitir requests sin origin (ej: apps móviles, Postman)

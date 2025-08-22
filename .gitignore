@@ -36,3 +36,4 @@ backend/.env.local
 /test-cors.html
 package-lock.json
 backend/package-lock.json
+/docs
