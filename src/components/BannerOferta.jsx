@@ -10,6 +10,7 @@ const BannerOferta = () => {
       name2: 'y GPU',
       price: '$199.990',
       slug: 'componentes',
+      imageKey: 'gpu', // ✅ Clave única para imagen
       tall: true // Ocupa 2 filas
     },
     {
@@ -17,6 +18,7 @@ const BannerOferta = () => {
       name: 'Gaming',
       price: '$129.990',
       slug: 'gaming-streaming',
+      imageKey: 'gaming',
       tall: false
     },
     {
@@ -24,6 +26,7 @@ const BannerOferta = () => {
       name: 'Motherboard',
       price: '$999.990',
       slug: 'componentes',
+      imageKey: 'motherboard',
       tall: true // Ocupa 2 filas
     },
     {
@@ -31,6 +34,7 @@ const BannerOferta = () => {
       name2: 'SSD',
       price: '$299.990',
       slug: 'otras-categorias',
+      imageKey: 'ssd',
       tall: false
     }
   ]
@@ -156,13 +160,13 @@ const BannerOferta = () => {
           <div className="hidden md:grid lg:hidden grid-cols-2 gap-4">
             {categorias.map((categoria) => {
               const backgroundImages = {
-                'componentes':
+                'gpu':
                   'url(https://i.blogs.es/3c6697/nvidia/1200_800.jpeg)',
-                'gaming-streaming':
+                'gaming':
                   'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)',
-                'computacion':
+                'motherboard':
                   'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)',
-                'otras-categorias':
+                'ssd':
                   'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
               }
 
@@ -172,7 +176,7 @@ const BannerOferta = () => {
                   to={`/category/${categoria.slug}`}
                   className="bg-gray-200 rounded-lg p-6 flex flex-col justify-center items-start hover:shadow-lg transition-all duration-300 min-h-[200px] bg-cover bg-center relative"
                   style={{
-                    backgroundImage: backgroundImages[categoria.slug]
+                    backgroundImage: backgroundImages[categoria.imageKey]
                   }}
                 >
                   {/* Contenido con texto en blanco y sombras fuertes */}
@@ -203,13 +207,13 @@ const BannerOferta = () => {
           <div className="grid md:hidden grid-cols-1 gap-4">
             {categorias.map((categoria) => {
               const backgroundImages = {
-                'componentes':
+                'gpu':
                   'url(https://i.blogs.es/3c6697/nvidia/1200_800.jpeg)',
-                'gaming-streaming':
+                'gaming':
                   'url(https://i.blogs.es/1a9ebd/guiamonitoresap/1366_2000.jpg)',
-                'computacion':
+                'motherboard':
                   'url(https://i.blogs.es/ab4820/placas-base-cabecera/1200_800.jpeg)',
-                'otras-categorias':
+                'ssd':
                   'url(https://i.blogs.es/dbc59f/m2/1366_2000.jpeg)'
               }
 
@@ -219,7 +223,7 @@ const BannerOferta = () => {
                   to={`/category/${categoria.slug}`}
                   className="bg-gray-200 rounded-lg p-6 flex flex-row items-center hover:shadow-lg transition-all duration-300 min-h-[120px] bg-cover bg-center relative"
                   style={{
-                    backgroundImage: backgroundImages[categoria.slug]
+                    backgroundImage: backgroundImages[categoria.imageKey]
                   }}
                 >
                   {/* Contenido con texto en blanco y sombras fuertes */}
