@@ -227,7 +227,11 @@ export const createProduct = async (productData) => {
 
 // ✅ ACTUALIZAR PRODUCTO
 export const updateProduct = async (id, productData) => {
+  const client = await pool.connect()
+  
   try {
+    await client.query('BEGIN')
+    
     console.log('🟡 === PRODUCT MODEL UPDATE ===')
     console.log('🟡 ID:', id)
     console.log('🟡 productData:', JSON.stringify(productData, null, 2))
@@ -246,17 +250,19 @@ export const updateProduct = async (id, productData) => {
       en_stock,
       destacado,
       envio,
-      caracteristicas
+      caracteristicas,
+      categoria // ✅ NUEVO: manejar categoría
     } = productData
 
     console.log('🟡 Campo destacado recibido:', destacado, '(tipo:', typeof destacado, ')')
+    console.log('🟡 Campo categoria recibido:', categoria, '(tipo:', typeof categoria, ')')
 
     // ✅ Resolver marca_id si solo se proporcionó el nombre de la marca
     let marcaIdFinal = marca_id
     if (!marcaIdFinal && marca) {
       console.log('🔍 Buscando marca_id para marca:', marca)
       try {
-        const marcaResult = await pool.query(
+        const marcaResult = await client.query(
           'SELECT marca_id FROM marca WHERE LOWER(nombre) = LOWER($1)',
           [marca]
         )
@@ -266,7 +272,7 @@ export const updateProduct = async (id, productData) => {
         } else {
           console.log('⚠️ Marca no encontrada, creando nueva marca:', marca)
           // Crear nueva marca si no existe
-          const nuevaMarcaResult = await pool.query(
+          const nuevaMarcaResult = await client.query(
             'INSERT INTO marca (nombre) VALUES ($1) RETURNING marca_id',
             [marca]
           )
@@ -279,7 +285,8 @@ export const updateProduct = async (id, productData) => {
       }
     }
 
-    const result = await pool.query(
+    // Actualizar el producto
+    const result = await client.query(
       `UPDATE producto
        SET nombre = $1, descripcion = $2, precio_normal = $3, precio_oferta = $4,
            descuento = $5, marca_id = $6, imagen_url = $7, caracteristicas = $8,
@@ -306,14 +313,64 @@ export const updateProduct = async (id, productData) => {
     )
 
     if (result.rows.length === 0) {
+      await client.query('ROLLBACK')
       return null
     }
 
     console.log('✅ Producto actualizado:', result.rows[0])
-    return formatProduct(result.rows[0])
+
+    // ✅ NUEVO: Manejar categoría si se proporcionó
+    if (categoria && typeof categoria === 'string' && categoria.trim()) {
+      console.log('🔍 Actualizando categoría:', categoria)
+      
+      // Primero eliminar relaciones existentes
+      await client.query(
+        'DELETE FROM producto_categoria WHERE producto_id = $1',
+        [id]
+      )
+      console.log('🗑️ Relaciones de categoría anteriores eliminadas')
+      
+      // Buscar categoría existente
+      let categoriaResult = await client.query(
+        'SELECT categoria_id FROM categoria WHERE LOWER(nombre) = LOWER($1) AND activo = true',
+        [categoria.trim()]
+      )
+      
+      let categoriaId
+      if (categoriaResult.rows.length > 0) {
+        categoriaId = categoriaResult.rows[0].categoria_id
+        console.log('✅ Categoría encontrada, categoria_id:', categoriaId)
+      } else {
+        // Crear nueva categoría si no existe
+        console.log('⚠️ Categoría no encontrada, creando nueva:', categoria)
+        const nuevaCategoriaResult = await client.query(
+          'INSERT INTO categoria (nombre, activo) VALUES ($1, true) RETURNING categoria_id',
+          [categoria.trim()]
+        )
+        categoriaId = nuevaCategoriaResult.rows[0].categoria_id
+        console.log('✅ Nueva categoría creada con ID:', categoriaId)
+      }
+      
+      // Asignar nueva categoría al producto
+      await client.query(
+        'INSERT INTO producto_categoria (producto_id, categoria_id) VALUES ($1, $2)',
+        [id, categoriaId]
+      )
+      console.log('✅ Nueva categoría asignada al producto')
+    }
+
+    await client.query('COMMIT')
+    
+    // Devolver el producto con las categorías actualizadas
+    const updatedProductWithCategories = await getProductById(id)
+    return updatedProductWithCategories
+
   } catch (error) {
+    await client.query('ROLLBACK')
     console.error('❌ Error en updateProduct:', error)
     throw new Error('Error al actualizar producto: ' + error.message)
+  } finally {
+    client.release()
   }
 }
 
