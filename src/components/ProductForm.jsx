@@ -84,7 +84,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       try {
         const response = await axios.get(API_ENDPOINTS.CATEGORIAS)
         
-        const categoriasData = response.data)
+        const categoriasData = response.data
         
         setCategorias(categoriasData)
       } catch (error) {
@@ -107,7 +107,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   }, [])
 
   useEffect(() => {
-    if (productoEditando) {)
+    if (productoEditando) {
       
       // ✅ Usar directamente los datos del backend en español
       const caracteristicasText = (() => {
@@ -579,7 +579,6 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
               placeholder="Escribe las características del producto, una por línea:&#10;• 8GB RAM&#10;• Procesador Intel i7&#10;• Tarjeta gráfica dedicada"
               rows={4}
-              onFocus={() =>}
             />
             <p className="text-xs text-gray-500 mt-1">
               Escribe cada característica en una línea separada. Las características se agregarán automáticamente al crear el producto.
