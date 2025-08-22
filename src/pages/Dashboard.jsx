@@ -23,11 +23,8 @@ const Dashboard = () => {
   // Función para obtener usuarios de la base de datos
   const cargarUsuarios = async () => {
     try {
-      console.log('🔄 Iniciando carga de usuarios...')
       
       const { data } = await apiClient.get(API_ENDPOINTS.USUARIOS)
-
-      console.log('✅ Usuarios cargados desde la base de datos:', data)
       setUsuarios(data)
     } catch (error) {
       console.error('❌ Error al obtener usuarios:', error.message || error)
@@ -47,12 +44,10 @@ const Dashboard = () => {
   const eliminarUsuario = async (usuarioId) => {
     if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
       try {
-        console.log('🗑️ Eliminando usuario:', usuarioId)
         
         await apiClient.delete(`${API_ENDPOINTS.USUARIOS}/${usuarioId}`)
 
         setUsuarios(usuarios.filter((u) => u.usuario_id !== usuarioId))
-        console.log(`✅ Usuario ${usuarioId} eliminado exitosamente`)
         alert('Usuario eliminado exitosamente')
       } catch (error) {
         console.error('❌ Error al eliminar usuario:', error.message || error)
@@ -81,11 +76,6 @@ const Dashboard = () => {
         // Los pedidos ahora se manejan directamente en SalesTab
         await cargarUsuarios()
       }
-
-      // Debug: Log productos cargados
-      console.log('🔍 Productos en Dashboard:', productos)
-      console.log('🔍 Cantidad de productos:', productos?.length)
-      
       setLoading(false)
     }
 
@@ -151,8 +141,7 @@ const Dashboard = () => {
                 productos={productos}
                 usuarios={usuarios}
                 onEliminarUsuario={eliminarUsuario}
-                onEliminarProducto={(id) => console.log('Eliminar producto:', id)}
-                onGuardarProducto={(data) => console.log('Guardar producto:', data)}
+
               />
             ) : (
               <UserPurchases comprasUsuario={comprasUsuario} />

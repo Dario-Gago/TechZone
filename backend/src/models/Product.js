@@ -84,9 +84,6 @@ export const createProduct = async (productData) => {
   
   try {
     await client.query('BEGIN')
-    
-    console.log('🟣 === PRODUCT MODEL CREATE ===')
-    console.log('🟣 productData recibido:', JSON.stringify(productData, null, 2))
 
     const {
       nombre,
@@ -103,16 +100,8 @@ export const createProduct = async (productData) => {
       destacado,
       envio,
       caracteristicas,
-      categoria // ✅ Nuevo: categoria como string
+      categoria //categoria como string
     } = productData
-
-    console.log('🟣 Campos extraídos:')
-    console.log('  - nombre:', nombre, '(tipo:', typeof nombre, ')')
-    console.log('  - marca:', marca, '(tipo:', typeof marca, ')')
-    console.log('  - marca_id:', marca_id, '(tipo:', typeof marca_id, ')')
-    console.log('  - destacado:', destacado, '(tipo:', typeof destacado, ')')
-    console.log('  - precio_normal:', precio_normal, '(tipo:', typeof precio_normal, ')')
-    console.log('  - categoria:', categoria, '(tipo:', typeof categoria, ')')
 
     // ✅ VALIDACIÓN
     if (!nombre || typeof nombre !== 'string' || nombre.trim() === '') {
@@ -126,7 +115,6 @@ export const createProduct = async (productData) => {
     // ✅ Resolver marca_id si solo se proporcionó el nombre de la marca
     let marcaIdFinal = marca_id
     if (!marcaIdFinal && marca) {
-      console.log('🔍 Buscando marca_id para marca:', marca)
       try {
         const marcaResult = await client.query(
           'SELECT marca_id FROM marca WHERE LOWER(nombre) = LOWER($1)',
@@ -134,7 +122,6 @@ export const createProduct = async (productData) => {
         )
         if (marcaResult.rows.length > 0) {
           marcaIdFinal = marcaResult.rows[0].marca_id
-          console.log('✅ Marca encontrada, marca_id:', marcaIdFinal)
         } else {
           console.log('⚠️ Marca no encontrada, creando nueva marca:', marca)
           // Crear nueva marca si no existe
@@ -143,15 +130,12 @@ export const createProduct = async (productData) => {
             [marca]
           )
           marcaIdFinal = nuevaMarcaResult.rows[0].marca_id
-          console.log('✅ Nueva marca creada con ID:', marcaIdFinal)
         }
       } catch (marcaError) {
         console.warn('⚠️ Error al buscar/crear marca:', marcaError.message)
         marcaIdFinal = null
       }
     }
-
-    console.log('✅ Validaciones pasadas en modelo')
 
     // Crear el producto
     const result = await client.query(
@@ -178,11 +162,9 @@ export const createProduct = async (productData) => {
     )
 
     const nuevoProducto = result.rows[0]
-    console.log('✅ Producto creado exitosamente:', nuevoProducto)
 
     // ✅ Manejar categoría si se proporcionó
     if (categoria && typeof categoria === 'string' && categoria.trim()) {
-      console.log('🔍 Buscando/creando categoría:', categoria)
       
       // Buscar categoría existente
       let categoriaResult = await client.query(
@@ -193,7 +175,6 @@ export const createProduct = async (productData) => {
       let categoriaId
       if (categoriaResult.rows.length > 0) {
         categoriaId = categoriaResult.rows[0].categoria_id
-        console.log('✅ Categoría encontrada, categoria_id:', categoriaId)
       } else {
         // Crear nueva categoría si no existe
         console.log('⚠️ Categoría no encontrada, creando nueva:', categoria)
@@ -202,7 +183,6 @@ export const createProduct = async (productData) => {
           [categoria.trim()]
         )
         categoriaId = nuevaCategoriaResult.rows[0].categoria_id
-        console.log('✅ Nueva categoría creada con ID:', categoriaId)
       }
       
       // Asignar categoría al producto
@@ -210,7 +190,6 @@ export const createProduct = async (productData) => {
         'INSERT INTO producto_categoria (producto_id, categoria_id) VALUES ($1, $2)',
         [nuevoProducto.producto_id, categoriaId]
       )
-      console.log('✅ Categoría asignada al producto')
     }
 
     await client.query('COMMIT')
@@ -231,10 +210,6 @@ export const updateProduct = async (id, productData) => {
   
   try {
     await client.query('BEGIN')
-    
-    console.log('🟡 === PRODUCT MODEL UPDATE ===')
-    console.log('🟡 ID:', id)
-    console.log('🟡 productData:', JSON.stringify(productData, null, 2))
 
     const {
       nombre,
@@ -251,16 +226,12 @@ export const updateProduct = async (id, productData) => {
       destacado,
       envio,
       caracteristicas,
-      categoria // ✅ NUEVO: manejar categoría
+      categoria //manejar categoría
     } = productData
-
-    console.log('🟡 Campo destacado recibido:', destacado, '(tipo:', typeof destacado, ')')
-    console.log('🟡 Campo categoria recibido:', categoria, '(tipo:', typeof categoria, ')')
 
     // ✅ Resolver marca_id si solo se proporcionó el nombre de la marca
     let marcaIdFinal = marca_id
     if (!marcaIdFinal && marca) {
-      console.log('🔍 Buscando marca_id para marca:', marca)
       try {
         const marcaResult = await client.query(
           'SELECT marca_id FROM marca WHERE LOWER(nombre) = LOWER($1)',
@@ -268,7 +239,6 @@ export const updateProduct = async (id, productData) => {
         )
         if (marcaResult.rows.length > 0) {
           marcaIdFinal = marcaResult.rows[0].marca_id
-          console.log('✅ Marca encontrada, marca_id:', marcaIdFinal)
         } else {
           console.log('⚠️ Marca no encontrada, creando nueva marca:', marca)
           // Crear nueva marca si no existe
@@ -277,7 +247,6 @@ export const updateProduct = async (id, productData) => {
             [marca]
           )
           marcaIdFinal = nuevaMarcaResult.rows[0].marca_id
-          console.log('✅ Nueva marca creada con ID:', marcaIdFinal)
         }
       } catch (marcaError) {
         console.warn('⚠️ Error al buscar/crear marca:', marcaError.message)
@@ -317,18 +286,14 @@ export const updateProduct = async (id, productData) => {
       return null
     }
 
-    console.log('✅ Producto actualizado:', result.rows[0])
-
-    // ✅ NUEVO: Manejar categoría si se proporcionó
+    //Manejar categoría si se proporcionó
     if (categoria && typeof categoria === 'string' && categoria.trim()) {
-      console.log('🔍 Actualizando categoría:', categoria)
       
       // Primero eliminar relaciones existentes
       await client.query(
         'DELETE FROM producto_categoria WHERE producto_id = $1',
         [id]
       )
-      console.log('🗑️ Relaciones de categoría anteriores eliminadas')
       
       // Buscar categoría existente
       let categoriaResult = await client.query(
@@ -339,7 +304,6 @@ export const updateProduct = async (id, productData) => {
       let categoriaId
       if (categoriaResult.rows.length > 0) {
         categoriaId = categoriaResult.rows[0].categoria_id
-        console.log('✅ Categoría encontrada, categoria_id:', categoriaId)
       } else {
         // Crear nueva categoría si no existe
         console.log('⚠️ Categoría no encontrada, creando nueva:', categoria)
@@ -348,7 +312,6 @@ export const updateProduct = async (id, productData) => {
           [categoria.trim()]
         )
         categoriaId = nuevaCategoriaResult.rows[0].categoria_id
-        console.log('✅ Nueva categoría creada con ID:', categoriaId)
       }
       
       // Asignar nueva categoría al producto
@@ -356,7 +319,6 @@ export const updateProduct = async (id, productData) => {
         'INSERT INTO producto_categoria (producto_id, categoria_id) VALUES ($1, $2)',
         [id, categoriaId]
       )
-      console.log('✅ Nueva categoría asignada al producto')
     }
 
     await client.query('COMMIT')
@@ -382,8 +344,6 @@ export const deleteProduct = async (id) => {
     // Iniciar transacción
     await client.query('BEGIN')
     
-    console.log('🗑️ Iniciando eliminación del producto ID:', id)
-    
     // Primero verificar que el producto existe
     const productExists = await client.query(
       'SELECT * FROM producto WHERE producto_id = $1',
@@ -395,36 +355,29 @@ export const deleteProduct = async (id) => {
       return null
     }
     
-    const product = productExists.rows[0]
-    console.log('✅ Producto encontrado:', product.nombre)
-    
     // 1. Eliminar relaciones en producto_categoria
-    const deletedCategories = await client.query(
-      'DELETE FROM producto_categoria WHERE producto_id = $1 RETURNING *',
+    await client.query(
+      'DELETE FROM producto_categoria WHERE producto_id = $1',
       [id]
     )
-    console.log(`🗑️ Eliminadas ${deletedCategories.rows.length} relaciones de categorías`)
     
     // 2. Eliminar de carritos (carrito_producto)
-    const deletedCartItems = await client.query(
-      'DELETE FROM carrito_producto WHERE producto_id = $1 RETURNING *',
+    await client.query(
+      'DELETE FROM carrito_producto WHERE producto_id = $1',
       [id]
     )
-    console.log(`🗑️ Eliminadas ${deletedCartItems.rows.length} referencias en carritos`)
     
     // 3. Eliminar de pedidos (pedido_producto)
-    const deletedOrderItems = await client.query(
-      'DELETE FROM pedido_producto WHERE producto_id = $1 RETURNING *',
+    await client.query(
+      'DELETE FROM pedido_producto WHERE producto_id = $1',
       [id]
     )
-    console.log(`🗑️ Eliminadas ${deletedOrderItems.rows.length} referencias en pedidos`)
     
     // 4. Eliminar de detalle de ventas
-    const deletedSaleDetails = await client.query(
-      'DELETE FROM detalle_ventas WHERE producto_id = $1 RETURNING *',
+    await client.query(
+      'DELETE FROM detalle_ventas WHERE producto_id = $1',
       [id]
     )
-    console.log(`🗑️ Eliminadas ${deletedSaleDetails.rows.length} referencias en ventas`)
     
     // 5. Finalmente eliminar el producto
     const result = await client.query(
@@ -434,8 +387,6 @@ export const deleteProduct = async (id) => {
     
     // Confirmar transacción
     await client.query('COMMIT')
-    
-    console.log('✅ Producto eliminado exitosamente')
     return formatProduct(result.rows[0])
     
   } catch (error) {

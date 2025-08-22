@@ -29,12 +29,7 @@ const BarraNavegacion = () => {
 
   // ✅ Extraer categorías únicas de los productos con orden específico
   const categoriasValidas = useMemo(() => {
-    if (cargando || !Array.isArray(productos) || productos.length === 0) {
-      console.log('Productos aún cargando o vacío:', {
-        cargando,
-        productos: productos?.length
-      })
-      return []
+    if (cargando || !Array.isArray(productos) || productos.length === 0) {return []
     }
 
     // Orden correcto según la base de datos

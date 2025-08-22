@@ -33,9 +33,7 @@ export const getProductByIdController = async (req, res) => {
 
 export const createProductController = async (req, res) => {
   try {
-    console.log('🟢 === CREATE PRODUCT CONTROLLER ===')
     const product = await ProductService.createProduct(req.body)
-    console.log('✅ Producto creado exitosamente:', product)
     res.status(201).json(product)
   } catch (error) {
     console.error('❌ Error en createProductController:', error)
@@ -48,10 +46,8 @@ export const createProductController = async (req, res) => {
 
 export const updateProductController = async (req, res) => {
   try {
-    console.log('🟡 === UPDATE PRODUCT CONTROLLER ===')
     const { id } = req.params
     const updatedProduct = await ProductService.updateProduct(id, req.body)
-    console.log('✅ Producto actualizado exitosamente:', updatedProduct)
     res.json(updatedProduct)
   } catch (error) {
     console.error('❌ Error en updateProductController:', error)
@@ -70,10 +66,8 @@ export const updateProductController = async (req, res) => {
 
 export const deleteProductController = async (req, res) => {
   try {
-    console.log('🗑️ === DELETE PRODUCT CONTROLLER ===')
     const { id } = req.params
     const deletedProduct = await ProductService.deleteProduct(id)
-    console.log('✅ Producto eliminado exitosamente')
     res.json({
       message: 'Producto eliminado exitosamente',
       deletedProduct

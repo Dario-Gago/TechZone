@@ -20,10 +20,6 @@ const OrderSummary = ({
   const [error, setError] = useState(null)
 
   const handleSubmit = async () => {
-    console.log('🛒 Iniciando proceso de compra...')
-    console.log('📦 Items del carrito (contexto):', articulosCarrito)
-    console.log('💰 Total final:', finalTotal)
-    console.log('👤 Usuario:', usuario)
 
     // Validaciones iniciales
     if (!usuario) {
@@ -45,7 +41,6 @@ const OrderSummary = ({
     setError(null)
 
     try {
-      console.log('📡 Enviando venta al backend...')
 
       // Mapear los items del carrito al formato esperado por el backend
       const itemsParaVenta = articulosCarrito.map((item, index) => {
@@ -59,19 +54,12 @@ const OrderSummary = ({
           item.precio ||
           item.price
 
-        console.log(`📋 Item ${index + 1} mapeado:`, {
-          original: item,
-          mapeado: { producto_id, cantidad, precio_unitario }
-        })
-
         return {
           producto_id,
           cantidad,
           precio_unitario
         }
       })
-
-      console.log('📋 Items finales para el backend:', itemsParaVenta)
 
       // Validar que todos los items tengan los campos requeridos
       const itemsInvalidos = itemsParaVenta.filter((item, index) => {
@@ -97,8 +85,6 @@ const OrderSummary = ({
 
       // Crear la venta usando los items mapeados
       const nuevaVenta = await createSale(itemsParaVenta, finalTotal)
-
-      console.log('✅ Venta creada exitosamente:', nuevaVenta)
 
       // Redirigir a la página de éxito
       navigate('/payment-success', {
