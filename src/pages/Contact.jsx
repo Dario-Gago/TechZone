@@ -17,7 +17,8 @@ const Contact = () => {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault()alert('¡Mensaje enviado! Te contactaremos pronto.')
+    e.preventDefault()
+    alert('¡Mensaje enviado! Te contactaremos pronto.')
     setFormData({
       name: '',
       email: '',

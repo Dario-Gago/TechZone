@@ -95,6 +95,7 @@ export const useProductos = () => {
     cargando,
     error,
     recargarProductos: () => {
-      // El contexto maneja la recarga automáticamente}
+      // El contexto maneja la recarga automáticamente
+    }
   }
 }
