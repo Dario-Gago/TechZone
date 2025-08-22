@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { User } from 'lucide-react'
 import { useAutenticacion } from '../contexts/AuthContext'
 import { API_ENDPOINTS } from '../config/api'
-import axios from 'axios'
+import apiClient from '../services/apiClient' // ✅ Usar apiClient en lugar de axios
 
 import StatsCards from '../components/StatsCards'
 import UserPurchases from '../components/UserPurchases'
@@ -23,23 +23,20 @@ const Dashboard = () => {
   // Función para obtener usuarios de la base de datos
   const cargarUsuarios = async () => {
     try {
-      const token = localStorage.getItem('token')
+      console.log('🔄 Iniciando carga de usuarios...')
+      
+      const { data } = await apiClient.get(API_ENDPOINTS.USUARIOS)
 
-      if (!token) {
-        console.error('No hay token de autenticación')
-        return
-      }
-
-      const { data } = await axios.get(API_ENDPOINTS.USUARIOS, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      console.log('Usuarios cargados desde la base de datos:', data)
+      console.log('✅ Usuarios cargados desde la base de datos:', data)
       setUsuarios(data)
     } catch (error) {
-      console.error('Error al obtener usuarios:', error)
+      console.error('❌ Error al obtener usuarios:', error.message || error)
+      
+      // Manejar diferentes tipos de errores
+      if (error.code === 'ECONNABORTED') {
+        console.log('⏱️ Timeout en la petición - Render puede estar "durmiendo"')
+      }
+      
       setUsuarios([])
     }
   }
@@ -50,24 +47,15 @@ const Dashboard = () => {
   const eliminarUsuario = async (usuarioId) => {
     if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
       try {
-        const token = localStorage.getItem('token')
-
-        if (!token) {
-          alert('No hay token de autenticación')
-          return
-        }
-
-        await axios.delete(`${API_ENDPOINTS.USUARIOS}/${usuarioId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
+        console.log('🗑️ Eliminando usuario:', usuarioId)
+        
+        await apiClient.delete(`${API_ENDPOINTS.USUARIOS}/${usuarioId}`)
 
         setUsuarios(usuarios.filter((u) => u.usuario_id !== usuarioId))
-        console.log(`Usuario ${usuarioId} eliminado exitosamente`)
+        console.log(`✅ Usuario ${usuarioId} eliminado exitosamente`)
         alert('Usuario eliminado exitosamente')
       } catch (error) {
-        console.error('Error al eliminar usuario:', error)
+        console.error('❌ Error al eliminar usuario:', error.message || error)
 
         if (error.response?.status === 403) {
           alert('No tienes permisos para eliminar usuarios')
@@ -75,6 +63,8 @@ const Dashboard = () => {
           alert('Usuario no encontrado')
         } else if (error.response?.status === 400) {
           alert(error.response?.data?.message || 'Error al eliminar usuario')
+        } else if (error.code === 'ECONNABORTED') {
+          alert('Timeout en la petición - El servidor puede estar ocupado, intenta de nuevo')
         } else {
           alert('Error al eliminar el usuario')
         }
