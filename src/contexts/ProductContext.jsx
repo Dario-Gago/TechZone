@@ -51,9 +51,6 @@ export const ProveedorProducto = ({ children }) => {
       ...new Set(productosActualizados.map((p) => p.categoria))
     ].filter(Boolean)
 
-    if (import.meta.env.DEV) {
-    }
-
     // Ordenar según el orden predefinido y crear IDs únicos
     const categoriasOrdenadas = ordenCategorias
       .filter(categoriaOrden => categoriasEncontradas.includes(categoriaOrden))
@@ -66,8 +63,6 @@ export const ProveedorProducto = ({ children }) => {
         slug: categoria
       }))
 
-    if (import.meta.env.DEV) {
-    }
     setCategorias(categoriasOrdenadas)
   }
 
@@ -76,12 +71,7 @@ export const ProveedorProducto = ({ children }) => {
     const cargarProductos = async () => {
       try {
         setCargando(true)
-        if (import.meta.env.DEV) {
-        }
         const response = await api.get('/')
-        
-        if (import.meta.env.DEV) {
-        }
         
         // ✅ Usar directamente los datos del backend sin mapeo innecesario
         const productosConvertidos = response.data.map(producto => {
@@ -108,8 +98,6 @@ export const ProveedorProducto = ({ children }) => {
           }
         })
         
-        if (import.meta.env.DEV) {
-        }
         setProductos(productosConvertidos)
         actualizarCategorias(productosConvertidos)
         setError(null)
@@ -123,7 +111,6 @@ export const ProveedorProducto = ({ children }) => {
     }
 
     cargarProductos()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [api]) // API_URL está incluido indirectamente a través de api
 
   // ---------------- CRUD ----------------
