@@ -19,9 +19,11 @@ const corsOptions = {
     const allowedOrigins = [
       'http://localhost:5173',
       'http://127.0.0.1:5173',
-      // Agregar dominio de producción aquí cuando esté disponible
-      // 'https://tu-dominio-produccion.com'
-    ]
+      // Dominios de producción en Render
+      process.env.FRONTEND_URL, // Variable de entorno para frontend en producción
+      // Ejemplos para Render:
+      'https://techzone-frontend.onrender.com',
+    ].filter(Boolean) // Eliminar valores undefined
     
     // Permitir requests sin origin (ej: apps móviles, Postman)
     if (!origin) return callback(null, true)
@@ -63,5 +65,4 @@ app.use('/api/categorias', categoria)
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`)
-  console.log(`📋 Health check: http://localhost:${PORT}/api/health`)
 })

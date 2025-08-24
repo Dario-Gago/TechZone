@@ -96,7 +96,6 @@ export const useProductos = () => {
     error,
     recargarProductos: () => {
       // El contexto maneja la recarga automáticamente
-      console.log('Recarga manejada por ProductContext')
     }
   }
 }

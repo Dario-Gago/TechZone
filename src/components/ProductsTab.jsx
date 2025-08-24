@@ -51,7 +51,6 @@ const ProductsTab = () => {
       if (resultado && resultado.success) {
         setMostrarFormProducto(false)
         setProductoEditando(null)
-        console.log('✅ Producto guardado exitosamente')
 
         // Recargar la página después de guardar exitosamente
         window.location.reload()

@@ -30,10 +30,6 @@ export const createSaleWithItems = async (userId, items, total) => {
   try {
     await client.query('BEGIN')
 
-    console.log('🔄 Creando venta para usuario:', userId)
-    console.log('🔄 Items recibidos:', items)
-    console.log('🔄 Total:', total)
-
     // Insert sale
     const saleResult = await client.query(
       `INSERT INTO ventas (usuario_id, total, estado)
@@ -42,11 +38,9 @@ export const createSaleWithItems = async (userId, items, total) => {
     )
 
     const ventaId = saleResult.rows[0].venta_id
-    console.log('✅ Venta creada con ID:', ventaId)
 
     // Insert items - USAR LOS NOMBRES CORRECTOS DEL FRONTEND
     for (const item of items) {
-      console.log('📦 Insertando item:', item)
 
       // Validar que el item tenga todos los campos requeridos
       if (!item.producto_id || !item.cantidad || !item.precio_unitario) {
@@ -61,7 +55,6 @@ export const createSaleWithItems = async (userId, items, total) => {
     }
 
     await client.query('COMMIT')
-    console.log('✅ Transacción completada exitosamente')
 
     return { id: ventaId, venta_id: ventaId }
   } catch (err) {

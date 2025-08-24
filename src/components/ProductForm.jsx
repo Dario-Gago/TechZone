@@ -82,16 +82,9 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   useEffect(() => {
     const cargarCategorias = async () => {
       try {
-        console.log('🔍 Intentando cargar categorías desde:', API_ENDPOINTS.CATEGORIAS)
         const response = await axios.get(API_ENDPOINTS.CATEGORIAS)
-        console.log('🔍 Response status:', response.status)
-        console.log('🔍 Response data:', response.data)
         
         const categoriasData = response.data
-        console.log('🔍 Categorías recibidas:', categoriasData)
-        console.log('🔍 Tipo de datos:', typeof categoriasData)
-        console.log('🔍 Es array:', Array.isArray(categoriasData))
-        console.log('🔍 Longitud:', categoriasData?.length)
         
         setCategorias(categoriasData)
       } catch (error) {
@@ -115,33 +108,22 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
 
   useEffect(() => {
     if (productoEditando) {
-      console.log('🔍 Producto completo:', productoEditando)
-      console.log('🔍 Características del producto:', productoEditando.caracteristicas)
-      console.log('🔍 Tipo de características:', typeof productoEditando.caracteristicas)
-      console.log('🔍 Es array características?:', Array.isArray(productoEditando.caracteristicas))
       
       // ✅ Usar directamente los datos del backend en español
       const caracteristicasText = (() => {
         // Usar características del backend
         if (Array.isArray(productoEditando.caracteristicas) && productoEditando.caracteristicas.length > 0) {
-          console.log('🟢 Usando caracteristicas como array:', productoEditando.caracteristicas)
           return productoEditando.caracteristicas.join('\n')
         }
         if (typeof productoEditando.caracteristicas === 'string' && productoEditando.caracteristicas.trim()) {
-          console.log('🟢 Usando caracteristicas como string:', productoEditando.caracteristicas)
           return productoEditando.caracteristicas
         }
         // Si no hay características específicas, usar la descripción como base
         if (typeof productoEditando.descripcion === 'string' && productoEditando.descripcion.trim()) {
-          console.log('🟢 Usando descripcion como características:', productoEditando.descripcion)
           return productoEditando.descripcion
         }
-        console.log('🔴 No se encontraron características válidas')
         return ''
       })()
-      
-      console.log('🔍 Características procesadas finales:', caracteristicasText)
-      console.log('🔍 Length de características procesadas:', caracteristicasText.length)
       
       const nuevoEstado = {
         nombre: productoEditando.nombre || '',
@@ -154,8 +136,6 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         destacado: productoEditando.destacado || false,
         stock: productoEditando.stock || 0
       }
-      
-      console.log('🔍 Estado que se va a establecer:', nuevoEstado)
       setFormProducto(nuevoEstado)
     } else {
       setFormProducto({
@@ -244,8 +224,6 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         
         // Agregar la nueva categoría a la lista para futuros usos
         setCategorias(prev => [...prev, nuevaCategoriaCreada])
-        
-        console.log('✅ Nueva categoría creada:', nuevaCategoriaCreada)
       } catch (error) {
         console.error('❌ Error al crear categoría:', error)
         alert(`Error al crear categoría: ${error.response?.data?.message || error.message}`)
@@ -283,8 +261,6 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       en_stock: stock > 0 ? 1 : 0, // ✅ Automático basado en stock
       destacado: formProducto.destacado // ✅ Usar el valor seleccionado
     }
-
-    console.log('🟢 Enviando al backend:', productoParaBackend)
     
     // Limpiar el estado de nueva categoría después de usar
     if (mostrandoNuevaCategoria) {
@@ -450,10 +426,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
               >
                 <option value="">Selecciona una categoría</option>
                 {(() => {
-                  console.log('🔍 Renderizando dropdown - categorias state:', categorias)
-                  console.log('🔍 Categorias length:', categorias?.length)
                   return categorias.map((cat) => {
-                    console.log('🔍 Categoria individual:', cat)
                     const nombreLegible = formatearNombreCategoria(cat.nombre)
                     return (
                       <option key={cat.categoria_id} value={cat.nombre}>
@@ -606,7 +579,6 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px]"
               placeholder="Escribe las características del producto, una por línea:&#10;• 8GB RAM&#10;• Procesador Intel i7&#10;• Tarjeta gráfica dedicada"
               rows={4}
-              onFocus={() => console.log('🔍 Valor actual en textarea al hacer focus:', formProducto.caracteristicas)}
             />
             <p className="text-xs text-gray-500 mt-1">
               Escribe cada característica en una línea separada. Las características se agregarán automáticamente al crear el producto.

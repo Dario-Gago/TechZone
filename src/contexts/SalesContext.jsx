@@ -101,7 +101,6 @@ export const SalesProvider = ({ children }) => {
 
   // ✅ Create new sale
   const createSale = async (items, total) => {
-    console.log('💾 createSale llamado con:', { items, total })
 
     const { token } = getAuthData()
 
@@ -121,8 +120,6 @@ export const SalesProvider = ({ children }) => {
         { items, total },
         { headers: { Authorization: `Bearer ${token}` } }
       )
-
-      console.log('✅ Venta creada exitosamente:', res.data)
 
       // Recargar todas las ventas
       await fetchSales()
@@ -168,8 +165,6 @@ export const SalesProvider = ({ children }) => {
             : sale
         )
       )
-      
-      console.log('✅ Estado actualizado localmente sin recargar')
     } catch (err) {
       console.error('Error actualizando estado de venta:', err)
       throw err
@@ -381,7 +376,6 @@ export const SalesProvider = ({ children }) => {
   // Debug del estado - solo en desarrollo y limitado
   useEffect(() => {
     if (usuario && estaAutenticado && import.meta.env.DEV) {
-      console.log('🎯 Sales:', sales?.length || 0, 'Loading:', loading, 'Error:', !!error)
     }
   }, [sales?.length, loading, error, usuario, estaAutenticado])
 

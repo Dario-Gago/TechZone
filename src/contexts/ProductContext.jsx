@@ -52,7 +52,6 @@ export const ProveedorProducto = ({ children }) => {
     ].filter(Boolean)
 
     if (import.meta.env.DEV) {
-      console.log('🔍 Categorías encontradas en productos:', categoriasEncontradas)
     }
 
     // Ordenar según el orden predefinido y crear IDs únicos
@@ -68,7 +67,6 @@ export const ProveedorProducto = ({ children }) => {
       }))
 
     if (import.meta.env.DEV) {
-      console.log('✅ Categorías procesadas:', categoriasOrdenadas)
     }
     setCategorias(categoriasOrdenadas)
   }
@@ -79,12 +77,10 @@ export const ProveedorProducto = ({ children }) => {
       try {
         setCargando(true)
         if (import.meta.env.DEV) {
-          console.log('🔄 Cargando productos desde:', API_URL)
         }
         const response = await api.get('/')
         
         if (import.meta.env.DEV) {
-          console.log('✅ Respuesta del API:', response.data)
         }
         
         // ✅ Usar directamente los datos del backend sin mapeo innecesario
@@ -113,7 +109,6 @@ export const ProveedorProducto = ({ children }) => {
         })
         
         if (import.meta.env.DEV) {
-          console.log('✅ Productos convertidos:', productosConvertidos)
         }
         setProductos(productosConvertidos)
         actualizarCategorias(productosConvertidos)
@@ -135,7 +130,6 @@ export const ProveedorProducto = ({ children }) => {
 
   const agregarProducto = async (nuevoProducto) => {
     try {
-      console.log('🟢 Datos recibidos en agregarProducto:', nuevoProducto)
 
       // ✅ Usar directamente los nombres del backend sin mapeo innecesario
       const payload = {
@@ -154,8 +148,6 @@ export const ProveedorProducto = ({ children }) => {
         envio: nuevoProducto.envio || 'Envío estándar',
         caracteristicas: nuevoProducto.caracteristicas || null
       }
-
-      console.log('🟢 Payload enviado al backend:', payload)
 
       const response = await api.post('/', payload)
 
@@ -184,7 +176,6 @@ export const ProveedorProducto = ({ children }) => {
 
   const editarProducto = async (id, productoActualizado) => {
     try {
-      console.log('🟡 Datos recibidos en editarProducto:', productoActualizado)
 
       // ✅ Usar directamente los nombres del backend sin mapeo innecesario
       const payload = {
@@ -203,8 +194,6 @@ export const ProveedorProducto = ({ children }) => {
         envio: productoActualizado.envio || 'Envío estándar',
         caracteristicas: productoActualizado.caracteristicas || null
       }
-
-      console.log('🟡 Payload enviado al backend:', payload)
 
       const response = await api.put(`/${id}`, payload)
 

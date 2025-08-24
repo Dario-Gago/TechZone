@@ -1,0 +1,12 @@
+# Render Deploy Script
+# Este archivo será usado por Render para configurar el servicio
+
+# Build Command: npm install
+# Start Command: npm start
+
+# Variables de entorno que debes configurar en Render:
+# NODE_ENV=production
+# DATABASE_URL=tu_database_url_de_render
+# JWT_SECRET=tu_jwt_secret_seguro
+# FRONTEND_URL=https://tu-frontend.netlify.app
+# PORT será configurado automáticamente por Render
