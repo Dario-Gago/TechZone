@@ -23,11 +23,6 @@ export const createSale = async (req, res) => {
     const user = req.user
     const { items, total } = req.body
 
-    console.log('📡 Datos recibidos en createSale:')
-    console.log('👤 Usuario:', user)
-    console.log('📦 Items:', items)
-    console.log('💰 Total:', total)
-
     // Validaciones
     if (!user || !user.userId) {
       return res.status(401).json({ error: 'Usuario no autenticado' })

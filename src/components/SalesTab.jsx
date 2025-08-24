@@ -48,7 +48,6 @@ const SalesTab = () => {
     const nuevoEstado = e.target.value
     
     try {
-      console.log('🔄 Actualizando estado de venta:', { ventaId, nuevoEstado })
       
       if (!updateSaleStatus) {
         console.error('❌ updateSaleStatus no está disponible')
@@ -57,7 +56,6 @@ const SalesTab = () => {
       }
 
       await updateSaleStatus(ventaId, nuevoEstado)
-      console.log('✅ Estado actualizado correctamente')
     } catch (error) {
       console.error('❌ Error actualizando estado:', error)
       

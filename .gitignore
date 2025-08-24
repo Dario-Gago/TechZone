@@ -34,3 +34,6 @@ backend/.env.local
 /package-lock.json
 /src/assets/slider.psd
 /test-cors.html
+package-lock.json
+backend/package-lock.json
+/docs

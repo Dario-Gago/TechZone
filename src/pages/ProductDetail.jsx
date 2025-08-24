@@ -168,8 +168,6 @@ const DetalleProducto = () => {
               )}
             </div>
 
-
-
             {/* Precios */}
             <div className="space-y-2">
               {/* Solo mostrar precio original tachado si hay descuento real */}

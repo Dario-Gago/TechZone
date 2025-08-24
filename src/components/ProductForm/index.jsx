@@ -172,8 +172,6 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
         en_stock: Number(formProducto.stock) > 0 ? 1 : 0,
         destacado: formProducto.destacado
       }
-
-      console.log('🟢 Enviando al backend:', productoParaBackend)
       
       // Llamar a la función onGuardar pasada como prop
       await onGuardar(productoParaBackend)
