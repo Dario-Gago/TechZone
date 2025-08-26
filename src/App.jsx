@@ -18,6 +18,7 @@ import SearchPage from './pages/SearchPage'
 import RutaPrivada from './components/PrivateRoute'
 import RutaPublica from './components/PublicRoute'
 import Contact from './pages/Contact'
+import FavoritesPage from './pages/FavoritesPage'
 
 //Importo el contexto
 import { ProveedorAutenticacion } from './contexts/AuthContext'
@@ -83,6 +84,7 @@ const App = () => {
                         }
                       />
                       <Route path="/contact" element={<Contact />} />
+                      <Route path="/favorites" element={<FavoritesPage />} />
                     </Routes>
                   </main>
                   <Footer />

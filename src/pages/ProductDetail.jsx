@@ -5,6 +5,7 @@ import axios from 'axios'
 import { useProductos } from '../hooks/useProducts'
 import { useCarrito } from '../hooks/useCart'
 import ProductosDestacados from '../components/FeaturedProducts'
+import LikeButton from '../components/LikeButton'
 import { API_ENDPOINTS } from '../config/api'
 
 const DetalleProducto = () => {
@@ -166,6 +167,16 @@ const DetalleProducto = () => {
               {producto.marca && (
                 <p className="text-lg text-gray-600 mb-4">{producto.marca}</p>
               )}
+            </div>
+
+            {/* Botón de Me Gusta */}
+            <div className="flex justify-start">
+              <LikeButton 
+                productoId={producto.id} 
+                size="lg" 
+                showText={true}
+                variant="default"
+              />
             </div>
 
             {/* Precios */}
