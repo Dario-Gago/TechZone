@@ -3,7 +3,6 @@ import { User } from 'lucide-react'
 import { useAutenticacion } from '../contexts/AuthContext'
 import { API_ENDPOINTS } from '../config/api'
 import apiClient from '../services/apiClient' // ✅ Usar apiClient en lugar de axios
-import Swal from 'sweetalert2'
 
 import StatsCards from '../components/StatsCards'
 import UserPurchases from '../components/UserPurchases'
@@ -43,54 +42,26 @@ const Dashboard = () => {
   // NOTA: Ahora SalesTab maneja esto directamente a través del SalesContext
 
   const eliminarUsuario = async (usuarioId) => {
-    const result = await Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¿Deseas eliminar este usuario?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#ef4444',
-      cancelButtonColor: '#6b7280',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-      reverseButtons: true
-    })
-
-    if (result.isConfirmed) {
-      try {
-        await apiClient.delete(`${API_ENDPOINTS.USUARIOS}/${usuarioId}`)
-
-        setUsuarios(usuarios.filter((u) => u.usuario_id !== usuarioId))
-        
-        Swal.fire({
-          title: '¡Eliminado!',
-          text: 'El usuario ha sido eliminado correctamente.',
-          icon: 'success',
-          confirmButtonColor: '#10b981',
-          timer: 2000,
-          timerProgressBar: true
-        })
-      } catch (error) {
-        console.error('❌ Error al eliminar usuario:', error.message || error)
-
-        let errorMessage = 'Error al eliminar el usuario'
-        
-        if (error.response?.status === 403) {
-          errorMessage = 'No tienes permisos para eliminar usuarios'
-        } else if (error.response?.status === 404) {
-          errorMessage = 'Usuario no encontrado'
-        } else if (error.response?.status === 400) {
-          errorMessage = error.response?.data?.message || 'Error al eliminar usuario'
-        } else if (error.code === 'ECONNABORTED') {
-          errorMessage = 'Timeout en la petición - El servidor puede estar ocupado, intenta de nuevo'
-        }
-
-        Swal.fire({
-          title: 'Error',
-          text: errorMessage,
-          icon: 'error',
-          confirmButtonColor: '#ef4444'
-        })
+    try {
+      await apiClient.delete(`${API_ENDPOINTS.USUARIOS}/${usuarioId}`)
+      setUsuarios(usuarios.filter((u) => u.usuario_id !== usuarioId))
+    } catch (error) {
+      console.error('❌ Error al eliminar usuario:', error.message || error)
+      
+      let errorMessage = 'Error al eliminar el usuario'
+      
+      if (error.response?.status === 403) {
+        errorMessage = 'No tienes permisos para eliminar usuarios'
+      } else if (error.response?.status === 404) {
+        errorMessage = 'Usuario no encontrado'
+      } else if (error.response?.status === 400) {
+        errorMessage = error.response?.data?.message || 'Error al eliminar usuario'
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Timeout en la petición - El servidor puede estar ocupado, intenta de nuevo'
       }
+
+      // Re-lanzar el error para que UsersTab lo capture y muestre la alerta
+      throw new Error(errorMessage)
     }
   }
 
