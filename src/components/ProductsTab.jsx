@@ -1,7 +1,9 @@
 import React, { useState, useContext } from 'react'
 import { Plus, Edit, Trash2 } from 'lucide-react'
+import Swal from 'sweetalert2'
 import ProductForm from './ProductForm'
-import { ProductContext } from '../contexts/ProductContext' // Asegúrate de que la ruta sea correcta
+import FavoriteButton from './FavoriteButton'
+import { ProductContext } from '../contexts/ProductContext'
 
 const ProductsTab = () => {
   const {
@@ -51,6 +53,7 @@ const ProductsTab = () => {
       if (resultado && resultado.success) {
         setMostrarFormProducto(false)
         setProductoEditando(null)
+        console.log('✅ Producto guardado exitosamente')
 
         // Recargar la página después de guardar exitosamente
         window.location.reload()
@@ -65,21 +68,55 @@ const ProductsTab = () => {
   }
 
   const handleEliminarProducto = async (id) => {
-    if (
-      window.confirm('¿Estás seguro de que quieres eliminar este producto?')
-    ) {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Estás seguro de que quieres eliminar este producto?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    })
+
+    if (result.isConfirmed) {
       setCargando(true)
       try {
         const resultado = await eliminarProducto(id)
         if (resultado && resultado.success) {
           console.log('Producto eliminado exitosamente')
+          
+          Swal.fire({
+            title: '¡Eliminado!',
+            text: 'El producto ha sido eliminado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#10b981',
+            timer: 2000,
+            timerProgressBar: true
+          })
+          
           // También recargar después de eliminar si lo deseas
           window.location.reload()
         } else {
           console.error('Error al eliminar producto:', resultado?.error)
+          
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo eliminar el producto. Inténtalo de nuevo.',
+            icon: 'error',
+            confirmButtonColor: '#ef4444'
+          })
         }
       } catch (error) {
         console.error('Error en handleEliminarProducto:', error)
+        
+        Swal.fire({
+          title: 'Error',
+          text: 'No se pudo eliminar el producto. Inténtalo de nuevo.',
+          icon: 'error',
+          confirmButtonColor: '#ef4444'
+        })
       } finally {
         setCargando(false)
       }
@@ -120,7 +157,7 @@ const ProductsTab = () => {
             key={producto.id}
             className="bg-white rounded-lg p-3 border border-gray-200"
           >
-            <div className="w-full aspect-square bg-white rounded-md mb-2 flex items-center justify-center border border-gray-100">
+            <div className="w-full aspect-square bg-white rounded-md mb-2 flex items-center justify-center border border-gray-100 relative">
               <img
                 src={producto.imagen_url || 'https://via.placeholder.com/80x80?text=Sin+Imagen'}
                 alt={producto.nombre}
@@ -130,6 +167,10 @@ const ProductsTab = () => {
                     'https://via.placeholder.com/150x150?text=No+Image'
                 }}
               />
+              {/* Botón de favoritos */}
+              <div className="absolute top-1 right-1">
+                <FavoriteButton producto={producto} size="small" />
+              </div>
             </div>
             <h4 className="font-medium text-gray-900 text-xs mb-1 line-clamp-2">
               {producto.nombre}

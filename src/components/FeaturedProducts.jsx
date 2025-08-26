@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useProductos } from '../hooks/useProducts'
+import FavoriteButton from './FavoriteButton'
 
 const ProductosDestacados = () => {
   const { productos, formatearPrecio, cargando } = useProductos()
@@ -163,6 +164,11 @@ const ProductosDestacados = () => {
                         -{descuento}%
                       </div>
                     )}
+
+                    {/* Botón de favoritos */}
+                    <div className="absolute top-2 left-2">
+                      <FavoriteButton producto={producto} size="small" />
+                    </div>
                   </div>
 
                   {/* Información del producto */}
