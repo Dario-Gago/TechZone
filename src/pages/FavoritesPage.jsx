@@ -8,13 +8,14 @@ import LikeButton from '../components/LikeButton'
 
 const FavoritesPage = () => {
   const { likes, totalLikes, limpiarLikes } = useLikes()
-  const { productos, formatearPrecio, cargando } = useProductos()
+  const { todosLosProductos, formatearPrecio, cargando } = useProductos()
   const { agregarAlCarrito } = useCarrito()
 
   // Filtrar productos que están en la lista de favoritos
-  const productosFavoritos = productos.filter(producto => 
-    likes.includes(producto.id)
-  )
+  const productosFavoritos = todosLosProductos.filter(producto => {
+    const productoIdString = String(producto.id)
+    return likes.includes(productoIdString)
+  })
 
   const calcularDescuento = (precioOriginal, precioOferta) => {
     if (!precioOriginal || !precioOferta) return 0
@@ -65,7 +66,11 @@ const FavoritesPage = () => {
           {/* Botón para limpiar todos los favoritos */}
           {totalLikes > 0 && (
             <button
-              onClick={limpiarLikes}
+              onClick={() => {
+                if (window.confirm('¿Estás seguro de que quieres quitar todos los productos de tu lista de favoritos?')) {
+                  limpiarLikes()
+                }
+              }}
               className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 hover:border-red-300 rounded-lg transition-colors duration-200"
             >
               Limpiar lista
@@ -86,14 +91,14 @@ const FavoritesPage = () => {
             </p>
             <Link
               to="/"
-              className="inline-flex items-center space-x-2 bg-gray-900 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors duration-200"
+              className="inline-flex items-center space-x-2 bg-gray-700 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors duration-200"
             >
               <span>Explorar productos</span>
             </Link>
           </div>
         ) : (
           /* Grid de productos favoritos */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {productosFavoritos.map((producto) => {
               const descuento = producto.precio_oferta > 0
                 ? calcularDescuento(producto.precio_normal, producto.precio_oferta)
@@ -172,7 +177,7 @@ const FavoritesPage = () => {
                     {producto.stock > 0 ? (
                       <button
                         onClick={() => handleAddToCart(producto)}
-                        className="w-full flex items-center justify-center space-x-2 bg-gray-900 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium"
+                        className="w-full flex items-center justify-center space-x-2 bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium"
                       >
                         <ShoppingCart className="h-4 w-4" />
                         <span>Agregar al carrito</span>

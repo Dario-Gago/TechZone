@@ -40,7 +40,7 @@ const LikeButton = ({
   // Configuración de variantes
   const variantConfig = {
     default: isLiked 
-      ? 'bg-red-500 text-white hover:bg-red-600' 
+      ? 'bg-red-500 text-white hover:bg-red-600 shadow-md' 
       : 'bg-white text-gray-600 hover:text-red-500 hover:bg-red-50 border border-gray-200',
     minimal: isLiked 
       ? 'text-red-500 hover:text-red-600' 
@@ -64,6 +64,7 @@ const LikeButton = ({
         duration-200 
         transform 
         hover:scale-105 
+        ${isLiked ? 'shadow-lg' : ''}
         focus:outline-none 
         focus:ring-2 
         focus:ring-red-500 
@@ -74,11 +75,13 @@ const LikeButton = ({
       title={isLiked ? 'Quitar de favoritos' : 'Agregar a favoritos'}
     >
       <Heart 
-        className={`${config.icon} ${isLiked ? 'fill-current' : ''} transition-all duration-200`} 
+        className={`${config.icon} transition-all duration-200`} 
+        fill={isLiked ? 'currentColor' : 'none'}
+        stroke="currentColor"
       />
       {showText && (
         <span className={`${config.text} font-medium`}>
-          {isLiked ? 'Me gusta' : 'Me gusta'}
+          {isLiked ? 'En favoritos' : 'Agregar a favoritos'}
         </span>
       )}
     </button>

@@ -153,9 +153,17 @@ const BarraNavegacion = () => {
             {/* Botón de Favoritos */}
             <Link
               to="/favorites"
-              className="p-2 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 relative transition-colors duration-200"
+              className={`p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 relative transition-all duration-200 ${
+                totalLikes > 0 
+                  ? 'text-red-500 hover:text-red-600' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
             >
-              <Heart className="h-5 w-5" />
+              <Heart 
+                className="h-5 w-5 transition-all duration-200"
+                fill={totalLikes > 0 ? 'currentColor' : 'none'}
+                stroke="currentColor"
+              />
               {totalLikes > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] text-[10px]">
                   {totalLikes > 99 ? '99+' : totalLikes}

@@ -160,23 +160,23 @@ const DetalleProducto = () => {
 
           {/* Información del producto */}
           <div className="space-y-6">
-            <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+            <div className="relative">
+              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2 pr-16">
                 {producto.nombre}
               </h1>
               {producto.marca && (
                 <p className="text-lg text-gray-600 mb-4">{producto.marca}</p>
               )}
-            </div>
-
-            {/* Botón de Me Gusta */}
-            <div className="flex justify-start">
-              <LikeButton 
-                productoId={producto.id} 
-                size="lg" 
-                showText={true}
-                variant="default"
-              />
+              
+              {/* Botón de Me Gusta en la esquina superior derecha */}
+              <div className="absolute top-0 right-0">
+                <LikeButton 
+                  productoId={producto.id} 
+                  size="lg" 
+                  showText={false}
+                  variant="floating"
+                />
+              </div>
             </div>
 
             {/* Precios */}
