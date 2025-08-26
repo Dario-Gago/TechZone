@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { User } from 'lucide-react'
+import Swal from 'sweetalert2'
 import { useAutenticacion } from '../contexts/AuthContext'
 import { API_ENDPOINTS } from '../config/api'
-import apiClient from '../services/apiClient' // ✅ Usar apiClient en lugar de axios
+import axios from 'axios'
 
 import StatsCards from '../components/StatsCards'
 import UserPurchases from '../components/UserPurchases'
@@ -23,17 +24,23 @@ const Dashboard = () => {
   // Función para obtener usuarios de la base de datos
   const cargarUsuarios = async () => {
     try {
-      
-      const { data } = await apiClient.get(API_ENDPOINTS.USUARIOS)
+      const token = localStorage.getItem('token')
+
+      if (!token) {
+        console.error('No hay token de autenticación')
+        return
+      }
+
+      const { data } = await axios.get(API_ENDPOINTS.USUARIOS, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      console.log('Usuarios cargados desde la base de datos:', data)
       setUsuarios(data)
     } catch (error) {
-      console.error('❌ Error al obtener usuarios:', error.message || error)
-      
-      // Manejar diferentes tipos de errores
-      if (error.code === 'ECONNABORTED') {
-        console.log('⏱️ Timeout en la petición - Render puede estar "durmiendo"')
-      }
-      
+      console.error('Error al obtener usuarios:', error)
       setUsuarios([])
     }
   }
@@ -42,27 +49,68 @@ const Dashboard = () => {
   // NOTA: Ahora SalesTab maneja esto directamente a través del SalesContext
 
   const eliminarUsuario = async (usuarioId) => {
-    if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Estás seguro de que quieres eliminar este usuario?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    })
+
+    if (result.isConfirmed) {
       try {
-        
-        await apiClient.delete(`${API_ENDPOINTS.USUARIOS}/${usuarioId}`)
+        const token = localStorage.getItem('token')
+
+        if (!token) {
+          Swal.fire({
+            title: 'Error',
+            text: 'No hay token de autenticación',
+            icon: 'error',
+            confirmButtonColor: '#ef4444'
+          })
+          return
+        }
+
+        await axios.delete(`${API_ENDPOINTS.USUARIOS}/${usuarioId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
 
         setUsuarios(usuarios.filter((u) => u.usuario_id !== usuarioId))
-        alert('Usuario eliminado exitosamente')
+        console.log(`Usuario ${usuarioId} eliminado exitosamente`)
+        
+        Swal.fire({
+          title: '¡Eliminado!',
+          text: 'Usuario eliminado exitosamente',
+          icon: 'success',
+          confirmButtonColor: '#10b981',
+          timer: 2000,
+          timerProgressBar: true
+        })
       } catch (error) {
-        console.error('❌ Error al eliminar usuario:', error.message || error)
+        console.error('Error al eliminar usuario:', error)
 
+        let errorMessage = 'Error al eliminar el usuario'
+        
         if (error.response?.status === 403) {
-          alert('No tienes permisos para eliminar usuarios')
+          errorMessage = 'No tienes permisos para eliminar usuarios'
         } else if (error.response?.status === 404) {
-          alert('Usuario no encontrado')
+          errorMessage = 'Usuario no encontrado'
         } else if (error.response?.status === 400) {
-          alert(error.response?.data?.message || 'Error al eliminar usuario')
-        } else if (error.code === 'ECONNABORTED') {
-          alert('Timeout en la petición - El servidor puede estar ocupado, intenta de nuevo')
-        } else {
-          alert('Error al eliminar el usuario')
+          errorMessage = error.response?.data?.message || 'Error al eliminar usuario'
         }
+
+        Swal.fire({
+          title: 'Error',
+          text: errorMessage,
+          icon: 'error',
+          confirmButtonColor: '#ef4444'
+        })
       }
     }
   }
@@ -76,6 +124,11 @@ const Dashboard = () => {
         // Los pedidos ahora se manejan directamente en SalesTab
         await cargarUsuarios()
       }
+
+      // Debug: Log productos cargados
+      console.log('🔍 Productos en Dashboard:', productos)
+      console.log('🔍 Cantidad de productos:', productos?.length)
+      
       setLoading(false)
     }
 
@@ -141,7 +194,8 @@ const Dashboard = () => {
                 productos={productos}
                 usuarios={usuarios}
                 onEliminarUsuario={eliminarUsuario}
-
+                onEliminarProducto={(id) => console.log('Eliminar producto:', id)}
+                onGuardarProducto={(data) => console.log('Guardar producto:', data)}
               />
             ) : (
               <UserPurchases comprasUsuario={comprasUsuario} />

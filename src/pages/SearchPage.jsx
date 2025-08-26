@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useProductos } from '../hooks/useProducts'
+import FavoriteButton from '../components/FavoriteButton'
 
 const PaginaBusqueda = () => {
   const [parametrosBusqueda] = useSearchParams()
@@ -101,6 +102,11 @@ const PaginaBusqueda = () => {
                         -{product.descuento}%
                       </div>
                     )}
+
+                    {/* Botón de favoritos */}
+                    <div className="absolute top-2 left-2">
+                      <FavoriteButton producto={product} size="small" />
+                    </div>
                   </div>
 
                   {/* Información del producto */}

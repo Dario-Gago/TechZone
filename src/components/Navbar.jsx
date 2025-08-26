@@ -7,11 +7,13 @@ import {
   Menu,
   X,
   UserPlus,
-  LogOut
+  LogOut,
+  Heart
 } from 'lucide-react'
 import { useAutenticacion } from '../contexts/AuthContext'
 import { useProductos } from '../hooks/useProducts'
 import { useCarrito } from '../hooks/useCart'
+import { useFavorites } from '../hooks/useFavorites'
 import BarraDeBusqueda from './SearchBar'
 import Logo from '../assets/Logo.png'
 
@@ -23,13 +25,19 @@ const BarraNavegacion = () => {
   // ✅ Obtener productos y extraer categorías de ellos
   const { todosLosProductos: productos, cargando } = useProductos()
   const { obtenerTotalItems } = useCarrito()
+  const { cantidadFavoritos } = useFavorites()
   const location = useLocation()
 
   const totalArticulos = obtenerTotalItems()
 
   // ✅ Extraer categorías únicas de los productos con orden específico
   const categoriasValidas = useMemo(() => {
-    if (cargando || !Array.isArray(productos) || productos.length === 0) {return []
+    if (cargando || !Array.isArray(productos) || productos.length === 0) {
+      console.log('Productos aún cargando o vacío:', {
+        cargando,
+        productos: productos?.length
+      })
+      return []
     }
 
     // Orden correcto según la base de datos
@@ -146,6 +154,19 @@ const BarraNavegacion = () => {
                 </button>
               </div>
             )}
+
+            {/* Carrito con contador */}
+            <Link
+              to="/favorites"
+              className="p-2 rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-900 relative transition-colors duration-200"
+            >
+              <Heart className="h-5 w-5" />
+              {cantidadFavoritos > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] text-[10px]">
+                  {cantidadFavoritos > 99 ? '99+' : cantidadFavoritos}
+                </span>
+              )}
+            </Link>
 
             {/* Carrito con contador */}
             <Link

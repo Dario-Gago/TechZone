@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useProductos } from '../hooks/useProducts'
 import { useAutenticacion } from '../contexts/AuthContext'
 import { ShoppingCart, Package, AlertTriangle } from 'lucide-react'
+import FavoriteButton from '../components/FavoriteButton'
 
 const PaginaCategoria = () => {
   const { categorySlug } = useParams()
@@ -175,6 +176,11 @@ const PaginaCategoria = () => {
                             -{descuento}%
                           </div>
                         )}
+                      </div>
+
+                      {/* Botón de favoritos */}
+                      <div className="absolute top-2 right-2">
+                        <FavoriteButton producto={product} size="small" />
                       </div>
 
                       {/* Overlay para productos sin stock (solo para admin) */}
