@@ -18,7 +18,7 @@ const Dashboard = () => {
   const { productos } = useContext(ProductContext)
   
   // Usar SalesContext para obtener las ventas y estadísticas
-  const { sales, loading: salesLoading } = useSales()
+  const { loading: salesLoading } = useSales()
 
   // Función para obtener usuarios de la base de datos
   const cargarUsuarios = async () => {
@@ -87,20 +87,6 @@ const Dashboard = () => {
     return <LoadingSpinner />
   }
 
-  // Convertir las ventas del usuario actual a formato de compras para UserPurchases
-  const comprasUsuario = sales.filter(sale => 
-    !esAdmin && (
-      sale.usuario_id === usuario?.usuario_id ||
-      sale.user_id === usuario?.usuario_id ||
-      sale.usuario_id === usuario?.id ||
-      sale.user_id === usuario?.id
-    )
-  ).map(sale => ({
-    ...sale,
-    precio: parseFloat(sale.total || 0),
-    estado_pedido: sale.estado || 'pendiente'
-  }))
-
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="max-w-6xl mx-auto">
@@ -144,7 +130,7 @@ const Dashboard = () => {
 
               />
             ) : (
-              <UserPurchases comprasUsuario={comprasUsuario} />
+              <UserPurchases />
             )}
           </div>
         </div>
