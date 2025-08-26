@@ -1,7 +1,7 @@
 // saleModel.js - VERSIÓN CORREGIDA
 import pool from '../../db/config.js'
 
-// ✅ Get all sales (admin) or only user sales
+// ✅ Get all sales (admin) or only user sales - Updated with shipping info
 export const findSales = async (user) => {
   if (user.admin) {
     const query = `
