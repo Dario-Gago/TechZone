@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useProductos } from '../hooks/useProducts'
 import { useAutenticacion } from '../contexts/AuthContext'
 import { ShoppingCart, Package, AlertTriangle } from 'lucide-react'
+import LikeButton from '../components/LikeButton'
 
 const PaginaCategoria = () => {
   const { categorySlug } = useParams()
@@ -175,6 +176,15 @@ const PaginaCategoria = () => {
                             -{descuento}%
                           </div>
                         )}
+                      </div>
+
+                      {/* Botón de like */}
+                      <div className="absolute top-2 right-2">
+                        <LikeButton 
+                          productoId={product.id} 
+                          size="sm" 
+                          variant="floating" 
+                        />
                       </div>
 
                       {/* Overlay para productos sin stock (solo para admin) */}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import { useProductos } from '../hooks/useProducts'
+import LikeButton from '../components/LikeButton'
 
 const PaginaBusqueda = () => {
   const [parametrosBusqueda] = useSearchParams()
@@ -101,6 +102,15 @@ const PaginaBusqueda = () => {
                         -{product.descuento}%
                       </div>
                     )}
+
+                    {/* Botón de like */}
+                    <div className="absolute top-2 left-2">
+                      <LikeButton 
+                        productoId={product.id} 
+                        size="sm" 
+                        variant="floating" 
+                      />
+                    </div>
                   </div>
 
                   {/* Información del producto */}

@@ -1,23 +1,22 @@
-// salesController.js - VERSIÓN CORREGIDA
+// salesController.js
 import {
   findSales,
   createSaleWithItems,
   updateSaleStatus
 } from '../models/Sales.js'
 
-// ✅ Get sales
+// Get sales
 export const getSales = async (req, res) => {
   try {
     const user = req.user
     const sales = await findSales(user)
     res.json(sales)
   } catch (err) {
-    console.error('❌ Error en getSales:', err)
     res.status(500).json({ error: err.message })
   }
 }
 
-// ✅ Create sale - CORREGIDO
+// Create sale
 export const createSale = async (req, res) => {
   try {
     const user = req.user
@@ -68,12 +67,11 @@ export const createSale = async (req, res) => {
       venta_id: result.venta_id
     })
   } catch (err) {
-    console.error('❌ Error en createSale:', err)
     res.status(500).json({ error: err.message })
   }
 }
 
-// ✅ Update sale status
+// Update sale status
 export const updateSale = async (req, res) => {
   try {
     const { ventaId } = req.params
@@ -107,18 +105,16 @@ export const updateSale = async (req, res) => {
 
     res.json({ message: 'Estado actualizado correctamente', sale: updatedSale })
   } catch (err) {
-    console.error('❌ Error en updateSale:', err)
     res.status(500).json({ error: err.message })
   }
 }
 
-// ✅ Get user sales
+// Get user sales
 export const getUserSales = async (req, res) => {
   try {
     const sales = await findSales(req.user)
     res.json(sales)
   } catch (err) {
-    console.error('❌ Error en getUserSales:', err)
     res.status(500).json({ error: err.message })
   }
 }

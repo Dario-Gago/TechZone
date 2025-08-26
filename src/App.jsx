@@ -18,12 +18,14 @@ import SearchPage from './pages/SearchPage'
 import RutaPrivada from './components/PrivateRoute'
 import RutaPublica from './components/PublicRoute'
 import Contact from './pages/Contact'
+import FavoritesPage from './pages/FavoritesPage'
 
 //Importo el contexto
 import { ProveedorAutenticacion } from './contexts/AuthContext'
 import { ProveedorProducto } from './contexts/ProductContext'
 import { ProveedorCarrito } from './contexts/CartContext'
 import { SalesProvider } from './contexts/SalesContext'
+import { LikesProvider } from './contexts/LikesContext'
 
 const App = () => {
   return (
@@ -37,57 +39,60 @@ const App = () => {
         <ProveedorAutenticacion>
           <ProveedorProducto>
             <ProveedorCarrito>
-              <SalesProvider>
-                <ScrollToTop>
-                  <Navbar />
+              <LikesProvider>
+                <SalesProvider>
+                  <ScrollToTop>
+                    <Navbar />
 
-                  <main className="flex-1">
-                    <Routes>
-                      <Route path="/" element={<Inicio />} />
-                      <Route path="/product/:id" element={<ProductDetail />} />
-                      <Route
-                        path="/category/:categorySlug"
-                        element={<CategoryPage />}
-                      />
-                      <Route path="/search" element={<SearchPage />} />
-                      <Route
-                        path="/login"
-                        element={
-                          <RutaPublica>
-                            <Login />
-                          </RutaPublica>
-                        }
-                      />
+                    <main className="flex-1">
+                      <Routes>
+                        <Route path="/" element={<Inicio />} />
+                        <Route path="/product/:id" element={<ProductDetail />} />
+                        <Route
+                          path="/category/:categorySlug"
+                          element={<CategoryPage />}
+                        />
+                        <Route path="/search" element={<SearchPage />} />
+                        <Route
+                          path="/login"
+                          element={
+                            <RutaPublica>
+                              <Login />
+                            </RutaPublica>
+                          }
+                        />
 
-                      <Route
-                        path="/register"
-                        element={
-                          <RutaPublica>
-                            <Register />
-                          </RutaPublica>
-                        }
-                      />
+                        <Route
+                          path="/register"
+                          element={
+                            <RutaPublica>
+                              <Register />
+                            </RutaPublica>
+                          }
+                        />
 
-                      <Route path="/cart" element={<Cart />} />
-                      <Route path="/checkout" element={<Checkout />} />
-                      <Route
-                        path="/payment-success"
-                        element={<PagoExitoso />}
-                      />
-                      <Route
-                        path="/dashboard"
-                        element={
-                          <RutaPrivada>
-                            <Dashboard />
-                          </RutaPrivada>
-                        }
-                      />
-                      <Route path="/contact" element={<Contact />} />
-                    </Routes>
-                  </main>
-                  <Footer />
-                </ScrollToTop>
-              </SalesProvider>
+                        <Route path="/cart" element={<Cart />} />
+                        <Route path="/checkout" element={<Checkout />} />
+                        <Route
+                          path="/payment-success"
+                          element={<PagoExitoso />}
+                        />
+                        <Route
+                          path="/dashboard"
+                          element={
+                            <RutaPrivada>
+                              <Dashboard />
+                            </RutaPrivada>
+                          }
+                        />
+                        <Route path="/contact" element={<Contact />} />
+                        <Route path="/favorites" element={<FavoritesPage />} />
+                      </Routes>
+                    </main>
+                    <Footer />
+                  </ScrollToTop>
+                </SalesProvider>
+              </LikesProvider>
             </ProveedorCarrito>
           </ProveedorProducto>
         </ProveedorAutenticacion>

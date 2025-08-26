@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useProductos } from '../hooks/useProducts'
+import LikeButton from './LikeButton'
 
 const ProductosDestacados = () => {
   const { productos, formatearPrecio, cargando } = useProductos()
@@ -163,6 +164,15 @@ const ProductosDestacados = () => {
                         -{descuento}%
                       </div>
                     )}
+
+                    {/* Botón de like */}
+                    <div className="absolute top-2 left-2">
+                      <LikeButton 
+                        productoId={producto.id} 
+                        size="sm" 
+                        variant="floating" 
+                      />
+                    </div>
                   </div>
 
                   {/* Información del producto */}
