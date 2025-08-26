@@ -18,7 +18,9 @@ const corsOptions = {
     // Lista de dominios permitidos
     const allowedOrigins = [
       'http://localhost:5173',
+      'http://localhost:5174',
       'http://127.0.0.1:5173',
+      'http://127.0.0.1:5174',
       // Dominios de producción en Render
       process.env.FRONTEND_URL, // Variable de entorno para frontend en producción
       // Ejemplos para Render:

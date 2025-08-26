@@ -40,7 +40,7 @@ export const SalesProvider = ({ children }) => {
     }
   }, [token, usuario])
 
-  // ✅ Get sales from backend (con prevención de llamadas duplicadas)
+  // Get sales from backend (con prevención de llamadas duplicadas)
   const fetchSales = useCallback(async () => {
     // Prevenir múltiples llamadas simultáneas
     if (fetchSalesRef.current) {
@@ -99,7 +99,7 @@ export const SalesProvider = ({ children }) => {
     }
   }, [getAuthData])
 
-  // ✅ Create new sale
+  // Create new sale
   const createSale = async (items, total) => {
 
     const { token } = getAuthData()
@@ -144,7 +144,7 @@ export const SalesProvider = ({ children }) => {
     }
   }
 
-  // ✅ Update sale status
+  // Update sale status
   const updateSaleStatus = async (ventaId, nuevoEstado) => {
     const { token } = getAuthData()
 
@@ -171,7 +171,7 @@ export const SalesProvider = ({ children }) => {
     }
   }
 
-  // 🆕 Estadísticas calculadas con useMemo para optimizar rendimiento - SOLO SI HAY SESIÓN
+  // Estadísticas calculadas con useMemo para optimizar rendimiento - SOLO SI HAY SESIÓN
   const userStats = useMemo(() => {
     // No calcular estadísticas si no hay usuario autenticado
     if (!usuario || !estaAutenticado) {
@@ -238,7 +238,7 @@ export const SalesProvider = ({ children }) => {
     }
   }, [sales, usuario, estaAutenticado, getAuthData])
 
-  // 🆕 Estadísticas de administrador calculadas con useMemo - SOLO SI HAY SESIÓN
+  // Estadísticas de administrador calculadas con useMemo - SOLO SI HAY SESIÓN
   const adminStats = useMemo(() => {
     // No calcular estadísticas si no hay usuario autenticado
     if (!usuario || !estaAutenticado) {
@@ -373,12 +373,6 @@ export const SalesProvider = ({ children }) => {
     }
   }, [usuario, estaAutenticado, isInitialized, getAuthData, fetchSales])
 
-  // Debug del estado - solo en desarrollo y limitado
-  useEffect(() => {
-    if (usuario && estaAutenticado && import.meta.env.DEV) {
-    }
-  }, [sales?.length, loading, error, usuario, estaAutenticado])
-
   const contextValue = {
     sales: sales || [],
     loading: loading || false,
@@ -386,7 +380,7 @@ export const SalesProvider = ({ children }) => {
     fetchSales,
     createSale,
     updateSaleStatus,
-    // 🆕 Nuevas estadísticas calculadas
+    // Nuevas estadísticas calculadas
     userStats,
     adminStats
   }

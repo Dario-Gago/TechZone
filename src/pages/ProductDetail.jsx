@@ -5,6 +5,7 @@ import axios from 'axios'
 import { useProductos } from '../hooks/useProducts'
 import { useCarrito } from '../hooks/useCart'
 import ProductosDestacados from '../components/FeaturedProducts'
+import LikeButton from '../components/LikeButton'
 import { API_ENDPOINTS } from '../config/api'
 
 const DetalleProducto = () => {
@@ -159,13 +160,23 @@ const DetalleProducto = () => {
 
           {/* Información del producto */}
           <div className="space-y-6">
-            <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+            <div className="relative">
+              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2 pr-16">
                 {producto.nombre}
               </h1>
               {producto.marca && (
                 <p className="text-lg text-gray-600 mb-4">{producto.marca}</p>
               )}
+              
+              {/* Botón de Me Gusta en la esquina superior derecha */}
+              <div className="absolute top-0 right-0">
+                <LikeButton 
+                  productoId={producto.id} 
+                  size="lg" 
+                  showText={false}
+                  variant="floating"
+                />
+              </div>
             </div>
 
             {/* Precios */}

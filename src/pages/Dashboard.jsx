@@ -18,7 +18,7 @@ const Dashboard = () => {
   const { productos } = useContext(ProductContext)
   
   // Usar SalesContext para obtener las ventas y estadísticas
-  const { sales, loading: salesLoading } = useSales()
+  const { loading: salesLoading } = useSales()
 
   // Función para obtener usuarios de la base de datos
   const cargarUsuarios = async () => {
@@ -42,28 +42,26 @@ const Dashboard = () => {
   // NOTA: Ahora SalesTab maneja esto directamente a través del SalesContext
 
   const eliminarUsuario = async (usuarioId) => {
-    if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-      try {
-        
-        await apiClient.delete(`${API_ENDPOINTS.USUARIOS}/${usuarioId}`)
-
-        setUsuarios(usuarios.filter((u) => u.usuario_id !== usuarioId))
-        alert('Usuario eliminado exitosamente')
-      } catch (error) {
-        console.error('❌ Error al eliminar usuario:', error.message || error)
-
-        if (error.response?.status === 403) {
-          alert('No tienes permisos para eliminar usuarios')
-        } else if (error.response?.status === 404) {
-          alert('Usuario no encontrado')
-        } else if (error.response?.status === 400) {
-          alert(error.response?.data?.message || 'Error al eliminar usuario')
-        } else if (error.code === 'ECONNABORTED') {
-          alert('Timeout en la petición - El servidor puede estar ocupado, intenta de nuevo')
-        } else {
-          alert('Error al eliminar el usuario')
-        }
+    try {
+      await apiClient.delete(`${API_ENDPOINTS.USUARIOS}/${usuarioId}`)
+      setUsuarios(usuarios.filter((u) => u.usuario_id !== usuarioId))
+    } catch (error) {
+      console.error('❌ Error al eliminar usuario:', error.message || error)
+      
+      let errorMessage = 'Error al eliminar el usuario'
+      
+      if (error.response?.status === 403) {
+        errorMessage = 'No tienes permisos para eliminar usuarios'
+      } else if (error.response?.status === 404) {
+        errorMessage = 'Usuario no encontrado'
+      } else if (error.response?.status === 400) {
+        errorMessage = error.response?.data?.message || 'Error al eliminar usuario'
+      } else if (error.code === 'ECONNABORTED') {
+        errorMessage = 'Timeout en la petición - El servidor puede estar ocupado, intenta de nuevo'
       }
+
+      // Re-lanzar el error para que UsersTab lo capture y muestre la alerta
+      throw new Error(errorMessage)
     }
   }
 
@@ -86,20 +84,6 @@ const Dashboard = () => {
   if (loading || salesLoading) {
     return <LoadingSpinner />
   }
-
-  // Convertir las ventas del usuario actual a formato de compras para UserPurchases
-  const comprasUsuario = sales.filter(sale => 
-    !esAdmin && (
-      sale.usuario_id === usuario?.usuario_id ||
-      sale.user_id === usuario?.usuario_id ||
-      sale.usuario_id === usuario?.id ||
-      sale.user_id === usuario?.id
-    )
-  ).map(sale => ({
-    ...sale,
-    precio: parseFloat(sale.total || 0),
-    estado_pedido: sale.estado || 'pendiente'
-  }))
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -144,7 +128,7 @@ const Dashboard = () => {
 
               />
             ) : (
-              <UserPurchases comprasUsuario={comprasUsuario} />
+              <UserPurchases />
             )}
           </div>
         </div>

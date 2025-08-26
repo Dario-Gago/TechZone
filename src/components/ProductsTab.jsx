@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { Plus, Edit, Trash2 } from 'lucide-react'
+import Swal from 'sweetalert2'
 import ProductForm from './ProductForm'
 import { ProductContext } from '../contexts/ProductContext' // Asegúrate de que la ruta sea correcta
 
@@ -65,21 +66,55 @@ const ProductsTab = () => {
   }
 
   const handleEliminarProducto = async (id) => {
-    if (
-      window.confirm('¿Estás seguro de que quieres eliminar este producto?')
-    ) {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Quieres eliminar este producto? Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    })
+
+    if (result.isConfirmed) {
       setCargando(true)
       try {
         const resultado = await eliminarProducto(id)
         if (resultado && resultado.success) {
           console.log('Producto eliminado exitosamente')
+          
+          Swal.fire({
+            title: '¡Eliminado!',
+            text: 'El producto ha sido eliminado correctamente.',
+            icon: 'success',
+            confirmButtonColor: '#10b981',
+            timer: 2000,
+            timerProgressBar: true
+          })
+          
           // También recargar después de eliminar si lo deseas
           window.location.reload()
         } else {
           console.error('Error al eliminar producto:', resultado?.error)
+          
+          Swal.fire({
+            title: 'Error',
+            text: 'No se pudo eliminar el producto. Inténtalo de nuevo.',
+            icon: 'error',
+            confirmButtonColor: '#ef4444'
+          })
         }
       } catch (error) {
         console.error('Error en handleEliminarProducto:', error)
+        
+        Swal.fire({
+          title: 'Error',
+          text: 'Ocurrió un error inesperado. Inténtalo de nuevo.',
+          icon: 'error',
+          confirmButtonColor: '#ef4444'
+        })
       } finally {
         setCargando(false)
       }
