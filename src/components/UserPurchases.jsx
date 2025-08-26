@@ -5,6 +5,20 @@ import { useSales } from '../hooks/useSales'
 const UserPurchases = () => {
   const { sales: comprasUsuario, loading, error } = useSales()
 
+  // 🔍 Debug logs para diagnosticar el problema
+  console.log('🔍 UserPurchases Debug:', {
+    comprasUsuario,
+    loading,
+    error,
+    length: comprasUsuario?.length
+  })
+  
+  if (comprasUsuario && comprasUsuario.length > 0) {
+    console.log('🔍 Primera compra completa:', comprasUsuario[0])
+    console.log('🔍 Campo envio de primera compra:', comprasUsuario[0].envio)
+    console.log('🔍 Tipo de envio:', typeof comprasUsuario[0].envio)
+  }
+
   const formatearMoneda = (cantidad) => {
     return new Intl.NumberFormat('es-CL', {
       style: 'currency',
@@ -103,21 +117,32 @@ const UserPurchases = () => {
               
               {/* Información de envío */}
               <div className="text-xs text-gray-500 mt-1">
-                {compra.envio ? (
-                  compra.envio.tipo_entrega === 'domicilio' ? (
-                    <div>
-                      <p>🚚 Envío a domicilio</p>
-                      {compra.envio.direccion && (
-                        <p className="mt-1 max-w-32 break-words">{compra.envio.direccion}</p>
-                      )}
-                    </div>
-                  ) : (
-                    <p>🏪 Retiro en tienda</p>
-                  )
-                ) : (
-                  // Si no hay información de envío, asumir retiro en tienda por defecto
-                  <p>🏪 Retiro en tienda</p>
-                )}
+                {(() => {
+                  // 🔍 Debug específico para el envío
+                  console.log(`🔍 Evaluando envío para venta ${compra.venta_id}:`, {
+                    envio: compra.envio,
+                    tipoEntrega: compra.envio?.tipo_entrega,
+                    direccion: compra.envio?.direccion,
+                    existeEnvio: !!compra.envio
+                  })
+                  
+                  if (compra.envio) {
+                    if (compra.envio.tipo_entrega === 'domicilio') {
+                      return (
+                        <div>
+                          <p>🚚 Envío a domicilio</p>
+                          {compra.envio.direccion && (
+                            <p className="mt-1 max-w-32 break-words">{compra.envio.direccion}</p>
+                          )}
+                        </div>
+                      )
+                    } else {
+                      return <p>🏪 Retiro en tienda</p>
+                    }
+                  } else {
+                    return <p>🏪 Retiro en tienda</p>
+                  }
+                })()}
               </div>
             </div>
           </div>
