@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Heart, ShoppingCart } from 'lucide-react'
+import Swal from 'sweetalert2'
 import { useLikes } from '../hooks/useLikes'
 import { useProductos } from '../hooks/useProducts'
 import { useCarrito } from '../hooks/useCart'
@@ -24,6 +25,33 @@ const FavoritesPage = () => {
 
   const handleAddToCart = (producto) => {
     agregarAlCarrito(producto.id, 1)
+  }
+
+  const handleLimpiarLikes = async () => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Quieres quitar todos los productos de tu lista de favoritos?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Sí, limpiar lista',
+      cancelButtonText: 'Cancelar',
+      reverseButtons: true
+    })
+
+    if (result.isConfirmed) {
+      limpiarLikes()
+      
+      Swal.fire({
+        title: '¡Lista limpia!',
+        text: 'Todos los productos han sido removidos de tu lista de favoritos.',
+        icon: 'success',
+        confirmButtonColor: '#10b981',
+        timer: 2000,
+        timerProgressBar: true
+      })
+    }
   }
 
   if (cargando) {
@@ -66,11 +94,7 @@ const FavoritesPage = () => {
           {/* Botón para limpiar todos los favoritos */}
           {totalLikes > 0 && (
             <button
-              onClick={() => {
-                if (window.confirm('¿Estás seguro de que quieres quitar todos los productos de tu lista de favoritos?')) {
-                  limpiarLikes()
-                }
-              }}
+              onClick={handleLimpiarLikes}
               className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 hover:border-red-300 rounded-lg transition-colors duration-200"
             >
               Limpiar lista
