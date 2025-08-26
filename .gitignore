@@ -37,3 +37,4 @@ backend/.env.local
 package-lock.json
 backend/package-lock.json
 /docs
+.env
