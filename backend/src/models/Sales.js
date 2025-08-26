@@ -1,4 +1,4 @@
-// saleModel.js - VERSIÓN CORREGIDA
+// Sales.js
 import pool from '../../db/config.js'
 
 // Obtener todas las ventas (administrador) o solo las ventas del usuario
@@ -90,7 +90,7 @@ export const findSales = async (user) => {
   }
 }
 
-// ✅ Create new sale with items - CORREGIDO
+// Create new sale with items
 export const createSaleWithItems = async (userId, items, total) => {
   const client = await pool.connect()
   try {
@@ -105,9 +105,8 @@ export const createSaleWithItems = async (userId, items, total) => {
 
     const ventaId = saleResult.rows[0].venta_id
 
-    // Insert items - USAR LOS NOMBRES CORRECTOS DEL FRONTEND
+    // Insert items
     for (const item of items) {
-
       // Validar que el item tenga todos los campos requeridos
       if (!item.producto_id || !item.cantidad || !item.precio_unitario) {
         throw new Error(`Item inválido: ${JSON.stringify(item)}`)
@@ -116,7 +115,7 @@ export const createSaleWithItems = async (userId, items, total) => {
       await client.query(
         `INSERT INTO detalle_ventas (venta_id, producto_id, cantidad, precio_unitario)
          VALUES ($1, $2, $3, $4)`,
-        [ventaId, item.producto_id, item.cantidad, item.precio_unitario] // ✅ Nombres correctos
+        [ventaId, item.producto_id, item.cantidad, item.precio_unitario]
       )
     }
 
@@ -125,14 +124,13 @@ export const createSaleWithItems = async (userId, items, total) => {
     return { id: ventaId, venta_id: ventaId }
   } catch (err) {
     await client.query('ROLLBACK')
-    console.error('❌ Error en transacción, haciendo rollback:', err)
     throw err
   } finally {
     client.release()
   }
 }
 
-// ✅ Update sale status
+// Update sale status
 export const updateSaleStatus = async (ventaId, nuevoEstado) => {
   const query = `UPDATE ventas SET estado = $1 WHERE venta_id = $2 RETURNING *`
   const result = await pool.query(query, [nuevoEstado, ventaId])
