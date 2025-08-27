@@ -123,7 +123,6 @@ export const createProduct = async (productData) => {
         if (marcaResult.rows.length > 0) {
           marcaIdFinal = marcaResult.rows[0].marca_id
         } else {
-          console.log('⚠️ Marca no encontrada, creando nueva marca:', marca)
           // Crear nueva marca si no existe
           const nuevaMarcaResult = await client.query(
             'INSERT INTO marca (nombre) VALUES ($1) RETURNING marca_id',
@@ -177,7 +176,6 @@ export const createProduct = async (productData) => {
         categoriaId = categoriaResult.rows[0].categoria_id
       } else {
         // Crear nueva categoría si no existe
-        console.log('⚠️ Categoría no encontrada, creando nueva:', categoria)
         const nuevaCategoriaResult = await client.query(
           'INSERT INTO categoria (nombre, activo) VALUES ($1, true) RETURNING categoria_id',
           [categoria.trim()]
@@ -240,7 +238,6 @@ export const updateProduct = async (id, productData) => {
         if (marcaResult.rows.length > 0) {
           marcaIdFinal = marcaResult.rows[0].marca_id
         } else {
-          console.log('⚠️ Marca no encontrada, creando nueva marca:', marca)
           // Crear nueva marca si no existe
           const nuevaMarcaResult = await client.query(
             'INSERT INTO marca (nombre) VALUES ($1) RETURNING marca_id',
@@ -306,7 +303,6 @@ export const updateProduct = async (id, productData) => {
         categoriaId = categoriaResult.rows[0].categoria_id
       } else {
         // Crear nueva categoría si no existe
-        console.log('⚠️ Categoría no encontrada, creando nueva:', categoria)
         const nuevaCategoriaResult = await client.query(
           'INSERT INTO categoria (nombre, activo) VALUES ($1, true) RETURNING categoria_id',
           [categoria.trim()]
