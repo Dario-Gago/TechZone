@@ -24,7 +24,7 @@ const BannerOferta = () => {
     {
       id: 'componentes-motherboard',
       name: 'Motherboard',
-      price: '$999.990',
+      price: '$160.900',
       slug: 'componentes',
       imageKey: 'motherboard',
       tall: true // Ocupa 2 filas
