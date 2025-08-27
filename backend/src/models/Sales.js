@@ -90,13 +90,13 @@ export const findSales = async (user) => {
   }
 }
 
-// Create new sale with items
+// Crear nueva venta con items
 export const createSaleWithItems = async (userId, items, total) => {
   const client = await pool.connect()
   try {
     await client.query('BEGIN')
 
-    // Insert sale
+    // Insertar venta
     const saleResult = await client.query(
       `INSERT INTO ventas (usuario_id, total, estado)
        VALUES ($1, $2, 'pendiente') RETURNING venta_id`,
@@ -105,7 +105,7 @@ export const createSaleWithItems = async (userId, items, total) => {
 
     const ventaId = saleResult.rows[0].venta_id
 
-    // Insert items
+    // Insertar items
     for (const item of items) {
       // Validar que el item tenga todos los campos requeridos
       if (!item.producto_id || !item.cantidad || !item.precio_unitario) {
@@ -130,7 +130,7 @@ export const createSaleWithItems = async (userId, items, total) => {
   }
 }
 
-// Update sale status
+// Actualizar estado venta
 export const updateSaleStatus = async (ventaId, nuevoEstado) => {
   const query = `UPDATE ventas SET estado = $1 WHERE venta_id = $2 RETURNING *`
   const result = await pool.query(query, [nuevoEstado, ventaId])

@@ -47,7 +47,7 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(express.json())
 
-// Health check route
+// Ruta de verificación de estado /health
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 

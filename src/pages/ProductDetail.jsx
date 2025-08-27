@@ -66,7 +66,7 @@ const DetalleProducto = () => {
     )
   }
 
-  // ✅ Calcular stock disponible
+  //Calcular stock disponible
   const cantidadEnCarrito = obtenerCantidadItem(producto.id)
   const stockDisponible = producto.stock - cantidadEnCarrito
   const sinStock = producto.stock <= 0
@@ -74,14 +74,14 @@ const DetalleProducto = () => {
 
   const manejarCambioCantidad = (nuevaCantidad) => {
     if (nuevaCantidad >= 1) {
-      // ✅ No permitir más del stock disponible
+      //No permitir más del stock disponible
       const cantidadMaxima = Math.min(nuevaCantidad, stockDisponible)
       setCantidad(cantidadMaxima)
     }
   }
 
   const manejarAgregarCarrito = async () => {
-    // ✅ Verificar stock antes de agregar
+    //Verificar stock antes de agregar
     if (stockInsuficiente) {
       setMensajeExito('No hay stock suficiente disponible')
       setTimeout(() => setMensajeExito(''), 3000)
@@ -240,7 +240,7 @@ const DetalleProducto = () => {
               </div>
             )}
 
-            {/* ✅ Selector cantidad y botón de compra */}
+            {/*Selector cantidad y botón de compra */}
             {!sinStock && (
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
@@ -307,7 +307,7 @@ const DetalleProducto = () => {
               </div>
             )}
 
-                        {/* ✅ Información de stock */}
+                        {/*Información de stock */}
             <div className="bg-gray-50 border rounded-lg p-4">
               <div className="flex items-center space-x-2 mb-2">
                 <Package className="h-5 w-5 text-gray-600" />

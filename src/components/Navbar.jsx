@@ -22,7 +22,7 @@ const BarraNavegacion = () => {
   const [estaBusquedaAbierta, setEstaBusquedaAbierta] = useState(false)
   const { estaAutenticado, cerrarSesion } = useAutenticacion()
 
-  // ✅ Obtener productos y extraer categorías de ellos
+  //Obtener productos y extraer categorías de ellos
   const { todosLosProductos: productos, cargando } = useProductos()
   const { obtenerTotalItems } = useCarrito()
   const { totalLikes } = useLikes()
@@ -30,7 +30,7 @@ const BarraNavegacion = () => {
 
   const totalArticulos = obtenerTotalItems()
 
-  // ✅ Extraer categorías únicas de los productos con orden específico
+  //Extraer categorías únicas de los productos con orden específico
   const categoriasValidas = useMemo(() => {
     if (cargando || !Array.isArray(productos) || productos.length === 0) {return []
     }
@@ -211,7 +211,7 @@ const BarraNavegacion = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center space-x-8 py-3 overflow-x-auto">
             {cargando ? (
-              // ✅ Skeleton loader para categorías
+              //Skeleton loader para categorías
               <div className="flex space-x-8">
                 {[...Array(6)].map((_, index) => (
                   <div
@@ -297,7 +297,7 @@ const BarraNavegacion = () => {
             <div className="border-t border-gray-200 pt-3">
               <div className="space-y-2">
                 {cargando ? (
-                  // ✅ Skeleton loader para móvil
+                  //Skeleton loader para móvil
                   <div className="space-y-2">
                     {[...Array(6)].map((_, index) => (
                       <div

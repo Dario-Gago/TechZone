@@ -73,7 +73,7 @@ export const ProveedorProducto = ({ children }) => {
         setCargando(true)
         const response = await api.get('/')
         
-        // ✅ Usar directamente los datos del backend sin mapeo innecesario
+        //Usar directamente los datos del backend sin mapeo innecesario
         const productosConvertidos = response.data.map(producto => {
           const caracteristicasProcessed = (() => {
             if (Array.isArray(producto.caracteristicas)) {
@@ -118,7 +118,7 @@ export const ProveedorProducto = ({ children }) => {
   const agregarProducto = async (nuevoProducto) => {
     try {
 
-      // ✅ Usar directamente los nombres del backend sin mapeo innecesario
+      //Usar directamente los nombres del backend sin mapeo innecesario
       const payload = {
         nombre: (nuevoProducto.nombre || '').trim(),
         marca: (nuevoProducto.marca || '').trim(),
@@ -138,7 +138,7 @@ export const ProveedorProducto = ({ children }) => {
 
       const response = await api.post('/', payload)
 
-      // ✅ Usar directamente la respuesta del backend
+      //Usar directamente la respuesta del backend
       const productoCreado = {
         ...response.data,
         caracteristicas: response.data.caracteristicas || []
@@ -164,7 +164,7 @@ export const ProveedorProducto = ({ children }) => {
   const editarProducto = async (id, productoActualizado) => {
     try {
 
-      // ✅ Usar directamente los nombres del backend sin mapeo innecesario
+      //Usar directamente los nombres del backend sin mapeo innecesario
       const payload = {
         nombre: (productoActualizado.nombre || '').trim(),
         marca: (productoActualizado.marca || '').trim(),
@@ -184,7 +184,7 @@ export const ProveedorProducto = ({ children }) => {
 
       const response = await api.put(`/${id}`, payload)
 
-      // ✅ Usar directamente la respuesta del backend
+      //Usar directamente la respuesta del backend
       const productoEditado = {
         ...response.data,
         caracteristicas: response.data.caracteristicas || []

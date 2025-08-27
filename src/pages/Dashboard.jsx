@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { User } from 'lucide-react'
 import { useAutenticacion } from '../contexts/AuthContext'
 import { API_ENDPOINTS } from '../config/api'
-import apiClient from '../services/apiClient' // ✅ Usar apiClient en lugar de axios
+import apiClient from '../services/apiClient' //Usar apiClient en lugar de axios
 
 import StatsCards from '../components/StatsCards'
 import UserPurchases from '../components/UserPurchases'

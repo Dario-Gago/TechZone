@@ -5,7 +5,7 @@ import {
   updateSaleStatus
 } from '../models/Sales.js'
 
-// Get sales
+// Obtener ventas
 export const getSales = async (req, res) => {
   try {
     const user = req.user
@@ -16,7 +16,7 @@ export const getSales = async (req, res) => {
   }
 }
 
-// Create sale
+// Crear venta
 export const createSale = async (req, res) => {
   try {
     const user = req.user
@@ -71,7 +71,7 @@ export const createSale = async (req, res) => {
   }
 }
 
-// Update sale status
+// Actualizar estado venta
 export const updateSale = async (req, res) => {
   try {
     const { ventaId } = req.params
@@ -109,7 +109,7 @@ export const updateSale = async (req, res) => {
   }
 }
 
-// Get user sales
+// Obtener ventas del usuario
 export const getUserSales = async (req, res) => {
   try {
     const sales = await findSales(req.user)
