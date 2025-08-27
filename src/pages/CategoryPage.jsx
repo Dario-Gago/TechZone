@@ -12,10 +12,10 @@ const PaginaCategoria = () => {
     useProductos()
   const { esAdmin } = useAutenticacion()
 
-  // ✅ Usar productos apropiados según el tipo de usuario
+  //Usar productos apropiados según el tipo de usuario
   const productosDisponibles = esAdmin ? todosLosProductos : productos
 
-  // ✅ Extraer categorías únicas de los productos con orden específico
+  //Extraer categorías únicas de los productos con orden específico
   const categorias = useMemo(() => {
     if (
       !Array.isArray(productosDisponibles) ||
@@ -54,7 +54,7 @@ const PaginaCategoria = () => {
     return [{ id: 'todo', slug: 'todo', name: 'Todo' }, ...categoriasOrdenadas]
   }, [productosDisponibles])
 
-  // ✅ Filtrar productos por categoría
+  //Filtrar productos por categoría
   const productosFiltrados = useMemo(() => {
     if (!Array.isArray(productosDisponibles)) return []
 
@@ -71,7 +71,7 @@ const PaginaCategoria = () => {
     })
   }, [productosDisponibles, categorySlug])
 
-  // ✅ Encontrar el nombre de la categoría
+  //Encontrar el nombre de la categoría
   const categoriaActual = categorias.find((cat) => cat.slug === categorySlug)
   const nombreCategoria = categoriaActual ? categoriaActual.name : 'Categoría'
 

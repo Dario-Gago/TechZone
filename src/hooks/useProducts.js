@@ -2,7 +2,7 @@ import { useContext, useMemo, useCallback } from 'react'
 import { ProductContext } from '../contexts/ProductContext'
 
 export const useProductos = () => {
-  // ✅ Usar el contexto existente en lugar de hacer peticiones duplicadas
+  //Usar el contexto existente en lugar de hacer peticiones duplicadas
   const {
     productos: todosLosProductos,
     cargando,
@@ -10,14 +10,14 @@ export const useProductos = () => {
     formatearPrecio: formatearPrecioContexto
   } = useContext(ProductContext)
 
-  // ✅ Función para obtener productos destacados (solo con stock > 0)
+  //Función para obtener productos destacados (solo con stock > 0)
   const obtenerProductosDestacados = useCallback(() => {
     return todosLosProductos.filter(
       (producto) => producto.destacado === true && producto.stock > 0
     )
   }, [todosLosProductos])
 
-  // ✅ Función para obtener productos por categoría (solo con stock > 0)
+  //Función para obtener productos por categoría (solo con stock > 0)
   const obtenerProductosPorCategoria = useCallback(
     (categoria) => {
       return todosLosProductos.filter(
@@ -29,7 +29,7 @@ export const useProductos = () => {
     [todosLosProductos]
   )
 
-  // ✅ Función para buscar productos (memoizada)
+  //Función para buscar productos (memoizada)
   const buscarProductos = useCallback(
     (consulta) => {
       if (!consulta || consulta.trim() === '') {
@@ -67,7 +67,7 @@ export const useProductos = () => {
     [todosLosProductos]
   )
 
-  // ✅ Función para formatear precio (usar la del contexto si está disponible)
+  //Función para formatear precio (usar la del contexto si está disponible)
   const formatearPrecio = useCallback((precio) => {
     if (formatearPrecioContexto) {
       return formatearPrecioContexto(precio)
@@ -80,14 +80,14 @@ export const useProductos = () => {
     }).format(precio)
   }, [formatearPrecioContexto])
 
-  // ✅ Productos con stock (memoizado)
+  //Productos con stock (memoizado)
   const productosConStock = useMemo(() => {
     return todosLosProductos.filter((producto) => producto.stock > 0)
   }, [todosLosProductos])
 
   return {
-    productos: productosConStock, // ✅ Por defecto solo productos con stock
-    todosLosProductos, // ✅ ARRAY de todos los productos para admin
+    productos: productosConStock, //Por defecto solo productos con stock
+    todosLosProductos, //ARRAY de todos los productos para admin
     obtenerProductosDestacados,
     obtenerProductosPorCategoria,
     buscarProductos,

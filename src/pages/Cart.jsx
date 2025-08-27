@@ -31,12 +31,12 @@ const Carrito = () => {
   const descuento = 25000 // Descuento fijo por simplicidad
   const subtotal = total + descuento
 
-  // ✅ Función para manejar cambio de cantidad con validación de stock
+  //Función para manejar cambio de cantidad con validación de stock
   const manejarCambioCantidad = (item, nuevaCantidad) => {
     // No permitir cantidad menor a 1
     if (nuevaCantidad < 1) return
 
-    // ✅ Verificar si hay stock suficiente
+    //Verificar si hay stock suficiente
     if (nuevaCantidad > item.stock) {
       // Opcionalmente mostrar una alerta
       alert(`Solo hay ${item.stock} unidades disponibles de ${item.name}`)
@@ -46,12 +46,12 @@ const Carrito = () => {
     actualizarCantidad(item.id, nuevaCantidad)
   }
 
-  // ✅ Verificar si un item tiene problemas de stock
+  //Verificar si un item tiene problemas de stock
   const tieneProblemasStock = (item) => {
     return item.cantidadCarrito > item.stock
   }
 
-  // ✅ Verificar si el carrito tiene productos con problemas de stock
+  //Verificar si el carrito tiene productos con problemas de stock
   const carritoTieneProblemasStock = articulosCarrito.some(tieneProblemasStock)
 
   // Si el carrito está vacío
@@ -99,7 +99,7 @@ const Carrito = () => {
           </p>
         </div>
 
-        {/* ✅ Alerta de problemas de stock */}
+        {/*Alerta de problemas de stock */}
         {carritoTieneProblemasStock && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <div className="flex items-center space-x-2 text-red-700 mb-2">
@@ -154,7 +154,7 @@ const Carrito = () => {
                               {item.marca}
                             </p>
 
-                            {/* ✅ Información de stock */}
+                            {/*Información de stock */}
                             <div className="mt-1 flex items-center space-x-2">
                               <Package className="h-4 w-4 text-gray-400" />
                               <span
@@ -172,7 +172,7 @@ const Carrito = () => {
                               </span>
                             </div>
 
-                            {/* ✅ Alertas específicas */}
+                            {/*Alertas específicas */}
                             {excedeCantidad && !sinStock && (
                               <div className="mt-2 flex items-center space-x-1 text-orange-600">
                                 <AlertTriangle className="h-4 w-4" />
@@ -238,7 +238,7 @@ const Carrito = () => {
                             </button>
                           </div>
 
-                          {/* ✅ Indicador de máximo disponible */}
+                          {/*Indicador de máximo disponible */}
                           {item.stock > 0 && (
                             <span className="text-xs text-gray-500">
                               Máx. {item.stock}
@@ -276,7 +276,7 @@ const Carrito = () => {
                           </div>
                         </div>
 
-                        {/* ✅ Botón de ajuste rápido para exceso de cantidad */}
+                        {/*Botón de ajuste rápido para exceso de cantidad */}
                         {excedeCantidad && !sinStock && (
                           <div className="mt-3">
                             <button
@@ -362,7 +362,7 @@ const Carrito = () => {
                 <span>${total.toLocaleString('es-CL')}</span>
               </div>
 
-              {/* ✅ Validación antes del checkout */}
+              {/*Validación antes del checkout */}
               {carritoTieneProblemasStock ? (
                 <div className="space-y-3">
                   <div className="bg-red-50 border border-red-200 rounded-md p-3">

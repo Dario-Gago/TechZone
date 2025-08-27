@@ -10,7 +10,7 @@ const PaginaBusqueda = () => {
 
   const consulta = parametrosBusqueda.get('q') || ''
 
-  // ✅ Memoizar la función de búsqueda para evitar dependencias que cambien
+  //Memoizar la función de búsqueda para evitar dependencias que cambien
   const realizarBusqueda = useCallback(() => {
     if (consulta && !cargando && buscarProductos) {
       const resultados = buscarProductos(consulta)
@@ -75,7 +75,7 @@ const PaginaBusqueda = () => {
         {resultadosBusqueda.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {resultadosBusqueda.map((product) => {
-              // ✅ Calcular precio con descuento en tiempo real
+              //Calcular precio con descuento en tiempo real
               const precioConDescuento =
                 product.descuento > 0
                   ? product.precio_normal -

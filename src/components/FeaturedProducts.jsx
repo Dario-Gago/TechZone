@@ -9,7 +9,7 @@ const ProductosDestacados = () => {
   const [puedeDesplazarIzquierda, setPuedeDesplazarIzquierda] = useState(false)
   const [puedeDesplazarDerecha, setPuedeDesplazarDerecha] = useState(true)
 
-  // ✅ Filtrar productos destacados con stock > 0
+  //Filtrar productos destacados con stock > 0
   const productosDestacados = productos.filter(
     (producto) => producto.destacado === true && producto.stock > 0
   )
@@ -63,7 +63,7 @@ const ProductosDestacados = () => {
     )
   }
 
-  // ✅ Si no hay productos destacados, no mostrar la sección
+  //Si no hay productos destacados, no mostrar la sección
   if (productosDestacados.length === 0) {
     return null
   }
@@ -131,7 +131,7 @@ const ProductosDestacados = () => {
         >
           <div className="flex gap-4 min-w-max">
             {productosDestacados.map((producto) => {
-              // ✅ Calcular descuento usando los campos correctos
+              //Calcular descuento usando los campos correctos
               const descuento =
                 producto.precio_oferta > 0
                   ? calcularDescuento(
@@ -210,7 +210,7 @@ const ProductosDestacados = () => {
                       )}
                     </div>
 
-                    {/* ✅ Características destacadas */}
+                    {/*Características destacadas */}
                     {producto.caracteristicas && producto.caracteristicas.length > 0 && (
                       <div className="mt-3">
                         <p className="text-xs text-gray-600 line-clamp-1">

@@ -10,7 +10,7 @@ const BannerOferta = () => {
       name2: 'y GPU',
       price: '$199.990',
       slug: 'componentes',
-      imageKey: 'gpu', // ✅ Clave única para imagen
+      imageKey: 'gpu', //Clave única para imagen
       tall: true // Ocupa 2 filas
     },
     {
