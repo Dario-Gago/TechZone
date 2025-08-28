@@ -32,20 +32,13 @@ const ProductsTab = () => {
   }
 
   const handleGuardarProducto = async (formProducto) => {
-    console.log('=== HANDLE GUARDAR PRODUCTO ===')
-    console.log('productoEditando:', productoEditando)
-    console.log('formProducto recibido:', formProducto)
-
     setCargando(true)
     try {
       let resultado
 
       if (productoEditando) {
-        console.log('Editando producto ID:', productoEditando.id)
-        console.log('Datos a enviar:', JSON.stringify(formProducto, null, 2))
         resultado = await editarProducto(productoEditando.id, formProducto)
       } else {
-        console.log('Agregando nuevo producto:', formProducto)
         resultado = await agregarProducto(formProducto)
       }
 
@@ -83,8 +76,6 @@ const ProductsTab = () => {
       try {
         const resultado = await eliminarProducto(id)
         if (resultado && resultado.success) {
-          console.log('Producto eliminado exitosamente')
-          
           Swal.fire({
             title: '¡Eliminado!',
             text: 'El producto ha sido eliminado correctamente.',

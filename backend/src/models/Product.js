@@ -78,7 +78,7 @@ export const getProductById = async (id) => {
   }
 }
 
-// ✅ CREAR PRODUCTO
+//CREAR PRODUCTO
 export const createProduct = async (productData) => {
   const client = await pool.connect()
   
@@ -88,12 +88,12 @@ export const createProduct = async (productData) => {
     const {
       nombre,
       descripcion,
-      precio_normal, // ✅ CORREGIDO: usar precio_normal
-      precio_oferta, // ✅ CORREGIDO: usar precio_oferta
+      precio_normal,
+      precio_oferta,
       descuento,
-      marca, // ✅ Aceptar marca como string
-      marca_id, // ✅ También aceptar marca_id
-      imagen_url, // ✅ CORREGIDO: usar imagen_url
+      marca,
+      marca_id,
+      imagen_url,
       stock,
       disponibilidad,
       en_stock,
@@ -103,7 +103,7 @@ export const createProduct = async (productData) => {
       categoria //categoria como string
     } = productData
 
-    // ✅ VALIDACIÓN
+    //VALIDACIÓN
     if (!nombre || typeof nombre !== 'string' || nombre.trim() === '') {
       throw new Error(`Nombre inválido: recibido ${nombre} (tipo: ${typeof nombre})`)
     }
@@ -112,7 +112,7 @@ export const createProduct = async (productData) => {
       throw new Error(`Precio normal inválido: recibido ${precio_normal}`)
     }
 
-    // ✅ Resolver marca_id si solo se proporcionó el nombre de la marca
+    //Resolver marca_id si solo se proporcionó el nombre de la marca
     let marcaIdFinal = marca_id
     if (!marcaIdFinal && marca) {
       try {
@@ -123,7 +123,6 @@ export const createProduct = async (productData) => {
         if (marcaResult.rows.length > 0) {
           marcaIdFinal = marcaResult.rows[0].marca_id
         } else {
-          console.log('⚠️ Marca no encontrada, creando nueva marca:', marca)
           // Crear nueva marca si no existe
           const nuevaMarcaResult = await client.query(
             'INSERT INTO marca (nombre) VALUES ($1) RETURNING marca_id',
@@ -163,7 +162,7 @@ export const createProduct = async (productData) => {
 
     const nuevoProducto = result.rows[0]
 
-    // ✅ Manejar categoría si se proporcionó
+    //Manejar categoría si se proporcionó
     if (categoria && typeof categoria === 'string' && categoria.trim()) {
       
       // Buscar categoría existente
@@ -177,7 +176,6 @@ export const createProduct = async (productData) => {
         categoriaId = categoriaResult.rows[0].categoria_id
       } else {
         // Crear nueva categoría si no existe
-        console.log('⚠️ Categoría no encontrada, creando nueva:', categoria)
         const nuevaCategoriaResult = await client.query(
           'INSERT INTO categoria (nombre, activo) VALUES ($1, true) RETURNING categoria_id',
           [categoria.trim()]
@@ -204,7 +202,7 @@ export const createProduct = async (productData) => {
   }
 }
 
-// ✅ ACTUALIZAR PRODUCTO
+//ACTUALIZAR PRODUCTO
 export const updateProduct = async (id, productData) => {
   const client = await pool.connect()
   
@@ -214,12 +212,12 @@ export const updateProduct = async (id, productData) => {
     const {
       nombre,
       descripcion,
-      precio_normal, // ✅ CORREGIDO: usar precio_normal
-      precio_oferta, // ✅ CORREGIDO: usar precio_oferta
+      precio_normal, //CORREGIDO: usar precio_normal
+      precio_oferta, //CORREGIDO: usar precio_oferta
       descuento,
-      marca, // ✅ Aceptar marca como string
-      marca_id, // ✅ También aceptar marca_id
-      imagen_url, // ✅ CORREGIDO: usar imagen_url
+      marca, //Aceptar marca como string
+      marca_id, //También aceptar marca_id
+      imagen_url, //CORREGIDO: usar imagen_url
       stock,
       disponibilidad,
       en_stock,
@@ -229,7 +227,7 @@ export const updateProduct = async (id, productData) => {
       categoria //manejar categoría
     } = productData
 
-    // ✅ Resolver marca_id si solo se proporcionó el nombre de la marca
+    //Resolver marca_id si solo se proporcionó el nombre de la marca
     let marcaIdFinal = marca_id
     if (!marcaIdFinal && marca) {
       try {
@@ -240,7 +238,6 @@ export const updateProduct = async (id, productData) => {
         if (marcaResult.rows.length > 0) {
           marcaIdFinal = marcaResult.rows[0].marca_id
         } else {
-          console.log('⚠️ Marca no encontrada, creando nueva marca:', marca)
           // Crear nueva marca si no existe
           const nuevaMarcaResult = await client.query(
             'INSERT INTO marca (nombre) VALUES ($1) RETURNING marca_id',
@@ -306,7 +303,6 @@ export const updateProduct = async (id, productData) => {
         categoriaId = categoriaResult.rows[0].categoria_id
       } else {
         // Crear nueva categoría si no existe
-        console.log('⚠️ Categoría no encontrada, creando nueva:', categoria)
         const nuevaCategoriaResult = await client.query(
           'INSERT INTO categoria (nombre, activo) VALUES ($1, true) RETURNING categoria_id',
           [categoria.trim()]

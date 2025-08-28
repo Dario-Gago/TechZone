@@ -109,7 +109,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   useEffect(() => {
     if (productoEditando) {
       
-      // ✅ Usar directamente los datos del backend en español
+      //Usar directamente los datos del backend en español
       const caracteristicasText = (() => {
         // Usar características del backend
         if (Array.isArray(productoEditando.caracteristicas) && productoEditando.caracteristicas.length > 0) {
@@ -155,13 +155,13 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // ✅ Normalizar todos los campos a string antes de usar trim()
+    //Normalizar todos los campos a string antes de usar trim()
     const nombre = String(formProducto.nombre || '').trim()
     const marca = String(formProducto.marca || '').trim()
     const categoria = String(formProducto.categoria || '').trim()
     const imagen_url = String(formProducto.imagen_url || '').trim()
 
-    // ✅ Validación modificada para manejar nuevas categorías
+    //Validación modificada para manejar nuevas categorías
     if (!nombre || !marca || !imagen_url) {
       alert(
         'Por favor completa todos los campos requeridos (Nombre, Marca e Imagen)'
@@ -169,13 +169,13 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       return
     }
 
-    // ✅ Validar categoría solo si no se está creando una nueva
+    //Validar categoría solo si no se está creando una nueva
     if (!mostrandoNuevaCategoria && !categoria) {
       alert('Por favor selecciona una categoría o crea una nueva')
       return
     }
 
-    // ✅ Si se está mostrando nueva categoría, validar que tenga nombre
+    //Si se está mostrando nueva categoría, validar que tenga nombre
     if (mostrandoNuevaCategoria && !nuevaCategoria.trim()) {
       alert('Por favor ingresa el nombre de la nueva categoría')
       return
@@ -203,7 +203,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       return
     }
 
-    // ✅ Manejar creación de nueva categoría si es necesario
+    //Manejar creación de nueva categoría si es necesario
     let categoriaFinal = categoria
     
     if (mostrandoNuevaCategoria && nuevaCategoria.trim()) {
@@ -231,7 +231,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
       }
     }
 
-    // ✅ Procesar características: convertir texto a array
+    //Procesar características: convertir texto a array
     const caracteristicasArray = formProducto.caracteristicas
       ? formProducto.caracteristicas
           .split('\n') // Dividir por saltos de línea
@@ -257,9 +257,9 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
           : 0,
       subcategoria: '',
       envio: 'Envío estándar',
-      stock: stock, // ✅ Usar el valor ingresado
-      en_stock: stock > 0 ? 1 : 0, // ✅ Automático basado en stock
-      destacado: formProducto.destacado // ✅ Usar el valor seleccionado
+      stock: stock, //Usar el valor ingresado
+      en_stock: stock > 0 ? 1 : 0, //Automático basado en stock
+      destacado: formProducto.destacado //Usar el valor seleccionado
     }
     
     // Limpiar el estado de nueva categoría después de usar
@@ -315,11 +315,11 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
   const handleInputChange = (field, value) => {
     setFormProducto((prev) => ({
       ...prev,
-      [field]: value || '' // ✅ Asegurar que siempre sea una cadena o número válido
+      [field]: value || '' //Asegurar que siempre sea una cadena o número válido
     }))
   }
 
-  // ✅ Función específica para manejar el checkbox de destacado
+  //Función específica para manejar el checkbox de destacado
   const handleDestacadoChange = (e) => {
     setFormProducto((prev) => ({
       ...prev,
@@ -551,7 +551,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
             />
           </div>
 
-          {/* ✅ Nueva sección para producto destacado */}
+          {/*Nueva sección para producto destacado */}
           <div className="flex items-center space-x-2">
             <input
               type="checkbox"
@@ -568,7 +568,7 @@ const ProductForm = ({ productoEditando, onGuardar, onCerrar }) => {
             </label>
           </div>
 
-          {/* ✅ Sección de características simplificada */}
+          {/*Sección de características simplificada */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Características

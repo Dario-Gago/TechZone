@@ -10,7 +10,7 @@ const BannerOferta = () => {
       name2: 'y GPU',
       price: '$199.990',
       slug: 'componentes',
-      imageKey: 'gpu', // ✅ Clave única para imagen
+      imageKey: 'gpu', //Clave única para imagen
       tall: true // Ocupa 2 filas
     },
     {
@@ -24,7 +24,7 @@ const BannerOferta = () => {
     {
       id: 'componentes-motherboard',
       name: 'Motherboard',
-      price: '$999.990',
+      price: '$160.900',
       slug: 'componentes',
       imageKey: 'motherboard',
       tall: true // Ocupa 2 filas
